@@ -1,5 +1,17 @@
 # GlitchVerse Game Progression Handoff
 
+## Integration preflight update (2026-10-23)
+
+Audit and validation details are in `docs/INTEGRATION_AUDIT.md`. Work remains on `feature/integration-preflight`; no merge, push, Git configuration change, or teammate scene edit was performed.
+
+Shared fixes: invalid registrations fail instead of winning; progression requires completed puzzle/exit state; loading is deferred and validates the saved spawn; obsolete transition timers are cancelled; retries remove the retried entry's previous score/time; camera pitch resets; initial level signals are captured; exits recognize only the `player` group and handle a player already in their trigger when unlocked.
+
+Integration additions: `Main.auto_start` supports the future main menu and `GameFlowManager.get_snapshot()` initializes UI that connects late. The detailed contract in `systems/GAME_FLOW_INTEGRATION.md` now documents asynchronous loads, spawn placement, input ownership, scoring, and transition behavior.
+
+Preflight files changed: `systems/game_flow_manager.gd`, `systems/gameplay_level.gd`, `interactive/puzzle_exit.gd`, `player/player.tscn` (group only), this handoff, and `systems/GAME_FLOW_INTEGRATION.md`. Added `docs/INTEGRATION_AUDIT.md`, `tests/integration_checks.gd`, `tests/ready_level_fixture.gd`, `tests/run_validation.ps1`, and generated test script UIDs. The earlier milestone file inventory below is historical.
+
+Validation: Godot 4.7.2 import and 300-frame startup passed; all 14 GDScript files parsed; 44 automated checks passed; whitespace check passed. Commands and limits are recorded in the audit. Run the manual demonstration steps below, including restart after looking steeply upward/downward, before integrating final levels.
+
 ## Implemented features
 
 - `GameFlowManager` starts a run, loads registered `PackedScene` levels, places the persistent player at each level's spawn, restarts the current level, advances in sequence, and supports replay after victory.

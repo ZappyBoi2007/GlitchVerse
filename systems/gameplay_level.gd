@@ -19,6 +19,14 @@ signal objective_updated(description: String, completed_steps: int, total_steps:
 var _puzzle_is_complete := false
 var _exit_is_unlocked := false
 var _level_is_complete := false
+var _level_has_failed := false
+var objective_description := ""
+var objective_completed_steps := 0
+var objective_total_steps := 0
+
+
+func has_valid_player_spawn() -> bool:
+	return not player_spawn_path.is_empty() and get_node_or_null(player_spawn_path) is Node3D
 
 
 func get_player_spawn_transform() -> Transform3D:
@@ -35,31 +43,35 @@ func is_exit_unlocked() -> bool:
 
 
 func mark_puzzle_completed() -> void:
-	if _puzzle_is_complete:
+	if _puzzle_is_complete or _level_has_failed:
 		return
 	_puzzle_is_complete = true
 	puzzle_completed.emit()
 
 
 func mark_exit_unlocked() -> void:
-	if _exit_is_unlocked:
+	if _exit_is_unlocked or not _puzzle_is_complete or _level_has_failed:
 		return
 	_exit_is_unlocked = true
 	exit_unlocked.emit()
 
 
 func finish_level() -> void:
-	if _level_is_complete or not _exit_is_unlocked:
+	if _level_is_complete or not _exit_is_unlocked or not _puzzle_is_complete or _level_has_failed:
 		return
 	_level_is_complete = true
 	level_completed.emit()
 
 
 func fail_level(reason: String) -> void:
-	if _level_is_complete:
+	if _level_is_complete or _level_has_failed:
 		return
+	_level_has_failed = true
 	level_failed.emit(reason)
 
 
 func report_objective(description: String, completed_steps: int, total_steps: int) -> void:
+	objective_description = description
+	objective_completed_steps = completed_steps
+	objective_total_steps = total_steps
 	objective_updated.emit(description, completed_steps, total_steps)
