@@ -13,7 +13,7 @@ extends Control
 @export var level_complete_scene: PackedScene = preload("res://scenes/ui/level_complete.tscn")
 @export var game_over_scene: PackedScene = preload("res://scenes/ui/game_over.tscn")
 
-# Screen Instances (Can be assigned via inspector, found in tree, or instantiated dynamically)
+# Screen Instances
 @export var main_menu_instance: MainMenu
 @export var hud_instance: InGameHUD
 @export var pause_menu_instance: PauseMenu
@@ -30,24 +30,52 @@ extends Control
 @onready var btn_complete: Button = get_node_or_null("%BtnComplete") as Button
 @onready var btn_game_over: Button = get_node_or_null("%BtnGameOver") as Button
 
-# Level & Instrument Testing Toolbar
+# Developer Sub-Bar Container
 @onready var dev_sub_bar: PanelContainer = get_node_or_null("%DevSubBar") as PanelContainer
+
+# Row 1: Level, Health, Score
 @onready var btn_l1: Button = get_node_or_null("%BtnL1") as Button
 @onready var btn_l2: Button = get_node_or_null("%BtnL2") as Button
 @onready var btn_l3: Button = get_node_or_null("%BtnL3") as Button
 @onready var btn_l4: Button = get_node_or_null("%BtnL4") as Button
+@onready var btn_dmg: Button = get_node_or_null("%BtnDmg") as Button
+@onready var btn_heal: Button = get_node_or_null("%BtnHeal") as Button
+@onready var btn_crit_health: Button = get_node_or_null("%BtnCritHealth") as Button
+@onready var btn_add_score: Button = get_node_or_null("%BtnAddScore") as Button
 
+# Row 2: Objective Progress & Grapple Targeting
+@onready var btn_obj0: Button = get_node_or_null("%BtnObj0") as Button
+@onready var btn_obj1: Button = get_node_or_null("%BtnObj1") as Button
+@onready var btn_obj2: Button = get_node_or_null("%BtnObj2") as Button
+@onready var btn_grapple_valid: Button = get_node_or_null("%BtnGrappleValid") as Button
+@onready var btn_grapple_invalid: Button = get_node_or_null("%BtnGrappleInvalid") as Button
+@onready var btn_grapple_none: Button = get_node_or_null("%BtnGrappleNone") as Button
+@onready var btn_target_compat: Button = get_node_or_null("%BtnTargetCompat") as Button
+@onready var btn_target_none: Button = get_node_or_null("%BtnTargetNone") as Button
+
+# Row 3: Tether, Blade, Vector Run
+@onready var btn_tether_ready: Button = get_node_or_null("%BtnTetherReady") as Button
+@onready var btn_tether_attached: Button = get_node_or_null("%BtnTetherAttached") as Button
+@onready var btn_tether_released: Button = get_node_or_null("%BtnTetherReleased") as Button
+@onready var btn_blade_ready: Button = get_node_or_null("%BtnBladeReady") as Button
+@onready var btn_blade_strike: Button = get_node_or_null("%BtnBladeStrike") as Button
+@onready var btn_vector_run: Button = get_node_or_null("%BtnVectorRun") as Button
+
+# Row 4: Mock Tools & Notifications
+@onready var btn_tool_polarity: Button = get_node_or_null("%BtnToolPolarity") as Button
+@onready var btn_tool_rewire: Button = get_node_or_null("%BtnToolRewire") as Button
 @onready var btn_phase: Button = get_node_or_null("%BtnPhase") as Button
 @onready var btn_gravity: Button = get_node_or_null("%BtnGravity") as Button
 @onready var btn_freeze: Button = get_node_or_null("%BtnFreeze") as Button
+@onready var btn_notif_breach: Button = get_node_or_null("%BtnNotifBreach") as Button
+@onready var btn_notif_relay: Button = get_node_or_null("%BtnNotifRelay") as Button
+@onready var btn_notif_unlocked: Button = get_node_or_null("%BtnNotifUnlocked") as Button
 
-@onready var btn_target_compat: Button = get_node_or_null("%BtnTargetCompat") as Button
-@onready var btn_target_none: Button = get_node_or_null("%BtnTargetNone") as Button
-@onready var btn_add_score: Button = get_node_or_null("%BtnAddScore") as Button
-
+# Simulation State (Kept strictly isolated in preview harness)
 var current_level_id: int = 1
 var current_view: String = "menu"
 var simulated_score: int = 1450
+var simulated_health: float = 100.0
 
 
 func _ready() -> void:
@@ -56,12 +84,24 @@ func _ready() -> void:
 	_ensure_screen_instances()
 	_setup_screen_interlinks()
 	_setup_preview_selector()
-	_setup_level_and_instrument_tools()
+	_setup_preview_tools()
 
 	_apply_level(1)
+	_apply_preview_mock_state()
 
-	# Start on MAIN MENU by default as required
+	# Start on MAIN MENU by default
 	_switch_view("menu")
+
+
+func _apply_preview_mock_state() -> void:
+	if hud_instance == null:
+		return
+	hud_instance.set_health(simulated_health, 100.0)
+	hud_instance.set_tether_status("READY", false)
+	hud_instance.set_blade_status("READY", true)
+	hud_instance.set_equipped_tool("POLARITY", "POLARITY (MOCK)", "STANDBY", UIColors.COLOR_TOOL_POLARITY)
+	hud_instance.set_control_hints("[E] TETHER  [F] INTERACT  [LMB] BLADE  [SHIFT] VECTOR RUN  [SPACE] JUMP")
+	hud_instance.set_objective_progress(0, 2, "CIRCUITS")
 
 
 func _ensure_screen_instances() -> void:
@@ -185,7 +225,8 @@ func _setup_screen_interlinks() -> void:
 		game_over_instance.menu_requested.connect(func(): _switch_view("menu"))
 
 
-func _setup_level_and_instrument_tools() -> void:
+func _setup_preview_tools() -> void:
+	# Level buttons
 	if btn_l1 != null:
 		btn_l1.pressed.connect(func(): _apply_level(1))
 	if btn_l2 != null:
@@ -195,25 +236,70 @@ func _setup_level_and_instrument_tools() -> void:
 	if btn_l4 != null:
 		btn_l4.pressed.connect(func(): _apply_level(4))
 
-	if btn_phase != null:
-		btn_phase.pressed.connect(func():
+	# Health simulation
+	if btn_dmg != null:
+		btn_dmg.pressed.connect(func():
+			simulated_health = maxf(0.0, simulated_health - 25.0)
 			if hud_instance != null:
-				hud_instance.set_ability("PHASE")
-			_highlight_instrument_btn(btn_phase)
+				hud_instance.set_health(simulated_health, 100.0)
 		)
-	if btn_gravity != null:
-		btn_gravity.pressed.connect(func():
+	if btn_heal != null:
+		btn_heal.pressed.connect(func():
+			simulated_health = minf(100.0, simulated_health + 25.0)
 			if hud_instance != null:
-				hud_instance.set_ability("GRAVITY")
-			_highlight_instrument_btn(btn_gravity)
+				hud_instance.set_health(simulated_health, 100.0)
 		)
-	if btn_freeze != null:
-		btn_freeze.pressed.connect(func():
+	if btn_crit_health != null:
+		btn_crit_health.pressed.connect(func():
+			simulated_health = 15.0
 			if hud_instance != null:
-				hud_instance.set_ability("FREEZE")
-			_highlight_instrument_btn(btn_freeze)
+				hud_instance.set_health(simulated_health, 100.0)
 		)
 
+	# Score
+	if btn_add_score != null:
+		btn_add_score.pressed.connect(func():
+			simulated_score += 250
+			if hud_instance != null:
+				hud_instance.set_score(simulated_score)
+		)
+
+	# Objective progress
+	if btn_obj0 != null:
+		btn_obj0.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.set_objective_progress(0, 2, "CIRCUITS")
+		)
+	if btn_obj1 != null:
+		btn_obj1.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.set_objective_progress(1, 2, "CIRCUITS")
+		)
+	if btn_obj2 != null:
+		btn_obj2.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.set_objective_progress(2, 2, "CIRCUITS")
+				hud_instance.show_notification("CIRCUITS 2/2 RESTORED // EXIT READY", false)
+		)
+
+	# Grapple targeting
+	if btn_grapple_valid != null:
+		btn_grapple_valid.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.set_grapple_target(true, true, "CONDUIT ANCHOR")
+		)
+	if btn_grapple_invalid != null:
+		btn_grapple_invalid.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.set_grapple_target(true, false, "OBSTRUCTED")
+		)
+	if btn_grapple_none != null:
+		btn_grapple_none.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.set_grapple_target(false)
+		)
+
+	# Interaction target (legacy / general)
 	if btn_target_compat != null:
 		btn_target_compat.pressed.connect(func():
 			var data: Dictionary = UIColors.get_level_data(current_level_id)
@@ -226,11 +312,90 @@ func _setup_level_and_instrument_tools() -> void:
 				hud_instance.set_target_prompt("", false)
 		)
 
-	if btn_add_score != null:
-		btn_add_score.pressed.connect(func():
-			simulated_score += 250
+	# Tether states
+	if btn_tether_ready != null:
+		btn_tether_ready.pressed.connect(func():
 			if hud_instance != null:
-				hud_instance.set_score(simulated_score)
+				hud_instance.set_tether_status("READY", false)
+				hud_instance.show_notification("TETHER READY", false)
+		)
+	if btn_tether_attached != null:
+		btn_tether_attached.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.set_tether_status("ATTACHED", true)
+				hud_instance.show_notification("TETHER ATTACHED", false)
+		)
+	if btn_tether_released != null:
+		btn_tether_released.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.set_tether_status("RELEASED", false)
+				hud_instance.show_notification("TETHER RELEASED", false)
+		)
+
+	# Blade states
+	if btn_blade_ready != null:
+		btn_blade_ready.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.set_blade_status("READY", true)
+		)
+	if btn_blade_strike != null:
+		btn_blade_strike.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.set_blade_status("STRIKE", true)
+				hud_instance.show_notification("BLADE STRIKE", false, 1.2)
+		)
+
+	# Vector Run (simulated)
+	if btn_vector_run != null:
+		btn_vector_run.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.show_notification("WALL RUN ACTIVE // MOMENTUM VECTOR", false, 2.5)
+		)
+
+	# Mock Tools & Environmental Vectors
+	if btn_tool_polarity != null:
+		btn_tool_polarity.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.set_equipped_tool("POLARITY", "POLARITY (MOCK)", "ACTIVE", UIColors.COLOR_TOOL_POLARITY)
+				hud_instance.show_notification("TOOL: POLARITY [MOCK DEMO]", false)
+		)
+	if btn_tool_rewire != null:
+		btn_tool_rewire.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.set_equipped_tool("REWIRE", "REWIRE (MOCK)", "ACTIVE", UIColors.COLOR_TOOL_REWIRE)
+				hud_instance.show_notification("TOOL: REWIRE [MOCK DEMO]", false)
+		)
+	if btn_phase != null:
+		btn_phase.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.set_ability("PHASE")
+		)
+	if btn_gravity != null:
+		btn_gravity.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.set_ability("GRAVITY")
+		)
+	if btn_freeze != null:
+		btn_freeze.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.set_ability("FREEZE")
+		)
+
+	# Notifications
+	if btn_notif_breach != null:
+		btn_notif_breach.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.show_notification("SECURITY BREACH // CONTAINMENT ALERT", true, 3.5)
+		)
+	if btn_notif_relay != null:
+		btn_notif_relay.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.show_notification("RELAY A RESTORED // POWER ROUTE SWITCHED", false, 3.0)
+		)
+	if btn_notif_unlocked != null:
+		btn_notif_unlocked.pressed.connect(func():
+			if hud_instance != null:
+				hud_instance.show_notification("EXIT UNLOCKED // PROCEED TO SECTOR EXIT", false, 3.0)
 		)
 
 
@@ -240,7 +405,7 @@ func _switch_view(view_name: String) -> void:
 		get_tree().paused = false
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
-	# Strict mutual exclusion: display ONLY the selected screen
+	# Strict mutual exclusion
 	if main_menu_instance != null:
 		main_menu_instance.visible = (view_name == "menu")
 	if hud_instance != null:
@@ -252,11 +417,11 @@ func _switch_view(view_name: String) -> void:
 	if game_over_instance != null:
 		game_over_instance.visible = (view_name == "game_over")
 
-	# Developer secondary toolbars: ONLY active in HUD mode
+	# Developer secondary toolbar: active in HUD view
 	if dev_sub_bar != null:
 		dev_sub_bar.visible = (view_name == "hud")
 
-	# Highlight active button on the developer preview selector
+	# Highlight active button on top bar
 	if btn_main_menu != null:
 		btn_main_menu.modulate = UIColors.COLOR_CONTROLLED if view_name == "menu" else UIColors.COLOR_TEXT_PRIMARY
 	if btn_hud != null:
@@ -268,7 +433,7 @@ func _switch_view(view_name: String) -> void:
 	if btn_game_over != null:
 		btn_game_over.modulate = UIColors.COLOR_CRITICAL if view_name == "game_over" else UIColors.COLOR_TEXT_PRIMARY
 
-	# Initialize view state if needed
+	# Initialize view state
 	if view_name == "pause" and pause_menu_instance != null:
 		pause_menu_instance.open(current_level_id)
 	elif view_name == "complete" and level_complete_instance != null:
@@ -283,7 +448,6 @@ func _apply_level(level_id: int) -> void:
 	if hud_instance != null:
 		hud_instance.set_level(level_id)
 
-	# Update level buttons
 	if btn_l1 != null:
 		btn_l1.modulate = UIColors.COLOR_CONTROLLED if level_id == 1 else UIColors.COLOR_TEXT_PRIMARY
 	if btn_l2 != null:
@@ -299,12 +463,3 @@ func _apply_level(level_id: int) -> void:
 		level_complete_instance.show_completion(level_id, 47.23, simulated_score, false)
 	elif current_view == "game_over" and game_over_instance != null:
 		game_over_instance.show_game_over(level_id)
-
-
-func _highlight_instrument_btn(active_btn: Button) -> void:
-	if btn_phase != null:
-		btn_phase.modulate = UIColors.COLOR_ABILITY_PHASE if active_btn == btn_phase else UIColors.COLOR_TEXT_PRIMARY
-	if btn_gravity != null:
-		btn_gravity.modulate = UIColors.COLOR_ABILITY_GRAVITY if active_btn == btn_gravity else UIColors.COLOR_TEXT_PRIMARY
-	if btn_freeze != null:
-		btn_freeze.modulate = UIColors.COLOR_ABILITY_FREEZE if active_btn == btn_freeze else UIColors.COLOR_TEXT_PRIMARY

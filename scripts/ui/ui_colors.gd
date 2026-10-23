@@ -30,6 +30,13 @@ const COLOR_ABILITY_PHASE := Color("39f5ff")     # Cyan
 const COLOR_ABILITY_GRAVITY := Color("ffb830")   # Amber / Warm Yellow
 const COLOR_ABILITY_FREEZE := Color("a259ff")    # Violet / Purple
 
+# Revised Gameplay Tool & Equipment Colors
+const COLOR_TOOL_TETHER := Color("39f5ff")       # Cyan
+const COLOR_TOOL_BLADE := Color("ffb830")        # Amber / Gold
+const COLOR_TOOL_POLARITY := Color("a259ff")     # Violet / Purple
+const COLOR_TOOL_REWIRE := Color("38ef7d")       # Green
+const COLOR_TOOL_VECTOR := Color("39f5ff")       # Cyan (Wall-run / Traversal)
+
 # Four Research Levels Metadata
 const LEVELS: Array[Dictionary] = [
 	{
@@ -94,3 +101,25 @@ static func get_ability_color(ability_name: String) -> Color:
 			return COLOR_ABILITY_FREEZE
 		_:
 			return COLOR_ABILITY_PHASE
+
+
+static func get_tool_color(tool_name: String) -> Color:
+	match tool_name.to_upper():
+		"TETHER", "GRAPPLE":
+			return COLOR_TOOL_TETHER
+		"BLADE", "SWORD":
+			return COLOR_TOOL_BLADE
+		"POLARITY":
+			return COLOR_TOOL_POLARITY
+		"REWIRE":
+			return COLOR_TOOL_REWIRE
+		"VECTOR", "WALL_RUN":
+			return COLOR_TOOL_VECTOR
+		"PHASE":
+			return COLOR_ABILITY_PHASE
+		"GRAVITY":
+			return COLOR_ABILITY_GRAVITY
+		"FREEZE":
+			return COLOR_ABILITY_FREEZE
+		_:
+			return COLOR_TEXT_PRIMARY

@@ -47,29 +47,45 @@ GLITCHVERSE balances a dark industrial, experimental research, horror-inspired a
 
 ## 4. Gameplay HUD Architecture
 
-The compact in-game HUD prioritizes gameplay-essential information:
+The revised compact in-game HUD balances high-speed traversal, survival metrics, and experimental puzzle solving:
 
 ```
 [ TOP-LEFT ]                                                      [ TOP-RIGHT ]
 GV-01 // ACCESS DENIED                                                 00:47.23
 OBJECTIVE: Restore access to containment chamber.                  SCORE: 01450
+CIRCUITS: 0/2 [ ■ ■ □ ]
 
-                                    [ CENTER ]
-                                        +
-                           [LMB] REWRITE PHASE BARRIER
+                           [ NOTIFICATION BANNER ]
+                        TETHER ATTACHED // VECTOR OK
+
+                                  [ CENTER ]
+                                   [ + ]
+                         [E] TETHER // CONDUIT ANCHOR
 
 [ BOTTOM-LEFT ]                                                [ BOTTOM-RIGHT ]
-1:PHASE  2:GRAV  3:FREEZE | LMB:APPLY | ESC:PAUSE            REALITY INSTRUMENT
-                                                                        ▪ PHASE
+VITALS // INTEGRITY                                         EQUIPMENT // LOADOUT
+[=========|==] 100 / 100 HP                                     ▪ TETHER: READY
+! CRITICAL INTEGRITY !                                          ▪ BLADE:  READY
+[E] TETHER  [F] INTERACT  [LMB] BLADE  [SHIFT] VECTOR RUN       ▪ POLARITY: ACT
 ```
 
 ### Public Callable API (`InGameHUD`)
-*   `set_ability(mode: String)`: Updates active ability and sets color to Cyan (`PHASE`), Amber (`GRAVITY`), or Violet (`FREEZE`).
+*   `set_level(level_id: int)`: Updates chamber code, name, and baseline corruption.
+*   `set_level_name(level_name: String, code: String = "")`: Updates level title and code dynamically.
+*   `set_objective(text: String)`: Updates the active objective string.
+*   `set_objective_progress(completed: int, total: int, step_desc: String = "")`: Updates progress steps and bar.
+*   `set_health(current: float, max_health: float = -1.0)`: Updates health bar, numerical readout, and low-health alert threshold. Starts uninitialized (`-- / -- HP`) until integration layer supplies actual data.
+*   `set_grapple_target(has_target: bool, is_valid: bool = false, anchor_label: String = "")`: Displays targeting crosshair brackets and valid/invalid status.
+*   `show_interaction_prompt(prompt_text: String, key_hint: String = "F")`: Contextual interaction prompt.
+*   `hide_interaction_prompt()`: Clears interaction prompt.
+*   `set_tether_status(status_text: String, is_attached: bool = false)`: Updates TETHER indicator.
+*   `set_blade_status(status_text: String, is_ready: bool = true)`: Updates BLADE indicator.
+*   `set_equipped_tool(tool_id: String, tool_label: String = "", tool_status: String = "READY", tool_color: Color = Color.WHITE)`: Updates auxiliary vector / tool.
+*   `set_ability(mode: String)`: Legacy backward-compatible adapter.
+*   `show_notification(message: String, is_alert: bool = false, duration: float = 2.5)`: Transient notification banner with tween animation.
+*   `set_control_hints(hints_text: String)`: Updates bottom-left keybind legend.
 *   `set_score(points: int)`: Updates score readout (`SCORE: %05d`).
 *   `set_timer_seconds(seconds: float)`: Updates HUD simulation clock.
-*   `set_level(level_id: int)`: Updates chamber code, name, and baseline corruption.
-*   `set_objective(text: String)`: Updates the active objective string.
-*   `set_target_prompt(prompt_text: String, is_compatible: bool)`: Updates target interaction prompt.
 
 ---
 
@@ -78,17 +94,19 @@ OBJECTIVE: Restore access to containment chamber.                  SCORE: 01450
 ### 1. `RealityDebugger` (Connected)
 `InGameHUD` looks for the group `"reality_debugger"` and connects to:
 *   `ability_changed(ability_label, ability_color)` -> calls `set_ability(ability_label)`
-*   `target_changed(target_label, compatible, has_target)` -> calls `set_target_prompt(target_label, compatible)`
-*   `feedback_changed(message, is_error)` -> displays error or feedback message in `#FF4057` / `#E8F7F8`
+*   `target_changed(target_label, compatible, has_target)` -> updates `set_target_prompt()` and `set_grapple_target()`
+*   `feedback_changed(message, is_error)` -> calls `show_notification(message, is_error)`
 
-### 2. `GameFlowManager` (Pending / Interface-Ready)
-`InGameHUD` checks for group `"game_flow_manager"` or root node `GameFlowManager` and automatically connects to:
-*   `level_started(level_id)` -> calls `set_level(level_id)`
-*   `objective_updated(text)` -> calls `set_objective(text)`
+### 2. `GameFlowManager` (Connected via group `"game_flow"`)
+`InGameHUD` automatically detects `GameFlowManager` in group `"game_flow"` and connects to:
+*   `level_started(level_id, level_name)` -> calls `set_level_name()` and announces level
+*   `objective_updated(text, completed, total)` -> calls `set_objective()` and `set_objective_progress()`
 *   `time_updated(seconds)` -> calls `set_timer_seconds(seconds)`
 *   `score_updated(points)` -> calls `set_score(points)`
-*   `level_completed(level_id, time, score)` -> displays `LevelComplete` modal
-*   `game_failed(level_id, reason)` -> displays `GameOver` modal
+*   `puzzle_completed(level_id, elapsed)` -> triggers `"PUZZLE SOLVED // EXIT UNLOCKED"` notification
+*   `exit_unlocked(level_id)` -> triggers `"CONTAINMENT EXIT UNLOCKED"` notification
+*   `game_failed(reason)` -> triggers alert notification `"CRITICAL FAILURE: <REASON>"`
+*   `game_victory(time, points)` -> triggers `"SIMULATION COMPLETE"` notification
 
 ---
 
