@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://interactive/moving_hazard.gd" id="1_script"]
+
+[sub_resource type="StandardMaterial3D" id="Material_moving"]
+albedo_color = Color(0.36, 0.025, 0.08, 1)
+metallic = 0.45
+roughness = 0.32
+emission_enabled = true
+emission = Color(1, 0.04, 0.22, 1)
+emission_energy_multiplier = 2.5
+
+[sub_resource type="StandardMaterial3D" id="Material_frozen"]
+albedo_color = Color(0.08, 0.16, 0.45, 1)
+metallic = 0.35
+roughness = 0.18
+emission_enabled = true
+emission = Color(0.22, 0.45, 1, 1)
+emission_energy_multiplier = 2.2
+
+[sub_resource type="BoxMesh" id="Mesh_hazard"]
+material = SubResource("Material_moving")
+size = Vector3(0.65, 2.4, 0.65)
+
+[sub_resource type="BoxShape3D" id="Shape_hazard"]
+size = Vector3(0.65, 2.4, 0.65)
+
+[node name="MovingHazard" type="AnimatableBody3D"]
+script = ExtResource("1_script")
+moving_material = SubResource("Material_moving")
+frozen_material = SubResource("Material_frozen")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("Mesh_hazard")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("Shape_hazard")
+
+[node name="Label3D" type="Label3D" parent="."]
+position = Vector3(0, 1.55, 0)
+text = "[3] FREEZE"
+font_size = 30
+outline_size = 7
+modulate = Color(1, 0.45, 0.55, 1)
