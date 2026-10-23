@@ -1,0 +1,83 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://player/player_controller.gd" id="1_player"]
+[ext_resource type="Script" path="res://audio/player_audio_controller.gd" id="2_audio"]
+[ext_resource type="Script" path="res://player/player_health.gd" id="3_health"]
+[ext_resource type="Script" path="res://systems/grapple_controller.gd" id="4_grapple"]
+[ext_resource type="PackedScene" path="res://player/sword_controller.tscn" id="5_sword"]
+[ext_resource type="Script" path="res://systems/vector_run_controller.gd" id="6_vector_run"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape_player"]
+radius = 0.35
+height = 1.8
+
+[sub_resource type="Environment" id="Environment_camera"]
+background_mode = 2
+background_color = Color(0.008, 0.012, 0.025, 1)
+ambient_light_source = 3
+ambient_light_color = Color(0.12, 0.18, 0.26, 1)
+ambient_light_energy = 0.45
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="Material_tether"]
+shading_mode = 0
+albedo_color = Color(0.18, 0.88, 1, 0.9)
+emission_enabled = true
+emission = Color(0.18, 0.88, 1, 1)
+emission_energy_multiplier = 2.2
+
+[sub_resource type="CylinderMesh" id="Mesh_tether"]
+material = SubResource("Material_tether")
+top_radius = 0.022
+bottom_radius = 0.022
+height = 1.0
+radial_segments = 8
+
+[node name="ActionPlayer" type="CharacterBody3D" groups=["player", "action_player"]]
+script = ExtResource("1_player")
+floor_snap_length = 0.3
+floor_max_angle = 0.785398
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.9, 0)
+shape = SubResource("CapsuleShape_player")
+
+[node name="Head" type="Node3D" parent="."]
+position = Vector3(0, 1.6, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+current = true
+fov = 78.0
+environment = SubResource("Environment_camera")
+
+[node name="GrappleController" type="Node3D" parent="Head/Camera3D"]
+script = ExtResource("4_grapple")
+
+[node name="TargetRay" type="RayCast3D" parent="Head/Camera3D/GrappleController"]
+target_position = Vector3(0, 0, -22)
+collide_with_areas = true
+
+[node name="TetherBeam" type="MeshInstance3D" parent="Head/Camera3D/GrappleController"]
+visible = false
+cast_shadow = 0
+mesh = SubResource("Mesh_tether")
+
+[node name="SwordController" parent="Head/Camera3D" instance=ExtResource("5_sword")]
+
+[node name="PlayerHealth" type="Node" parent="."]
+script = ExtResource("3_health")
+
+[node name="VectorRunController" type="Node3D" parent="."]
+position = Vector3(0, 1, 0)
+script = ExtResource("6_vector_run")
+
+[node name="LeftWallRay" type="RayCast3D" parent="VectorRunController"]
+target_position = Vector3(-0.9, 0, 0)
+collision_mask = 1
+
+[node name="RightWallRay" type="RayCast3D" parent="VectorRunController"]
+target_position = Vector3(0.9, 0, 0)
+collision_mask = 1
+
+[node name="PlayerAudioController" type="Node" parent="."]
+script = ExtResource("2_audio")

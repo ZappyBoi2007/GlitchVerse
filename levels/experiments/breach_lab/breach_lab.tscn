@@ -1,0 +1,18 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://levels/experiments/breach_lab/breach_lab_level.tscn" id="1_level"]
+[ext_resource type="PackedScene" path="res://player/action_player.tscn" id="2_player"]
+[ext_resource type="Script" path="res://systems/game_flow_manager.gd" id="3_flow"]
+[ext_resource type="Script" path="res://levels/experiments/breach_lab/breach_lab_hud.gd" id="4_hud"]
+
+[node name="BreachLabPreview" type="Node"]
+script = ExtResource("3_flow")
+level_scenes = Array[PackedScene]([ExtResource("1_level")])
+failure_height = -9.0
+
+[node name="LevelContainer" type="Node" parent="."]
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+
+[node name="BreachLabHUD" type="CanvasLayer" parent="."]
+script = ExtResource("4_hud")
