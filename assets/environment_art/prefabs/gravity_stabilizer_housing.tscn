@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3]
 
-[ext_resource type="Material" path="res://assets/environment_art/materials/structural_black.tres" id="1_black"]
-[ext_resource type="Material" path="res://assets/environment_art/materials/brushed_steel.tres" id="2_steel"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/level2_dark_alloy.tres" id="1_black"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/industrial_edge.tres" id="2_steel"]
 [ext_resource type="Material" path="res://assets/environment_art/materials/cyan_emissive.tres" id="3_cyan"]
 [ext_resource type="Material" path="res://assets/environment_art/materials/hazard_yellow.tres" id="4_hazard"]
 
