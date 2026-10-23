@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://levels/test_chamber.tscn" id="1_level"]
+[ext_resource type="PackedScene" path="res://player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://ui/hud.tscn" id="3_hud"]
+
+[node name="Main" type="Node"]
+
+[node name="TestChamber" parent="." instance=ExtResource("1_level")]
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector3(0, 0.05, 11)
+rotation_degrees = Vector3(0, 180, 0)
+
+[node name="HUD" parent="." instance=ExtResource("3_hud")]
