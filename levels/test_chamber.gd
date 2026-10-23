@@ -1,11 +1,14 @@
-extends Node3D
+extends GameplayLevel
 
 ## Builds the Milestone 1 chamber entirely from Godot primitives.
 ## Each solid receives both a BoxMesh and matching BoxShape3D collision.
 
 var charcoal: StandardMaterial3D
+var floor_material: StandardMaterial3D
 var dark_metal: StandardMaterial3D
 var cyan: StandardMaterial3D
+var amber: StandardMaterial3D
+var violet: StandardMaterial3D
 var magenta: StandardMaterial3D
 var exit_material: StandardMaterial3D
 
@@ -17,12 +20,18 @@ func _ready() -> void:
 	_build_corridor()
 	_build_decorations()
 	_build_lighting()
+	$DemoPuzzleController.puzzle_solved.connect(_on_puzzle_solved)
+	$DemoPuzzleController.progress_changed.connect(report_objective)
+	$PuzzleExit.exit_reached.connect(_on_exit_reached)
 
 
 func _create_materials() -> void:
-	charcoal = _make_material(Color("202631"), 0.82, 0.18)
-	dark_metal = _make_material(Color("111722"), 0.48, 0.62)
-	cyan = _make_emissive_material(Color("20e7ff"), 2.2)
+	charcoal = _make_material(Color("2b3442"), 0.82, 0.18)
+	floor_material = _make_material(Color("303b49"), 0.88, 0.12)
+	dark_metal = _make_material(Color("192230"), 0.48, 0.62)
+	cyan = _make_emissive_material(Color("55e8e2"), 2.2)
+	amber = _make_emissive_material(Color("f6b857"), 2.0)
+	violet = _make_emissive_material(Color("bb8dfa"), 2.0)
 	magenta = _make_emissive_material(Color("ff3bbd"), 2.0)
 	exit_material = _make_emissive_material(Color("55ff9a"), 2.8)
 
@@ -74,8 +83,20 @@ func _add_glow_strip(position: Vector3, size: Vector3, material: Material) -> vo
 	add_child(strip)
 
 
+func _add_world_label(label_name: String, position: Vector3, text: String, color: Color) -> void:
+	var label := Label3D.new()
+	label.name = label_name
+	label.position = position
+	label.text = text
+	label.font_size = 34
+	label.outline_size = 9
+	label.modulate = color
+	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	add_child(label)
+
+
 func _build_floor_and_walls() -> void:
-	_add_box("MainFloor", Vector3(0, -0.5, 0), Vector3(30, 1, 34), charcoal)
+	_add_box("MainFloor", Vector3(0, -0.5, 0), Vector3(30, 1, 34), floor_material)
 	_add_box("NorthWall", Vector3(0, 4, -17), Vector3(30, 9, 1), dark_metal)
 	_add_box("SouthWallLeft", Vector3(-9.5, 4, 17), Vector3(11, 9, 1), dark_metal)
 	_add_box("SouthWallRight", Vector3(9.5, 4, 17), Vector3(11, 9, 1), dark_metal)
@@ -83,6 +104,13 @@ func _build_floor_and_walls() -> void:
 	_add_box("EastWall", Vector3(15, 4, 0), Vector3(1, 9, 34), dark_metal)
 	_add_glow_strip(Vector3(0, 0.03, -15.5), Vector3(20, 0.04, 0.13), cyan)
 	_add_glow_strip(Vector3(-13.5, 0.03, 0), Vector3(0.13, 0.04, 24), magenta)
+	_add_glow_strip(Vector3(0, 0.035, 13.6), Vector3(0.12, 0.05, 4.8), cyan)
+	_add_world_label(
+		"CalibrationInstructions",
+		Vector3(0, 4.85, 15.7),
+		"CALIBRATION // 3 LINKS REQUIRED\nPHASE  >  GRAVITY  >  FREEZE  >  EXIT",
+		Color("b9fffb")
+	)
 
 
 func _build_platform_course() -> void:
@@ -99,25 +127,15 @@ func _build_platform_course() -> void:
 
 
 func _build_corridor() -> void:
-	_add_box("CorridorFloor", Vector3(0, -0.25, 21), Vector3(8, 0.5, 9), charcoal)
+	_add_box("CorridorFloor", Vector3(0, -0.25, 21), Vector3(8, 0.5, 9), floor_material)
 	_add_box("CorridorLeft", Vector3(-4, 2.5, 21), Vector3(0.6, 5.5, 9), dark_metal)
 	_add_box("CorridorRight", Vector3(4, 2.5, 21), Vector3(0.6, 5.5, 9), dark_metal)
 	_add_box("CorridorCeiling", Vector3(0, 5.15, 21), Vector3(8.6, 0.5, 9), dark_metal)
-	_add_box("ExitDoor", Vector3(0, 2.1, 25.2), Vector3(4.2, 4.2, 0.45), exit_material)
 	_add_box("ExitHeader", Vector3(0, 4.55, 25.0), Vector3(5.6, 0.35, 0.5), magenta)
 	_add_glow_strip(Vector3(-3.65, 0.08, 21), Vector3(0.09, 0.09, 7.6), cyan)
 	_add_glow_strip(Vector3(3.65, 0.08, 21), Vector3(0.09, 0.09, 7.6), cyan)
-
-	var exit_label := Label3D.new()
-	exit_label.text = "EXIT // LOCKED"
-	exit_label.font_size = 48
-	exit_label.modulate = Color("07100b")
-	exit_label.outline_size = 8
-	exit_label.outline_modulate = Color("55ff9a")
-	exit_label.position = Vector3(0, 3.7, 24.94)
-	exit_label.rotation_degrees = Vector3(0, 180, 0)
-	add_child(exit_label)
-
+	_add_glow_strip(Vector3(-0.22, 0.04, 19.4), Vector3(0.1, 0.05, 3.0), amber)
+	_add_glow_strip(Vector3(0.22, 0.04, 22.5), Vector3(0.1, 0.05, 2.7), violet)
 
 func _build_decorations() -> void:
 	for z_position in [-12.0, -4.0, 4.0, 12.0]:
@@ -132,10 +150,18 @@ func _build_lighting() -> void:
 	var key_light := DirectionalLight3D.new()
 	key_light.name = "DirectionalLight"
 	key_light.rotation_degrees = Vector3(-58, -32, 0)
-	key_light.light_color = Color("9bcaff")
-	key_light.light_energy = 0.72
+	key_light.light_color = Color("b8d5ff")
+	key_light.light_energy = 1.0
 	key_light.shadow_enabled = true
 	add_child(key_light)
+
+	var fill_light := DirectionalLight3D.new()
+	fill_light.name = "SoftFillLight"
+	fill_light.rotation_degrees = Vector3(-35, 145, 0)
+	fill_light.light_color = Color("9fb6ca")
+	fill_light.light_energy = 0.34
+	fill_light.shadow_enabled = false
+	add_child(fill_light)
 
 	_add_omni_light(Vector3(-7, 3.6, -6), Color("22eaff"), 5.0, 10.0)
 	_add_omni_light(Vector3(7, 3.5, 4), Color("ff35bd"), 4.5, 9.0)
@@ -150,3 +176,13 @@ func _add_omni_light(position: Vector3, color: Color, energy: float, range_value
 	light.omni_range = range_value
 	light.shadow_enabled = false
 	add_child(light)
+
+
+func _on_puzzle_solved() -> void:
+	mark_puzzle_completed()
+	$PuzzleExit.unlock_exit()
+	mark_exit_unlocked()
+
+
+func _on_exit_reached() -> void:
+	finish_level()

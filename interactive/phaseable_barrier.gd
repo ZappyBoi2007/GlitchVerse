@@ -3,11 +3,14 @@ extends StaticBody3D
 
 ## A solid barrier that can be phased while retaining a ray-targetable Area3D.
 
+signal state_changed(is_phased: bool)
+
 @export var interaction_name := "PHASE BARRIER"
 @export var solid_material: Material
 @export var phased_material: Material
 
 @onready var mesh: MeshInstance3D = $MeshInstance3D
+@onready var target_highlight: MeshInstance3D = $TargetHighlight
 @onready var solid_collision: CollisionShape3D = $SolidCollision
 @onready var occupancy_sensor: Area3D = $OccupancySensor
 
@@ -36,7 +39,12 @@ func apply_ability(ability: StringName, _source: Node) -> String:
 		return String(status["message"])
 	is_phased = not is_phased
 	_update_state()
+	state_changed.emit(is_phased)
 	return "PHASE BARRIER // %s" % ("PHASED" if is_phased else "SOLID")
+
+
+func set_debugger_highlight(enabled: bool, _ability_color: Color) -> void:
+	target_highlight.visible = enabled
 
 
 func _update_state() -> void:

@@ -6,6 +6,14 @@ extends RayCast3D
 
 signal ability_changed(ability_label: String, ability_color: Color)
 signal target_changed(target_label: String, compatible: bool, has_target: bool)
+## Rich target context for replaceable HUDs. `target` is null for static geometry/no hit.
+signal target_context_changed(
+	target: Node,
+	ability: StringName,
+	compatible: bool,
+	has_target: bool,
+	ability_color: Color
+)
 signal feedback_changed(message: String, is_error: bool)
 
 const PHASE: StringName = &"phase"
@@ -15,7 +23,12 @@ const FREEZE: StringName = &"freeze"
 @export_range(2.0, 30.0, 0.5) var interaction_distance: float = 12.0
 
 var selected_ability: StringName = PHASE
-var _last_target_signature := ""
+var _last_target_id := -1
+var _last_target_ability: StringName = &""
+var _last_target_compatible := false
+var _last_has_target := false
+var _highlighted_target: Node
+var _highlighted_ability: StringName = &""
 
 
 func _ready() -> void:
@@ -59,11 +72,11 @@ func get_selected_ability_label() -> String:
 func get_selected_ability_color() -> Color:
 	match selected_ability:
 		GRAVITY:
-			return Color("ff4ac6")
+			return Color("f6b857")
 		FREEZE:
-			return Color("7a8cff")
+			return Color("bb8dfa")
 		_:
-			return Color("25ecff")
+			return Color("55e8e2")
 
 
 func _broadcast_initial_state() -> void:
@@ -76,7 +89,7 @@ func _select_ability(ability: StringName) -> void:
 	if selected_ability == ability:
 		return
 	selected_ability = ability
-	_last_target_signature = ""
+	_invalidate_target_cache()
 	ability_changed.emit(get_selected_ability_label(), get_selected_ability_color())
 	feedback_changed.emit("%s selected." % get_selected_ability_label(), false)
 	_update_target_feedback()
@@ -100,7 +113,7 @@ func _activate_selected_ability() -> void:
 
 	var result_message := String(interactable.call("apply_ability", selected_ability, self))
 	feedback_changed.emit(result_message, false)
-	_last_target_signature = ""
+	_invalidate_target_cache()
 	call_deferred("_update_target_feedback")
 
 
@@ -110,9 +123,10 @@ func _update_target_feedback() -> void:
 	var compatible := false
 	var has_target := is_colliding()
 	var target_id := 0
+	var interactable: Node
 
 	if has_target:
-		var interactable := _find_interactable(get_collider())
+		interactable = _find_interactable(get_collider())
 		if interactable == null:
 			target_label = "STATIC ENVIRONMENT"
 		else:
@@ -121,10 +135,48 @@ func _update_target_feedback() -> void:
 			var status: Dictionary = interactable.call("get_ability_status", selected_ability)
 			compatible = bool(status.get("compatible", false))
 
-	var signature := "%s|%s|%s|%s" % [target_id, selected_ability, compatible, has_target]
-	if signature != _last_target_signature:
-		_last_target_signature = signature
+	_update_world_highlight(interactable if compatible else null)
+	if (
+		target_id != _last_target_id
+		or selected_ability != _last_target_ability
+		or compatible != _last_target_compatible
+		or has_target != _last_has_target
+	):
+		_last_target_id = target_id
+		_last_target_ability = selected_ability
+		_last_target_compatible = compatible
+		_last_has_target = has_target
 		target_changed.emit(target_label, compatible, has_target)
+		target_context_changed.emit(
+			interactable,
+			selected_ability,
+			compatible,
+			has_target,
+			get_selected_ability_color()
+		)
+
+
+func _update_world_highlight(target: Node) -> void:
+	var next_target := target if target != null and target.has_method("set_debugger_highlight") else null
+	if next_target == _highlighted_target and (
+		next_target == null or _highlighted_ability == selected_ability
+	):
+		return
+	if is_instance_valid(_highlighted_target):
+		_highlighted_target.call("set_debugger_highlight", false, Color.TRANSPARENT)
+	_highlighted_target = next_target
+	_highlighted_ability = selected_ability if next_target != null else &""
+	if is_instance_valid(_highlighted_target):
+		_highlighted_target.call("set_debugger_highlight", true, get_selected_ability_color())
+
+
+func _invalidate_target_cache() -> void:
+	_last_target_id = -1
+	_last_target_ability = &""
+
+
+func _exit_tree() -> void:
+	_update_world_highlight(null)
 
 
 func _find_interactable(collider: Object) -> Node:

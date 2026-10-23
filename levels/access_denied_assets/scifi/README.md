@@ -1,0 +1,2 @@
+Open res://levels/access_denied_scifi.tscn and press F6 to preview. The scene inherits the untouched access_denied.tscn. Materials are procedural: no downloads or texture licenses needed. ScifiDecor contains seven non-colliding hovering drones. Hover animation affects only drone children; disable their script to stop it. Edit shader uniforms on overridden materials to tune colors. Original collision and layout are inherited. Compatibility renderer is supported; bloom is not required. No gameplay or main-scene configuration changes.
+
