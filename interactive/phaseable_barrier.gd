@@ -3,6 +3,8 @@ extends StaticBody3D
 
 ## A solid barrier that can be phased while retaining a ray-targetable Area3D.
 
+signal state_changed(is_phased: bool)
+
 @export var interaction_name := "PHASE BARRIER"
 @export var solid_material: Material
 @export var phased_material: Material
@@ -36,6 +38,7 @@ func apply_ability(ability: StringName, _source: Node) -> String:
 		return String(status["message"])
 	is_phased = not is_phased
 	_update_state()
+	state_changed.emit(is_phased)
 	return "PHASE BARRIER // %s" % ("PHASED" if is_phased else "SOLID")
 
 

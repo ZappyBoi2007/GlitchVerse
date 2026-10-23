@@ -3,6 +3,8 @@ extends AnimatableBody3D
 
 ## A local oscillating hazard. FREEZE stops only this instance; collision remains active.
 
+signal state_changed(is_frozen: bool)
+
 @export var interaction_name := "MOVING HAZARD"
 @export var movement_axis := Vector3.RIGHT
 @export_range(0.5, 8.0, 0.1) var travel_distance := 2.7
@@ -44,6 +46,7 @@ func apply_ability(ability: StringName, _source: Node) -> String:
 		return "This hazard accepts FREEZE only."
 	is_frozen = not is_frozen
 	_update_state()
+	state_changed.emit(is_frozen)
 	return "MOVING HAZARD // %s" % ("FROZEN" if is_frozen else "ACTIVE")
 
 
