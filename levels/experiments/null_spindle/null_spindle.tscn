@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://levels/experiments/null_spindle/null_spindle_level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://interactive/phaseable_barrier.tscn" id="2_phase"]
@@ -6,6 +6,8 @@
 [ext_resource type="PackedScene" path="res://interactive/moving_hazard.tscn" id="4_freeze"]
 [ext_resource type="PackedScene" path="res://interactive/puzzle_exit.tscn" id="5_exit"]
 [ext_resource type="Script" path="res://levels/experiments/null_spindle/null_spindle_puzzle.gd" id="6_puzzle"]
+[ext_resource type="PackedScene" path="res://interactive/reality_fragment.tscn" id="7_fragment"]
+[ext_resource type="Script" path="res://levels/experiments/null_spindle/null_spindle_fragments.gd" id="8_fragments"]
 
 [node name="NullSpindle" type="Node3D"]
 script = ExtResource("1_level")
@@ -42,3 +44,21 @@ script = ExtResource("6_puzzle")
 phase_barrier_path = NodePath("../PhaseableBarrier")
 gravity_crate_path = NodePath("../GravityCrate")
 moving_hazard_path = NodePath("../MovingHazard")
+
+[node name="RealityFragments" type="Node3D" parent="."]
+
+[node name="IntroFragment" parent="RealityFragments" instance=ExtResource("7_fragment")]
+position = Vector3(0, 5.15, 17)
+fragment_id = &"null_spindle_intro"
+
+[node name="MaintenanceFragment" parent="RealityFragments" instance=ExtResource("7_fragment")]
+position = Vector3(0.6, 1.05, -8)
+fragment_id = &"null_spindle_maintenance"
+
+[node name="ObservationBonusFragment" parent="RealityFragments" instance=ExtResource("7_fragment")]
+position = Vector3(4.7, 5.15, 8.5)
+fragment_id = &"null_spindle_observation_bonus"
+
+[node name="NullSpindleFragments" type="Node" parent="."]
+script = ExtResource("8_fragments")
+fragment_paths = Array[NodePath]([NodePath("../RealityFragments/IntroFragment"), NodePath("../RealityFragments/MaintenanceFragment"), NodePath("../RealityFragments/ObservationBonusFragment")])

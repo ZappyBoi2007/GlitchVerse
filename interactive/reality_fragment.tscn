@@ -1,0 +1,71 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://interactive/reality_fragment.gd" id="1_script"]
+
+[sub_resource type="StandardMaterial3D" id="Material_core"]
+albedo_color = Color(0.055, 0.24, 0.3, 1)
+metallic = 0.35
+roughness = 0.28
+emission_enabled = true
+emission = Color(0.18, 0.88, 1, 1)
+emission_energy_multiplier = 1.35
+
+[sub_resource type="StandardMaterial3D" id="Material_glitch"]
+albedo_color = Color(0.24, 0.07, 0.31, 1)
+metallic = 0.2
+roughness = 0.4
+emission_enabled = true
+emission = Color(0.72, 0.28, 0.95, 1)
+emission_energy_multiplier = 1.15
+
+[sub_resource type="BoxMesh" id="Mesh_core"]
+material = SubResource("Material_core")
+size = Vector3(0.24, 0.78, 0.18)
+
+[sub_resource type="BoxMesh" id="Mesh_glitch_a"]
+material = SubResource("Material_glitch")
+size = Vector3(0.46, 0.12, 0.14)
+
+[sub_resource type="BoxMesh" id="Mesh_glitch_b"]
+material = SubResource("Material_core")
+size = Vector3(0.12, 0.3, 0.38)
+
+[sub_resource type="SphereShape3D" id="Shape_pickup"]
+radius = 0.68
+
+[node name="RealityFragment" type="Area3D"]
+collision_layer = 0
+collision_mask = 1
+monitorable = false
+script = ExtResource("1_script")
+
+[node name="VisualRoot" type="Node3D" parent="."]
+rotation_degrees = Vector3(0, 0, 28)
+
+[node name="Core" type="MeshInstance3D" parent="VisualRoot"]
+mesh = SubResource("Mesh_core")
+cast_shadow = 0
+
+[node name="GlitchShardA" type="MeshInstance3D" parent="VisualRoot"]
+position = Vector3(0.16, 0.09, 0.02)
+rotation_degrees = Vector3(18, 20, -37)
+mesh = SubResource("Mesh_glitch_a")
+cast_shadow = 0
+
+[node name="GlitchShardB" type="MeshInstance3D" parent="VisualRoot"]
+position = Vector3(-0.12, -0.2, 0.04)
+rotation_degrees = Vector3(-20, 34, 15)
+mesh = SubResource("Mesh_glitch_b")
+cast_shadow = 0
+
+[node name="Marker" type="Label3D" parent="VisualRoot"]
+position = Vector3(0, 0.72, 0)
+text = "FRAGMENT"
+font_size = 20
+outline_size = 6
+modulate = Color(0.55, 0.96, 1, 1)
+billboard = 1
+no_depth_test = true
+
+[node name="PickupCollision" type="CollisionShape3D" parent="."]
+shape = SubResource("Shape_pickup")

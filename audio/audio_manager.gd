@@ -509,6 +509,8 @@ func _build_placeholder_streams() -> void:
 	_streams[&"failure"] = _make_tone(0.75, 260.0, 54.0, 0.25, 0.06)
 	_streams[&"restart"] = _make_tone(0.35, 150.0, 460.0, 0.16, 0.03)
 	_streams[&"victory"] = _make_tone(1.25, 180.0, 920.0, 0.22, 0.02)
+	_streams[&"fragment_pickup"] = _make_tone(0.34, 420.0, 1180.0, 0.19, 0.03, 12.0)
+	_streams[&"fragment_requirement"] = _make_tone(0.7, 260.0, 920.0, 0.18, 0.01)
 
 	_streams[&"phase_idle_loop"] = _make_tone(4.0, 220.0, 220.0, 0.08, 0.0, 5.0, true)
 	_streams[&"phase_active_loop"] = _make_tone(4.0, 330.0, 330.0, 0.11, 0.0, 7.0, true)

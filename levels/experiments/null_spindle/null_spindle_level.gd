@@ -4,8 +4,11 @@ extends GameplayLevel
 ## Experimental layered facility built from inexpensive Godot primitives.
 ## The route descends from observation level into maintenance, then climbs to containment.
 
+signal fragment_progress_changed(collected: int, required: int, total: int)
+
 @onready var puzzle_controller: NullSpindlePuzzle = $NullSpindlePuzzle
 @onready var puzzle_exit: PuzzleExit = $PuzzleExit
+@onready var fragment_controller: NullSpindleFragments = $NullSpindleFragments
 
 var floor_material: StandardMaterial3D
 var steel_material: StandardMaterial3D
@@ -15,6 +18,11 @@ var cyan_material: StandardMaterial3D
 var amber_material: StandardMaterial3D
 var violet_material: StandardMaterial3D
 var warning_material: StandardMaterial3D
+var _debugger_puzzle_solved := false
+var _debugger_steps := 0
+var _fragment_count := 0
+var _fragment_required := 2
+var _fragment_total := 3
 
 
 func _ready() -> void:
@@ -28,8 +36,10 @@ func _ready() -> void:
 	_build_guidance()
 	_build_lighting()
 	puzzle_controller.puzzle_solved.connect(_on_puzzle_solved)
-	puzzle_controller.progress_changed.connect(report_objective)
+	puzzle_controller.progress_changed.connect(_on_puzzle_progress_changed)
+	fragment_controller.fragment_progress_changed.connect(_on_fragment_progress_changed)
 	puzzle_exit.exit_reached.connect(_on_exit_reached)
+	call_deferred("_refresh_combined_objective")
 
 
 func _create_materials() -> void:
@@ -403,9 +413,66 @@ func _add_omni_light(position: Vector3, color: Color, energy: float, range_value
 
 
 func _on_puzzle_solved() -> void:
+	_debugger_puzzle_solved = true
+	_try_unlock_exit()
+	_refresh_combined_objective()
+
+
+func _on_puzzle_progress_changed(_description: String, completed_steps: int, _total_steps: int) -> void:
+	_debugger_steps = completed_steps
+	_refresh_combined_objective()
+
+
+func _on_fragment_progress_changed(collected: int, required: int, total: int) -> void:
+	_fragment_count = collected
+	_fragment_required = required
+	_fragment_total = total
+	fragment_progress_changed.emit(collected, required, total)
+	_try_unlock_exit()
+	_refresh_combined_objective()
+
+
+func get_fragment_snapshot() -> Dictionary:
+	return fragment_controller.get_snapshot()
+
+
+func _try_unlock_exit() -> void:
+	if is_puzzle_complete():
+		return
+	if not _debugger_puzzle_solved or not fragment_controller.has_required_fragments():
+		return
 	mark_puzzle_completed()
 	puzzle_exit.unlock_exit()
 	mark_exit_unlocked()
+
+
+func _refresh_combined_objective() -> void:
+	if not is_instance_valid(puzzle_exit) or not is_instance_valid(fragment_controller):
+		return
+	var fragments_for_requirement := mini(_fragment_count, _fragment_required)
+	var completed_steps := _debugger_steps + fragments_for_requirement
+	var total_steps := 3 + _fragment_required
+	var description: String
+	if is_exit_unlocked():
+		description = "CONTAINMENT ACCESS GRANTED // FRAGMENTS %d/%d%s" % [
+			_fragment_count,
+			_fragment_total,
+			" // BONUS RECOVERED" if _fragment_count == _fragment_total else "",
+		]
+	elif _debugger_puzzle_solved:
+		description = "CORE STABLE // COLLECT REALITY FRAGMENTS %d/%d TO UNLOCK EXIT" % [
+			_fragment_count, _fragment_required
+		]
+		puzzle_exit.label.text = "EXIT LOCKED\nFRAGMENTS %d/%d" % [_fragment_count, _fragment_required]
+	elif fragment_controller.has_required_fragments():
+		description = "FRAGMENTS STABLE // COMPLETE PHASE • GRAVITY • FREEZE"
+		puzzle_exit.label.text = "EXIT LOCKED\nSTABILIZE CORE"
+	else:
+		description = "STABILIZE CORE %d/3 // FRAGMENTS %d/%d" % [
+			_debugger_steps, _fragment_count, _fragment_required
+		]
+		puzzle_exit.label.text = "EXIT LOCKED\nCORE + %d FRAGMENTS" % _fragment_required
+	report_objective(description, completed_steps, total_steps)
 
 
 func _on_exit_reached() -> void:
