@@ -1,0 +1,141 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/level_complete.gd" id="1_comp"]
+[ext_resource type="Theme" path="res://assets/ui/research_theme.tres" id="2_theme"]
+
+[node name="LevelComplete" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_comp")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.051, 0.067, 0.09, 0.9)
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DialogPanel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Center/DialogPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="Center/DialogPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 1)
+theme_override_font_sizes/font_size = 20
+text = "LEVEL COMPLETE"
+
+[node name="SubTitleLabel" type="Label" parent="Center/DialogPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
+theme_override_font_sizes/font_size = 11
+text = "DATA RECOVERED"
+
+[node name="HSeparator" type="HSeparator" parent="Center/DialogPanel/VBox"]
+layout_mode = 2
+
+[node name="ChamberLabel" type="Label" parent="Center/DialogPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "GV-01 // ACCESS DENIED"
+
+[node name="MetricsContainer" type="VBoxContainer" parent="Center/DialogPanel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ScoreRow" type="HBoxContainer" parent="Center/DialogPanel/VBox/MetricsContainer"]
+layout_mode = 2
+
+[node name="Lbl" type="Label" parent="Center/DialogPanel/VBox/MetricsContainer/ScoreRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
+theme_override_font_sizes/font_size = 11
+text = "ACQUIRED SCORE:"
+
+[node name="ScoreMetric" type="Label" parent="Center/DialogPanel/VBox/MetricsContainer/ScoreRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "1450 PTS"
+
+[node name="TimeRow" type="HBoxContainer" parent="Center/DialogPanel/VBox/MetricsContainer"]
+layout_mode = 2
+
+[node name="Lbl" type="Label" parent="Center/DialogPanel/VBox/MetricsContainer/TimeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
+theme_override_font_sizes/font_size = 11
+text = "CALIBRATION TIME:"
+
+[node name="TimeMetric" type="Label" parent="Center/DialogPanel/VBox/MetricsContainer/TimeRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 1)
+theme_override_font_sizes/font_size = 11
+text = "00:47 SEC"
+
+[node name="ParadoxRow" type="HBoxContainer" parent="Center/DialogPanel/VBox/MetricsContainer"]
+layout_mode = 2
+
+[node name="Lbl" type="Label" parent="Center/DialogPanel/VBox/MetricsContainer/ParadoxRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
+theme_override_font_sizes/font_size = 11
+text = "ANOMALY STATUS:"
+
+[node name="ParadoxMetric" type="Label" parent="Center/DialogPanel/VBox/MetricsContainer/ParadoxRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.22, 0.937, 0.49, 1)
+theme_override_font_sizes/font_size = 11
+text = "RESOLVED"
+
+[node name="Spacer" type="Control" parent="Center/DialogPanel/VBox"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="NextButton" type="Button" parent="Center/DialogPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "[ ADVANCE TO NEXT CHAMBER ]"
+alignment = 0
+
+[node name="RetryButton" type="Button" parent="Center/DialogPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "[ REPLAY CHAMBER ]"
+alignment = 0
+
+[node name="MenuButton" type="Button" parent="Center/DialogPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "[ RETURN TO TERMINAL ]"
+alignment = 0

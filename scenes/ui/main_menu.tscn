@@ -1,0 +1,858 @@
+[gd_scene format=3 uid="uid://cwx0sh6tfr72l"]
+
+[ext_resource type="Script" uid="uid://db8x75rqcfk7d" path="res://scripts/ui/main_menu.gd" id="1_menu"]
+[ext_resource type="Theme" uid="uid://cy2i0ajnqc8sv" path="res://assets/ui/research_theme.tres" id="2_theme"]
+[ext_resource type="Script" uid="uid://dnlf7xtduw3nb" path="res://scripts/ui/crt_overlay.gd" id="3_crt"]
+
+[sub_resource type="Gradient" id="Gradient_deep_void"]
+offsets = PackedFloat32Array(0, 0.45, 1)
+colors = PackedColorArray(0.045, 0.075, 0.09, 0.55, 0.025, 0.035, 0.045, 0.92, 0.012, 0.016, 0.022, 0.99)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_deep_void"]
+gradient = SubResource("Gradient_deep_void")
+fill = 1
+fill_from = Vector2(0.35, 0.4)
+fill_to = Vector2(0.9, 0.95)
+
+[sub_resource type="Gradient" id="Gradient_haze"]
+offsets = PackedFloat32Array(0, 0.4, 0.8, 1)
+colors = PackedColorArray(0.09, 0.22, 0.239, 0.2, 0.06, 0.15, 0.18, 0.12, 0.03, 0.06, 0.08, 0.04, 0.01, 0.02, 0.03, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_haze"]
+gradient = SubResource("Gradient_haze")
+fill = 1
+fill_from = Vector2(0.6, 0.5)
+fill_to = Vector2(0.95, 0.85)
+
+[sub_resource type="Gradient" id="Gradient_portal_ambient"]
+offsets = PackedFloat32Array(0, 0.35, 0.7, 1)
+colors = PackedColorArray(0.12, 0.32, 0.35, 0.38, 0.07, 0.18, 0.2, 0.22, 0.04, 0.07, 0.09, 0.08, 0.02, 0.03, 0.04, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_portal_ambient"]
+gradient = SubResource("Gradient_portal_ambient")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.95, 0.95)
+
+[sub_resource type="Gradient" id="Gradient_floor_spill_radial"]
+offsets = PackedFloat32Array(0, 0.35, 0.7, 1)
+colors = PackedColorArray(0.14, 0.35, 0.38, 0.26, 0.08, 0.2, 0.22, 0.16, 0.03, 0.06, 0.08, 0.05, 0.015, 0.02, 0.03, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_floor_spill_radial"]
+gradient = SubResource("Gradient_floor_spill_radial")
+fill = 1
+fill_from = Vector2(0.5, 0.15)
+fill_to = Vector2(0.9, 0.85)
+
+[sub_resource type="Gradient" id="Gradient_anomaly_core"]
+offsets = PackedFloat32Array(0, 0.25, 0.6, 1)
+colors = PackedColorArray(1, 0.169, 0.839, 0.38, 0.224, 0.961, 1, 0.18, 0.09, 0.22, 0.239, 0.08, 0.02, 0.03, 0.04, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_anomaly_core"]
+gradient = SubResource("Gradient_anomaly_core")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.9, 0.9)
+
+[node name="MainMenu" type="Control" unique_id=1624703957]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_menu")
+
+[node name="BaseVoid" type="ColorRect" parent="." unique_id=1586896529]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.02, 0.025, 0.035, 1)
+
+[node name="DeepVignette" type="TextureRect" parent="." unique_id=1312451581]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_deep_void")
+
+[node name="CinematicEnvironment" type="Control" parent="." unique_id=865914403]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="AtmosphericHaze" type="TextureRect" parent="CinematicEnvironment" unique_id=1287178596]
+layout_mode = 0
+offset_left = 340.0
+offset_top = 140.0
+offset_right = 1240.0
+offset_bottom = 620.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_haze")
+
+[node name="PortalAmbientGlow" type="TextureRect" parent="CinematicEnvironment" unique_id=1437230685]
+layout_mode = 0
+offset_left = 620.0
+offset_top = 80.0
+offset_right = 1220.0
+offset_bottom = 680.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_portal_ambient")
+
+[node name="CeilingBulkhead" type="ColorRect" parent="CinematicEnvironment" unique_id=156420413]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 44.0
+grow_horizontal = 2
+mouse_filter = 2
+color = Color(0.025, 0.035, 0.045, 0.95)
+
+[node name="CeilingTrimLine" type="ColorRect" parent="CinematicEnvironment/CeilingBulkhead" unique_id=1818421785]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -1.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+color = Color(0.09, 0.22, 0.239, 0.55)
+
+[node name="OverheadConduit" type="ColorRect" parent="CinematicEnvironment" unique_id=1218409134]
+layout_mode = 0
+offset_left = 480.0
+offset_top = 22.0
+offset_right = 1280.0
+offset_bottom = 25.0
+mouse_filter = 2
+color = Color(0.06, 0.14, 0.16, 0.8)
+
+[node name="ConduitLightStrip" type="ColorRect" parent="CinematicEnvironment/OverheadConduit" unique_id=2098769806]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -1.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+color = Color(0.224, 0.961, 1, 0.45)
+
+[node name="FloorDeckShadow" type="ColorRect" parent="CinematicEnvironment" unique_id=801125128]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -180.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+color = Color(0.012, 0.018, 0.025, 0.88)
+
+[node name="FloorDeckLine" type="ColorRect" parent="CinematicEnvironment" unique_id=708500752]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -181.0
+offset_bottom = -180.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+color = Color(0.09, 0.22, 0.239, 0.4)
+
+[node name="FloorSpillRadial" type="TextureRect" parent="CinematicEnvironment" unique_id=794281597]
+layout_mode = 0
+offset_left = 560.0
+offset_top = 460.0
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_floor_spill_radial")
+
+[node name="FloorPlatingSeam1" type="Line2D" parent="CinematicEnvironment" unique_id=1905163857]
+points = PackedVector2Array(620, 610, 1220, 610)
+width = 1.0
+default_color = Color(0.09, 0.22, 0.239, 0.28)
+
+[node name="FloorPlatingSeam2" type="Line2D" parent="CinematicEnvironment" unique_id=911014825]
+points = PackedVector2Array(560, 665, 1260, 665)
+width = 1.0
+default_color = Color(0.09, 0.22, 0.239, 0.2)
+
+[node name="RightWallBulkhead" type="ColorRect" parent="CinematicEnvironment" unique_id=446687848]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -110.0
+offset_top = 44.0
+offset_bottom = -70.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.028, 0.045, 0.06, 0.9)
+
+[node name="RightWallTrim" type="ColorRect" parent="CinematicEnvironment/RightWallBulkhead" unique_id=711010854]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 1.0
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.09, 0.22, 0.239, 0.45)
+
+[node name="RightWallLightStrip" type="ColorRect" parent="CinematicEnvironment/RightWallBulkhead" unique_id=1700133516]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 40.0
+offset_right = 20.0
+offset_bottom = 560.0
+mouse_filter = 2
+color = Color(0.224, 0.961, 1, 0.5)
+
+[node name="ContainmentPortal" type="Control" parent="CinematicEnvironment" unique_id=2144802707]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="PortalOuterArch" type="ColorRect" parent="CinematicEnvironment/ContainmentPortal" unique_id=822293006]
+layout_mode = 0
+offset_left = 770.0
+offset_top = 135.0
+offset_right = 1070.0
+offset_bottom = 540.0
+mouse_filter = 2
+color = Color(0.026, 0.04, 0.052, 0.95)
+
+[node name="PortalArchBorder" type="ReferenceRect" parent="CinematicEnvironment/ContainmentPortal/PortalOuterArch" unique_id=1225918328]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+border_color = Color(0.09, 0.22, 0.239, 0.55)
+editor_only = false
+
+[node name="PortalLintel" type="ColorRect" parent="CinematicEnvironment/ContainmentPortal" unique_id=102525736]
+layout_mode = 0
+offset_left = 755.0
+offset_top = 120.0
+offset_right = 1085.0
+offset_bottom = 155.0
+mouse_filter = 2
+color = Color(0.035, 0.055, 0.07, 0.98)
+
+[node name="LintelBorder" type="ReferenceRect" parent="CinematicEnvironment/ContainmentPortal/PortalLintel" unique_id=1904036932]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+border_color = Color(0.09, 0.22, 0.239, 0.65)
+editor_only = false
+
+[node name="LintelLightIndicator" type="ColorRect" parent="CinematicEnvironment/ContainmentPortal/PortalLintel" unique_id=1020969627]
+layout_mode = 0
+offset_left = 145.0
+offset_top = 16.0
+offset_right = 185.0
+offset_bottom = 18.0
+mouse_filter = 2
+color = Color(0.224, 0.961, 1, 0.75)
+
+[node name="ChamberOpeningVoid" type="ColorRect" parent="CinematicEnvironment/ContainmentPortal" unique_id=1889374194]
+layout_mode = 0
+offset_left = 815.0
+offset_top = 175.0
+offset_right = 1025.0
+offset_bottom = 538.0
+mouse_filter = 2
+color = Color(0.012, 0.018, 0.024, 1)
+
+[node name="ChamberInnerBorder" type="ReferenceRect" parent="CinematicEnvironment/ContainmentPortal/ChamberOpeningVoid" unique_id=1749037700]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+border_color = Color(0.09, 0.22, 0.239, 0.4)
+editor_only = false
+
+[node name="StasisGlow" type="TextureRect" parent="CinematicEnvironment/ContainmentPortal" unique_id=956463471]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.28)
+layout_mode = 0
+offset_left = 730.0
+offset_top = 170.0
+offset_right = 1110.0
+offset_bottom = 550.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_anomaly_core")
+
+[node name="DoorGapLeft" type="ColorRect" parent="CinematicEnvironment/ContainmentPortal" unique_id=1543211265]
+layout_mode = 0
+offset_left = 815.0
+offset_top = 180.0
+offset_right = 817.0
+offset_bottom = 536.0
+mouse_filter = 2
+color = Color(0.224, 0.961, 1, 0.4)
+
+[node name="DoorGapRight" type="ColorRect" parent="CinematicEnvironment/ContainmentPortal" unique_id=225508808]
+layout_mode = 0
+offset_left = 1023.0
+offset_top = 180.0
+offset_right = 1025.0
+offset_bottom = 536.0
+mouse_filter = 2
+color = Color(0.224, 0.961, 1, 0.4)
+
+[node name="ApertureReticle" type="ReferenceRect" parent="CinematicEnvironment/ContainmentPortal" unique_id=1540558824]
+layout_mode = 0
+offset_left = 870.0
+offset_top = 300.0
+offset_right = 970.0
+offset_bottom = 400.0
+mouse_filter = 2
+border_color = Color(0.224, 0.961, 1, 0.35)
+editor_only = false
+
+[node name="ApertureCore" type="ColorRect" parent="CinematicEnvironment/ContainmentPortal" unique_id=255656388]
+layout_mode = 0
+offset_left = 918.0
+offset_top = 348.0
+offset_right = 922.0
+offset_bottom = 352.0
+mouse_filter = 2
+color = Color(0.224, 0.961, 1, 0.9)
+
+[node name="ApertureCrossH" type="ColorRect" parent="CinematicEnvironment/ContainmentPortal" unique_id=27832632]
+layout_mode = 0
+offset_left = 908.0
+offset_top = 349.5
+offset_right = 932.0
+offset_bottom = 350.5
+mouse_filter = 2
+color = Color(0.224, 0.961, 1, 0.7)
+
+[node name="ApertureCrossV" type="ColorRect" parent="CinematicEnvironment/ContainmentPortal" unique_id=1467360202]
+layout_mode = 0
+offset_left = 919.5
+offset_top = 338.0
+offset_right = 920.5
+offset_bottom = 362.0
+mouse_filter = 2
+color = Color(0.224, 0.961, 1, 0.7)
+
+[node name="AnomalyFracture" type="Control" parent="CinematicEnvironment/ContainmentPortal" unique_id=1768446698]
+unique_name_in_owner = true
+modulate = Color(1, 0.169, 0.839, 0.55)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Rift1" type="Line2D" parent="CinematicEnvironment/ContainmentPortal/AnomalyFracture" unique_id=1966526834]
+points = PackedVector2Array(920, 350, 934, 402, 924, 448, 958, 510, 978, 565)
+width = 1.5
+default_color = Color(1, 0.169, 0.839, 0.9)
+
+[node name="RiftSpike" type="Line2D" parent="CinematicEnvironment/ContainmentPortal/AnomalyFracture" unique_id=1124054074]
+points = PackedVector2Array(934, 402, 952, 412)
+width = 1.0
+default_color = Color(1, 0.169, 0.839, 0.75)
+
+[node name="RiftSpike2" type="Line2D" parent="CinematicEnvironment/ContainmentPortal/AnomalyFracture" unique_id=62594596]
+points = PackedVector2Array(924, 448, 906, 460)
+width = 1.0
+default_color = Color(1, 0.169, 0.839, 0.65)
+
+[node name="CalibTop" type="Label" parent="CinematicEnvironment/ContainmentPortal" unique_id=1498102391]
+layout_mode = 0
+offset_left = 776.0
+offset_top = 220.0
+offset_right = 812.0
+offset_bottom = 234.0
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.4)
+theme_override_font_sizes/font_size = 8
+text = "+04.0m"
+
+[node name="CalibMid" type="Label" parent="CinematicEnvironment/ContainmentPortal" unique_id=1849103829]
+layout_mode = 0
+offset_left = 776.0
+offset_top = 344.0
+offset_right = 812.0
+offset_bottom = 358.0
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 0.5)
+theme_override_font_sizes/font_size = 8
+text = "±00.0m"
+
+[node name="CalibBtm" type="Label" parent="CinematicEnvironment/ContainmentPortal" unique_id=1029481920]
+layout_mode = 0
+offset_left = 776.0
+offset_top = 468.0
+offset_right = 812.0
+offset_bottom = 482.0
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.4)
+theme_override_font_sizes/font_size = 8
+text = "-04.0m"
+
+[node name="TelemetryChamber" type="Label" parent="CinematicEnvironment/ContainmentPortal" unique_id=525381431]
+layout_mode = 0
+offset_left = 770.0
+offset_top = 100.0
+offset_right = 980.0
+offset_bottom = 116.0
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.65)
+theme_override_font_sizes/font_size = 9
+text = "CONTAINMENT // CHAMBER-04"
+
+[node name="TelemetryField" type="Label" parent="CinematicEnvironment/ContainmentPortal" unique_id=474546550]
+layout_mode = 0
+offset_left = 960.0
+offset_top = 100.0
+offset_right = 1070.0
+offset_bottom = 116.0
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 0.75)
+theme_override_font_sizes/font_size = 9
+text = "FIELD: 99.4% [STABLE]"
+horizontal_alignment = 2
+
+[node name="CorruptedMarker" type="Label" parent="CinematicEnvironment/ContainmentPortal" unique_id=14485845]
+unique_name_in_owner = true
+modulate = Color(1, 0.169, 0.839, 0.85)
+layout_mode = 0
+offset_left = 770.0
+offset_top = 548.0
+offset_right = 1090.0
+offset_bottom = 564.0
+theme_override_colors/font_color = Color(1, 0.169, 0.839, 1)
+theme_override_font_sizes/font_size = 9
+text = "▲ SYSTEM INTEGRITY: 87.4% [DECAY DETECTED]"
+
+[node name="LeftTerminalInterface" type="MarginContainer" parent="." unique_id=20788549]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 96
+theme_override_constants/margin_top = 80
+theme_override_constants/margin_right = 96
+theme_override_constants/margin_bottom = 44
+
+[node name="VBox" type="VBoxContainer" parent="LeftTerminalInterface" unique_id=734549275]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="InstitutionalTag" type="Label" parent="LeftTerminalInterface/VBox" unique_id=1240389530]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.65)
+theme_override_font_sizes/font_size = 9
+text = "FACILITY-04 // SUB-ATOMIC REALITY RESEARCH"
+
+[node name="TitleBox" type="Control" parent="LeftTerminalInterface/VBox" unique_id=767738022]
+custom_minimum_size = Vector2(480, 72)
+layout_mode = 2
+
+[node name="TitleCyan" type="Label" parent="LeftTerminalInterface/VBox/TitleBox" unique_id=2114894105]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = -2.0
+offset_top = 0.5
+offset_right = 480.0
+offset_bottom = 70.0
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 0.35)
+theme_override_font_sizes/font_size = 56
+text = "GLITCHVERSE"
+
+[node name="TitleMagenta" type="Label" parent="LeftTerminalInterface/VBox/TitleBox" unique_id=1276930567]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 2.0
+offset_top = -0.5
+offset_right = 480.0
+offset_bottom = 69.0
+theme_override_colors/font_color = Color(1, 0.169, 0.839, 0.35)
+theme_override_font_sizes/font_size = 56
+text = "GLITCHVERSE"
+
+[node name="TitlePrimary" type="Label" parent="LeftTerminalInterface/VBox/TitleBox" unique_id=859967405]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 480.0
+offset_bottom = 70.0
+theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 1)
+theme_override_font_sizes/font_size = 56
+text = "GLITCHVERSE"
+
+[node name="Subtitle" type="Label" parent="LeftTerminalInterface/VBox" unique_id=1648184320]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.9)
+theme_override_font_sizes/font_size = 11
+text = "EXPERIMENTAL REALITY SIMULATION"
+
+[node name="Divider" type="HSeparator" parent="LeftTerminalInterface/VBox" unique_id=259424125]
+custom_minimum_size = Vector2(320, 1)
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="WarningNotice" type="Label" parent="LeftTerminalInterface/VBox" unique_id=1898024980]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.6)
+theme_override_font_sizes/font_size = 10
+text = "Parameters beyond this threshold do not conform to physical reality."
+
+[node name="NavSpacer" type="Control" parent="LeftTerminalInterface/VBox" unique_id=607011731]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+
+[node name="NavContainer" type="VBoxContainer" parent="LeftTerminalInterface/VBox" unique_id=182898583]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = 10
+
+[node name="StartBtn" type="Button" parent="LeftTerminalInterface/VBox/NavContainer" unique_id=1778252527]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "▸ 01 // START SIMULATION"
+alignment = 0
+
+[node name="HowToPlayBtn" type="Button" parent="LeftTerminalInterface/VBox/NavContainer" unique_id=1783134239]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "  02 // HOW TO PLAY"
+alignment = 0
+
+[node name="SettingsBtn" type="Button" parent="LeftTerminalInterface/VBox/NavContainer" unique_id=2002592033]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "  03 // SETTINGS"
+alignment = 0
+
+[node name="ExitBtn" type="Button" parent="LeftTerminalInterface/VBox/NavContainer" unique_id=690965638]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 36)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "  04 // EXIT"
+alignment = 0
+
+[node name="PromptSpacer" type="Control" parent="LeftTerminalInterface/VBox" unique_id=349812756]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="DispatchPrompt" type="Label" parent="LeftTerminalInterface/VBox" unique_id=1948271034]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 0.8)
+theme_override_font_sizes/font_size = 10
+text = ">> DISPATCH: INITIALIZE CONTAINMENT SIMULATION GV-01 // READY"
+
+[node name="BottomSpacer" type="Control" parent="LeftTerminalInterface/VBox" unique_id=862071790]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="FooterDivider" type="HSeparator" parent="LeftTerminalInterface/VBox" unique_id=769333508]
+layout_mode = 2
+
+[node name="FooterMetadata" type="HBoxContainer" parent="LeftTerminalInterface/VBox" unique_id=975458259]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="LblTerminal" type="Label" parent="LeftTerminalInterface/VBox/FooterMetadata" unique_id=1797557352]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.65)
+theme_override_font_sizes/font_size = 9
+text = "TERMINAL: T-04"
+
+[node name="Sep0" type="Label" parent="LeftTerminalInterface/VBox/FooterMetadata" unique_id=817294621]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.09, 0.22, 0.239, 0.6)
+theme_override_font_sizes/font_size = 9
+text = "|"
+
+[node name="LblExperiment" type="Label" parent="LeftTerminalInterface/VBox/FooterMetadata" unique_id=1849204712]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.65)
+theme_override_font_sizes/font_size = 9
+text = "EXPERIMENT: GV-01"
+
+[node name="Sep1" type="Label" parent="LeftTerminalInterface/VBox/FooterMetadata" unique_id=993532035]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.09, 0.22, 0.239, 0.6)
+theme_override_font_sizes/font_size = 9
+text = "|"
+
+[node name="LblEq" type="Label" parent="LeftTerminalInterface/VBox/FooterMetadata" unique_id=183770823]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.65)
+theme_override_font_sizes/font_size = 9
+text = "FIELD EQUILIBRIUM: 87.4%"
+
+[node name="Sep2" type="Label" parent="LeftTerminalInterface/VBox/FooterMetadata" unique_id=491493925]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.09, 0.22, 0.239, 0.6)
+theme_override_font_sizes/font_size = 9
+text = "|"
+
+[node name="LblStatus" type="Label" parent="LeftTerminalInterface/VBox/FooterMetadata" unique_id=1099472462]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.65)
+theme_override_font_sizes/font_size = 9
+text = "SIMULATION STATUS:"
+
+[node name="StatusDot" type="Label" parent="LeftTerminalInterface/VBox/FooterMetadata" unique_id=905417577]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 9
+text = "●"
+
+[node name="StatusText" type="Label" parent="LeftTerminalInterface/VBox/FooterMetadata" unique_id=875544085]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 0.85)
+theme_override_font_sizes/font_size = 9
+text = "NOMINAL"
+
+[node name="Sep3" type="Label" parent="LeftTerminalInterface/VBox/FooterMetadata" unique_id=1016861351]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.09, 0.22, 0.239, 0.6)
+theme_override_font_sizes/font_size = 9
+text = "|"
+
+[node name="LblDebug" type="Label" parent="LeftTerminalInterface/VBox/FooterMetadata" unique_id=264499687]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.5)
+theme_override_font_sizes/font_size = 9
+text = "REALITY DEBUGGER: OFFLINE"
+
+[node name="CRTScanlineOverlay" type="Control" parent="." unique_id=704304068]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_crt")
+
+[node name="AnomalyScanline" type="ColorRect" parent="." unique_id=1948201948]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_top = 340.0
+offset_right = 1280.0
+offset_bottom = 341.0
+mouse_filter = 2
+color = Color(1, 0.169, 0.839, 0.35)
+
+[node name="SettingsModal" type="PanelContainer" parent="." unique_id=1229253597]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -180.0
+offset_right = 280.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="SettingsModal" unique_id=245831645]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Header" type="Label" parent="SettingsModal/VBox" unique_id=1958732461]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "// RESEARCH STATION CONFIGURATION // TERMINAL T-04"
+
+[node name="HSeparator" type="HSeparator" parent="SettingsModal/VBox" unique_id=441052161]
+layout_mode = 2
+
+[node name="RowAudio" type="HBoxContainer" parent="SettingsModal/VBox" unique_id=1006477616]
+layout_mode = 2
+
+[node name="Lbl" type="Label" parent="SettingsModal/VBox/RowAudio" unique_id=2058562276]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 1)
+theme_override_font_sizes/font_size = 11
+text = "ACOUSTIC DAMPENING (MASTER)"
+
+[node name="Val" type="Label" parent="SettingsModal/VBox/RowAudio" unique_id=731736052]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "85% [NOMINAL]"
+
+[node name="RowScanline" type="HBoxContainer" parent="SettingsModal/VBox" unique_id=274973929]
+layout_mode = 2
+
+[node name="Lbl" type="Label" parent="SettingsModal/VBox/RowScanline" unique_id=660793157]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 1)
+theme_override_font_sizes/font_size = 11
+text = "OPTICAL MATRIX FILTER (SCANLINES)"
+
+[node name="Val" type="Label" parent="SettingsModal/VBox/RowScanline" unique_id=1671789509]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "ACTIVE"
+
+[node name="RowSens" type="HBoxContainer" parent="SettingsModal/VBox" unique_id=1658917773]
+layout_mode = 2
+
+[node name="Lbl" type="Label" parent="SettingsModal/VBox/RowSens" unique_id=573528194]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 1)
+theme_override_font_sizes/font_size = 11
+text = "OPTICAL SENSOR SENSITIVITY"
+
+[node name="Val" type="Label" parent="SettingsModal/VBox/RowSens" unique_id=2024453467]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "1.00X [CALIBRATED]"
+
+[node name="Spacer" type="Control" parent="SettingsModal/VBox" unique_id=594156385]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CloseSettingsBtn" type="Button" parent="SettingsModal/VBox" unique_id=1805954710]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "[ STORE CONFIGURATION & RESUME ]"
+alignment = 0
+
+[node name="HowToPlayModal" type="PanelContainer" parent="." unique_id=734437832]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -310.0
+offset_top = -210.0
+offset_right = 310.0
+offset_bottom = 210.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="HowToPlayModal" unique_id=170517720]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="Label" parent="HowToPlayModal/VBox" unique_id=1104562021]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "// EXPERIMENTAL PROTOCOL SPECIFICATION // EXPERIMENT GV-01"
+
+[node name="HSeparator" type="HSeparator" parent="HowToPlayModal/VBox" unique_id=1736059027]
+layout_mode = 2
+
+[node name="LineSubject" type="Label" parent="HowToPlayModal/VBox" unique_id=125036966]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 0.95)
+theme_override_font_sizes/font_size = 11
+text = "SUBJECT:  Controlled reality stabilization in decaying sub-atomic environment."
+
+[node name="LineObj" type="Label" parent="HowToPlayModal/VBox" unique_id=2090854357]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
+theme_override_font_sizes/font_size = 11
+text = "OBJECTIVE: Navigate containment chambers 01-04 to rewrite the corrupted matrix."
+
+[node name="HSep2" type="HSeparator" parent="HowToPlayModal/VBox" unique_id=661582915]
+layout_mode = 2
+
+[node name="InstPhase" type="Label" parent="HowToPlayModal/VBox" unique_id=815971024]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 10
+text = "[1] PHASE (CYAN)     - Restructure molecular barriers for matter pass-through."
+
+[node name="InstGrav" type="Label" parent="HowToPlayModal/VBox" unique_id=1182217362]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.72, 0.19, 1)
+theme_override_font_sizes/font_size = 10
+text = "[2] GRAVITY (AMBER)  - Invert localized object mass and counter gravitational drift."
+
+[node name="InstFreeze" type="Label" parent="HowToPlayModal/VBox" unique_id=703616220]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.635, 0.35, 1, 1)
+theme_override_font_sizes/font_size = 10
+text = "[3] FREEZE (VIOLET)  - Freeze localized temporal cycle on moving hazards."
+
+[node name="LineControls" type="Label" parent="HowToPlayModal/VBox" unique_id=2009877974]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 0.85)
+theme_override_font_sizes/font_size = 10
+text = "CONTROLS: [W][A][S][D] Move | [SHIFT] Sprint | [SPACE] Jump | [LMB] Rewrite Reality"
+
+[node name="Spacer" type="Control" parent="HowToPlayModal/VBox" unique_id=601352420]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CloseHowToPlayBtn" type="Button" parent="HowToPlayModal/VBox" unique_id=1884998586]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 34)
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "[ ACKNOWLEDGE PROTOCOL & RETURN ]"
+alignment = 0

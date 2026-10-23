@@ -1,0 +1,229 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ui_preview.gd" id="1_prev"]
+[ext_resource type="Theme" path="res://assets/ui/research_theme.tres" id="2_theme"]
+[ext_resource type="PackedScene" path="res://scenes/ui/main_menu.tscn" id="3_menu"]
+[ext_resource type="PackedScene" path="res://scenes/ui/in_game_hud.tscn" id="4_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="5_pause"]
+[ext_resource type="PackedScene" path="res://scenes/ui/level_complete.tscn" id="6_comp"]
+[ext_resource type="PackedScene" path="res://scenes/ui/game_over.tscn" id="7_over"]
+
+[node name="UIPreview" type="Control" node_paths=PackedStringArray("main_menu_instance", "hud_instance", "pause_menu_instance", "level_complete_instance", "game_over_instance")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_prev")
+main_menu_instance = NodePath("ScreensContainer/MainMenu")
+hud_instance = NodePath("ScreensContainer/InGameHUD")
+pause_menu_instance = NodePath("ScreensContainer/PauseMenu")
+level_complete_instance = NodePath("ScreensContainer/LevelComplete")
+game_over_instance = NodePath("ScreensContainer/GameOver")
+
+[node name="MockGameBackground" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.04, 0.055, 0.075, 1)
+
+[node name="ChamberPlatformMock" type="ColorRect" parent="MockGameBackground"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = 80.0
+offset_right = 260.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.09, 0.22, 0.239, 0.18)
+
+[node name="ScreensContainer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainMenu" parent="ScreensContainer" instance=ExtResource("3_menu")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="InGameHUD" parent="ScreensContainer" instance=ExtResource("4_hud")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+
+[node name="PauseMenu" parent="ScreensContainer" instance=ExtResource("5_pause")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+
+[node name="LevelComplete" parent="ScreensContainer" instance=ExtResource("6_comp")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+
+[node name="GameOver" parent="ScreensContainer" instance=ExtResource("7_over")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+
+[node name="DevSelectorLayer" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="DevTopBar" type="PanelContainer" parent="DevSelectorLayer"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -390.0
+offset_top = 10.0
+offset_right = 390.0
+offset_bottom = 50.0
+grow_horizontal = 2
+
+[node name="HBox" type="HBoxContainer" parent="DevSelectorLayer/DevTopBar"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Lbl" type="Label" parent="DevSelectorLayer/DevTopBar/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
+theme_override_font_sizes/font_size = 10
+text = "DEV PREVIEW:"
+
+[node name="BtnMainMenu" type="Button" parent="DevSelectorLayer/DevTopBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "[ MAIN MENU ]"
+
+[node name="BtnHUD" type="Button" parent="DevSelectorLayer/DevTopBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "[ HUD ]"
+
+[node name="BtnPause" type="Button" parent="DevSelectorLayer/DevTopBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "[ PAUSE ]"
+
+[node name="BtnComplete" type="Button" parent="DevSelectorLayer/DevTopBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "[ LEVEL COMPLETE ]"
+
+[node name="BtnGameOver" type="Button" parent="DevSelectorLayer/DevTopBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "[ GAME OVER ]"
+
+[node name="DevSubBar" type="PanelContainer" parent="DevSelectorLayer"]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -440.0
+offset_top = -46.0
+offset_right = 440.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="HBox" type="HBoxContainer" parent="DevSelectorLayer/DevSubBar"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="LblLvl" type="Label" parent="DevSelectorLayer/DevSubBar/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
+theme_override_font_sizes/font_size = 10
+text = "LEVEL:"
+
+[node name="BtnL1" type="Button" parent="DevSelectorLayer/DevSubBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "L1: ACCESS"
+
+[node name="BtnL2" type="Button" parent="DevSelectorLayer/DevSubBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "L2: INVERTED"
+
+[node name="BtnL3" type="Button" parent="DevSelectorLayer/DevSubBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "L3: CLOCK"
+
+[node name="BtnL4" type="Button" parent="DevSelectorLayer/DevSubBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "L4: PANIC"
+
+[node name="VSep1" type="VSeparator" parent="DevSelectorLayer/DevSubBar/HBox"]
+layout_mode = 2
+
+[node name="BtnPhase" type="Button" parent="DevSelectorLayer/DevSubBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 10
+text = "PHASE"
+
+[node name="BtnGravity" type="Button" parent="DevSelectorLayer/DevSubBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.72, 0.19, 1)
+theme_override_font_sizes/font_size = 10
+text = "GRAV"
+
+[node name="BtnFreeze" type="Button" parent="DevSelectorLayer/DevSubBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.635, 0.35, 1, 1)
+theme_override_font_sizes/font_size = 10
+text = "FREEZE"
+
+[node name="VSep2" type="VSeparator" parent="DevSelectorLayer/DevSubBar/HBox"]
+layout_mode = 2
+
+[node name="BtnTargetCompat" type="Button" parent="DevSelectorLayer/DevSubBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "TARGET OK"
+
+[node name="BtnTargetNone" type="Button" parent="DevSelectorLayer/DevSubBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "NO TARGET"
+
+[node name="BtnAddScore" type="Button" parent="DevSelectorLayer/DevSubBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "+250 PTS"

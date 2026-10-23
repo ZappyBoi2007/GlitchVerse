@@ -1,0 +1,233 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/in_game_hud.gd" id="1_hud"]
+[ext_resource type="Theme" path="res://assets/ui/research_theme.tres" id="2_theme"]
+
+[node name="InGameHUD" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_hud")
+
+[node name="HUDContainer" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("2_theme")
+
+[node name="TopLeft" type="VBoxContainer" parent="HUDContainer"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 28.0
+offset_right = 480.0
+offset_bottom = 98.0
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="ChamberRow" type="HBoxContainer" parent="HUDContainer/TopLeft"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="ChamberCode" type="Label" parent="HUDContainer/TopLeft/ChamberRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
+theme_override_font_sizes/font_size = 11
+text = "GV-01"
+
+[node name="Divider" type="Label" parent="HUDContainer/TopLeft/ChamberRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.11, 0.27, 0.29, 0.8)
+theme_override_font_sizes/font_size = 11
+text = "//"
+
+[node name="ChamberName" type="Label" parent="HUDContainer/TopLeft/ChamberRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 1)
+theme_override_font_sizes/font_size = 15
+text = "ACCESS DENIED"
+
+[node name="ObjectiveLabel" type="Label" parent="HUDContainer/TopLeft"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 1)
+theme_override_font_sizes/font_size = 12
+text = "OBJECTIVE: Restore access to the containment chamber."
+
+[node name="TopRight" type="VBoxContainer" parent="HUDContainer"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -340.0
+offset_top = 28.0
+offset_right = -32.0
+offset_bottom = 90.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="TimerLabel" type="Label" parent="HUDContainer/TopRight"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 1)
+theme_override_font_sizes/font_size = 16
+text = "00:00.00"
+horizontal_alignment = 2
+
+[node name="ScoreLabel" type="Label" parent="HUDContainer/TopRight"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "SCORE: 00000"
+horizontal_alignment = 2
+
+[node name="CenterReticle" type="Control" parent="HUDContainer"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ReticleH" type="ColorRect" parent="HUDContainer/CenterReticle"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -4.0
+offset_top = -0.5
+offset_right = 5.0
+offset_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.557, 0.647, 0.667, 0.75)
+
+[node name="ReticleV" type="ColorRect" parent="HUDContainer/CenterReticle"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -0.5
+offset_top = -4.0
+offset_right = 0.5
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.557, 0.647, 0.667, 0.75)
+
+[node name="ReticleDot" type="ColorRect" parent="HUDContainer/CenterReticle"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -0.5
+offset_top = -0.5
+offset_right = 0.5
+offset_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.557, 0.647, 0.667, 0.9)
+
+[node name="TargetPromptLabel" type="Label" parent="HUDContainer"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = 22.0
+offset_right = 200.0
+offset_bottom = 44.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 11
+horizontal_alignment = 1
+
+[node name="BottomRight" type="VBoxContainer" parent="HUDContainer"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -80.0
+offset_right = -32.0
+offset_bottom = -28.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="Header" type="Label" parent="HUDContainer/BottomRight"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
+theme_override_font_sizes/font_size = 10
+text = "REALITY INSTRUMENT"
+horizontal_alignment = 2
+
+[node name="AbilityRow" type="HBoxContainer" parent="HUDContainer/BottomRight"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 2
+
+[node name="AbilityBadge" type="Label" parent="HUDContainer/BottomRight/AbilityRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "▪"
+
+[node name="AbilityNameLabel" type="Label" parent="HUDContainer/BottomRight/AbilityRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "PHASE"
+
+[node name="BottomLeft" type="VBoxContainer" parent="HUDContainer"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = -60.0
+offset_right = 440.0
+offset_bottom = -28.0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="ProtocolPrompt" type="Label" parent="HUDContainer/BottomLeft"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.7)
+theme_override_font_sizes/font_size = 10
+text = "1:PHASE  2:GRAV  3:FREEZE  |  LMB:APPLY  |  ESC:PAUSE"
