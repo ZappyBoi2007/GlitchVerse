@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://player/player_controller.gd" id="1_player"]
 [ext_resource type="Script" path="res://audio/player_audio_controller.gd" id="2_audio"]
@@ -6,6 +6,8 @@
 [ext_resource type="Script" path="res://systems/grapple_controller.gd" id="4_grapple"]
 [ext_resource type="PackedScene" path="res://player/sword_controller.tscn" id="5_sword"]
 [ext_resource type="Script" path="res://systems/vector_run_controller.gd" id="6_vector_run"]
+[ext_resource type="Script" path="res://systems/interaction_controller.gd" id="7_interaction"]
+[ext_resource type="Script" path="res://systems/polarity_controller.gd" id="8_polarity"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape_player"]
 radius = 0.35
@@ -63,6 +65,20 @@ cast_shadow = 0
 mesh = SubResource("Mesh_tether")
 
 [node name="SwordController" parent="Head/Camera3D" instance=ExtResource("5_sword")]
+
+[node name="InteractionController" type="Node3D" parent="Head/Camera3D"]
+script = ExtResource("7_interaction")
+
+[node name="InteractionRay" type="RayCast3D" parent="Head/Camera3D/InteractionController"]
+target_position = Vector3(0, 0, -4)
+collide_with_areas = true
+
+[node name="PolarityController" type="Node3D" parent="Head/Camera3D"]
+script = ExtResource("8_polarity")
+
+[node name="PolarityRay" type="RayCast3D" parent="Head/Camera3D/PolarityController"]
+target_position = Vector3(0, 0, -12)
+collide_with_areas = true
 
 [node name="PlayerHealth" type="Node" parent="."]
 script = ExtResource("3_health")
