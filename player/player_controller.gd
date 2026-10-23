@@ -47,6 +47,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED
 	):
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+		get_viewport().set_input_as_handled()
 
 
 func _physics_process(delta: float) -> void:

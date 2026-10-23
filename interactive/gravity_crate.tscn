@@ -1,0 +1,51 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://interactive/gravity_crate.gd" id="1_script"]
+
+[sub_resource type="StandardMaterial3D" id="Material_normal"]
+albedo_color = Color(0.22, 0.08, 0.2, 1)
+metallic = 0.65
+roughness = 0.3
+emission_enabled = true
+emission = Color(0.75, 0.08, 0.55, 1)
+emission_energy_multiplier = 1.25
+
+[sub_resource type="StandardMaterial3D" id="Material_inverted"]
+albedo_color = Color(0.04, 0.3, 0.38, 1)
+metallic = 0.55
+roughness = 0.22
+emission_enabled = true
+emission = Color(0.05, 0.95, 1, 1)
+emission_energy_multiplier = 2.8
+
+[sub_resource type="BoxMesh" id="Mesh_crate"]
+material = SubResource("Material_normal")
+size = Vector3(1.6, 1.6, 1.6)
+
+[sub_resource type="BoxShape3D" id="Shape_crate"]
+size = Vector3(1.6, 1.6, 1.6)
+
+[node name="GravityCrate" type="RigidBody3D"]
+mass = 2.0
+continuous_cd = true
+axis_lock_linear_x = true
+axis_lock_linear_z = true
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+script = ExtResource("1_script")
+normal_material = SubResource("Material_normal")
+inverted_material = SubResource("Material_inverted")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("Mesh_crate")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("Shape_crate")
+
+[node name="Label3D" type="Label3D" parent="."]
+position = Vector3(0, 1.15, 0)
+text = "[2] GRAVITY"
+font_size = 32
+outline_size = 7
+modulate = Color(1, 0.55, 0.92, 1)

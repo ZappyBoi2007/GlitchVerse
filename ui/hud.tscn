@@ -1,7 +1,10 @@
-[gd_scene format=3]
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://ui/debugger_hud.gd" id="1_hud"]
 
 [node name="HUD" type="CanvasLayer"]
 layer = 10
+script = ExtResource("1_hud")
 
 [node name="Title" type="Label" parent="."]
 offset_left = 24.0
@@ -23,7 +26,7 @@ offset_right = 330.0
 offset_bottom = 78.0
 theme_override_colors/font_color = Color(1, 0.3, 0.82, 1)
 theme_override_font_sizes/font_size = 14
-text = "TESTING CHAMBER // M1"
+text = "TESTING CHAMBER // M2"
 mouse_filter = 2
 
 [node name="ControlsPanel" type="ColorRect" parent="."]
@@ -31,7 +34,7 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 20.0
-offset_top = -104.0
+offset_top = -126.0
 offset_right = 328.0
 offset_bottom = -20.0
 color = Color(0.015, 0.025, 0.045, 0.78)
@@ -48,7 +51,46 @@ offset_right = -8.0
 offset_bottom = -6.0
 theme_override_colors/font_color = Color(0.78, 0.93, 1, 1)
 theme_override_font_sizes/font_size = 14
-text = "WASD  Move      SHIFT  Sprint\nSPACE  Jump       MOUSE  Look\nESC  Release cursor  •  CLICK  Recapture"
+text = "WASD  Move      SHIFT  Sprint      SPACE  Jump\n1  Phase      2  Gravity      3  Freeze\nLEFT CLICK  Apply      ESC  Release cursor"
+mouse_filter = 2
+
+[node name="DebuggerPanel" type="ColorRect" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -386.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 122.0
+color = Color(0.015, 0.025, 0.045, 0.82)
+mouse_filter = 2
+
+[node name="Ability" type="Label" parent="DebuggerPanel"]
+offset_left = 12.0
+offset_top = 9.0
+offset_right = 350.0
+offset_bottom = 35.0
+theme_override_font_sizes/font_size = 17
+text = "REALITY DEBUGGER // PHASE"
+mouse_filter = 2
+
+[node name="Target" type="Label" parent="DebuggerPanel"]
+offset_left = 12.0
+offset_top = 38.0
+offset_right = 350.0
+offset_bottom = 61.0
+theme_override_font_sizes/font_size = 14
+text = "TARGET // NO TARGET"
+mouse_filter = 2
+
+[node name="Feedback" type="Label" parent="DebuggerPanel"]
+offset_left = 12.0
+offset_top = 66.0
+offset_right = 350.0
+offset_bottom = 94.0
+theme_override_font_sizes/font_size = 12
+text = "Select a target and left-click to rewrite reality."
+autowrap_mode = 2
 mouse_filter = 2
 
 [node name="Crosshair" type="Control" parent="."]
