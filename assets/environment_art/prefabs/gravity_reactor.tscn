@@ -1,0 +1,219 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Material" path="res://assets/environment_art/materials/structural_black.tres" id="1_black"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/brushed_steel.tres" id="2_steel"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/gravity_core.tres" id="3_core"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/gravity_glass.tres" id="4_glass"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/cyan_emissive.tres" id="5_cyan"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/magenta_emissive.tres" id="6_magenta"]
+
+[sub_resource type="TorusMesh" id="OuterRing"]
+inner_radius = 2.45
+outer_radius = 3.05
+rings = 32
+ring_segments = 18
+
+[sub_resource type="TorusMesh" id="InnerRing"]
+inner_radius = 1.72
+outer_radius = 2.05
+rings = 32
+ring_segments = 14
+
+[node name="GravityReactorAssembly" type="Node3D"]
+
+[node name="Foundation" type="Node3D" parent="."]
+
+[node name="BasePlinth" type="CSGCylinder3D" parent="Foundation"]
+position = Vector3(0, 0.35, 0)
+radius = 4.5
+height = 0.7
+sides = 32
+material = ExtResource("1_black")
+
+[node name="BaseBezel" type="CSGCylinder3D" parent="Foundation"]
+position = Vector3(0, 0.73, 0)
+radius = 3.75
+height = 0.16
+sides = 32
+material = ExtResource("2_steel")
+
+[node name="BaseEnergyInlay" type="MeshInstance3D" parent="Foundation"]
+position = Vector3(0, 0.84, 0)
+mesh = SubResource("OuterRing")
+material_override = ExtResource("5_cyan")
+
+[node name="Containment" type="Node3D" parent="."]
+
+[node name="GlassVessel" type="CSGCylinder3D" parent="Containment"]
+position = Vector3(0, 4.45, 0)
+radius = 2.25
+height = 7.1
+sides = 40
+material = ExtResource("4_glass")
+
+[node name="GravityColumn" type="CSGCylinder3D" parent="Containment"]
+position = Vector3(0, 4.45, 0)
+radius = 0.72
+height = 6.35
+sides = 32
+material = ExtResource("3_core")
+
+[node name="CoreSpine" type="CSGCylinder3D" parent="Containment"]
+position = Vector3(0, 4.45, 0)
+radius = 0.16
+height = 7.15
+sides = 16
+material = ExtResource("5_cyan")
+
+[node name="LowerContainmentRing" type="MeshInstance3D" parent="Containment"]
+position = Vector3(0, 1.15, 0)
+mesh = SubResource("OuterRing")
+material_override = ExtResource("2_steel")
+
+[node name="LowerCoil" type="MeshInstance3D" parent="Containment"]
+position = Vector3(0, 2.55, 0)
+mesh = SubResource("InnerRing")
+material_override = ExtResource("6_magenta")
+
+[node name="MidContainmentRing" type="MeshInstance3D" parent="Containment"]
+position = Vector3(0, 4.45, 0)
+mesh = SubResource("OuterRing")
+material_override = ExtResource("2_steel")
+
+[node name="UpperCoil" type="MeshInstance3D" parent="Containment"]
+position = Vector3(0, 6.3, 0)
+mesh = SubResource("InnerRing")
+material_override = ExtResource("6_magenta")
+
+[node name="UpperContainmentRing" type="MeshInstance3D" parent="Containment"]
+position = Vector3(0, 7.75, 0)
+mesh = SubResource("OuterRing")
+material_override = ExtResource("2_steel")
+
+[node name="Crown" type="CSGCylinder3D" parent="Containment"]
+position = Vector3(0, 8.15, 0)
+radius = 2.75
+height = 0.55
+sides = 32
+material = ExtResource("1_black")
+
+[node name="CrownCap" type="CSGCylinder3D" parent="Containment"]
+position = Vector3(0, 8.48, 0)
+radius = 1.5
+height = 0.22
+sides = 24
+material = ExtResource("2_steel")
+
+[node name="StructuralStruts" type="Node3D" parent="."]
+
+[node name="StrutWestFront" type="CSGBox3D" parent="StructuralStruts"]
+position = Vector3(-2.75, 4.4, 1.25)
+rotation_degrees = Vector3(0, 0, -5)
+size = Vector3(0.38, 6.7, 0.5)
+material = ExtResource("2_steel")
+
+[node name="StrutEastFront" type="CSGBox3D" parent="StructuralStruts"]
+position = Vector3(2.75, 4.4, 1.25)
+rotation_degrees = Vector3(0, 0, 5)
+size = Vector3(0.38, 6.7, 0.5)
+material = ExtResource("2_steel")
+
+[node name="StrutWestRear" type="CSGBox3D" parent="StructuralStruts"]
+position = Vector3(-2.75, 4.4, -1.25)
+rotation_degrees = Vector3(0, 0, -5)
+size = Vector3(0.38, 6.7, 0.5)
+material = ExtResource("2_steel")
+
+[node name="StrutEastRear" type="CSGBox3D" parent="StructuralStruts"]
+position = Vector3(2.75, 4.4, -1.25)
+rotation_degrees = Vector3(0, 0, 5)
+size = Vector3(0.38, 6.7, 0.5)
+material = ExtResource("2_steel")
+
+[node name="CoilBanks" type="Node3D" parent="."]
+
+[node name="NorthBank" type="Node3D" parent="CoilBanks"]
+
+[node name="Housing" type="CSGBox3D" parent="CoilBanks/NorthBank"]
+position = Vector3(0, 4.35, -3.25)
+size = Vector3(2.2, 1.35, 1.1)
+material = ExtResource("1_black")
+
+[node name="Face" type="CSGBox3D" parent="CoilBanks/NorthBank"]
+position = Vector3(0, 4.35, -2.66)
+size = Vector3(1.55, 0.78, 0.1)
+material = ExtResource("5_cyan")
+
+[node name="SouthBank" type="Node3D" parent="CoilBanks"]
+
+[node name="Housing" type="CSGBox3D" parent="CoilBanks/SouthBank"]
+position = Vector3(0, 4.35, 3.25)
+size = Vector3(2.2, 1.35, 1.1)
+material = ExtResource("1_black")
+
+[node name="Face" type="CSGBox3D" parent="CoilBanks/SouthBank"]
+position = Vector3(0, 4.35, 2.66)
+size = Vector3(1.55, 0.78, 0.1)
+material = ExtResource("6_magenta")
+
+[node name="WestBank" type="Node3D" parent="CoilBanks"]
+
+[node name="Housing" type="CSGBox3D" parent="CoilBanks/WestBank"]
+position = Vector3(-3.25, 4.35, 0)
+size = Vector3(1.1, 1.35, 2.2)
+material = ExtResource("1_black")
+
+[node name="Face" type="CSGBox3D" parent="CoilBanks/WestBank"]
+position = Vector3(-2.66, 4.35, 0)
+size = Vector3(0.1, 0.78, 1.55)
+material = ExtResource("5_cyan")
+
+[node name="EastBank" type="Node3D" parent="CoilBanks"]
+
+[node name="Housing" type="CSGBox3D" parent="CoilBanks/EastBank"]
+position = Vector3(3.25, 4.35, 0)
+size = Vector3(1.1, 1.35, 2.2)
+material = ExtResource("1_black")
+
+[node name="Face" type="CSGBox3D" parent="CoilBanks/EastBank"]
+position = Vector3(2.66, 4.35, 0)
+size = Vector3(0.1, 0.78, 1.55)
+material = ExtResource("6_magenta")
+
+[node name="Fasteners" type="Node3D" parent="."]
+
+[node name="BoltNW" type="CSGCylinder3D" parent="Fasteners"]
+position = Vector3(-3.35, 0.88, -2.2)
+radius = 0.2
+height = 0.3
+sides = 12
+material = ExtResource("2_steel")
+
+[node name="BoltNE" type="CSGCylinder3D" parent="Fasteners"]
+position = Vector3(3.35, 0.88, -2.2)
+radius = 0.2
+height = 0.3
+sides = 12
+material = ExtResource("2_steel")
+
+[node name="BoltSW" type="CSGCylinder3D" parent="Fasteners"]
+position = Vector3(-3.35, 0.88, 2.2)
+radius = 0.2
+height = 0.3
+sides = 12
+material = ExtResource("2_steel")
+
+[node name="BoltSE" type="CSGCylinder3D" parent="Fasteners"]
+position = Vector3(3.35, 0.88, 2.2)
+radius = 0.2
+height = 0.3
+sides = 12
+material = ExtResource("2_steel")
+
+[node name="ReactorLight" type="OmniLight3D" parent="."]
+position = Vector3(0, 4.7, 0)
+light_color = Color(0.66, 0.17, 0.78, 1)
+light_energy = 1.4
+omni_range = 11.0
+shadow_enabled = true
+

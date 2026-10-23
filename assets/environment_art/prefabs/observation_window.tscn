@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Material" path="res://assets/environment_art/materials/structural_black.tres" id="1_black"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/brushed_steel.tres" id="2_steel"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/gravity_glass.tres" id="3_glass"]
+
+[node name="ObservationWindow" type="Node3D"]
+
+[node name="Glass" type="CSGBox3D" parent="."]
+position = Vector3(0, 2.2, 0)
+size = Vector3(5.6, 3.1, 0.12)
+material = ExtResource("3_glass")
+
+[node name="TopFrame" type="CSGBox3D" parent="."]
+position = Vector3(0, 3.85, 0)
+size = Vector3(6.3, 0.3, 0.45)
+material = ExtResource("2_steel")
+
+[node name="BottomFrame" type="CSGBox3D" parent="."]
+position = Vector3(0, 0.55, 0)
+size = Vector3(6.3, 0.3, 0.45)
+material = ExtResource("2_steel")
+
+[node name="LeftFrame" type="CSGBox3D" parent="."]
+position = Vector3(-3, 2.2, 0)
+size = Vector3(0.3, 3.6, 0.45)
+material = ExtResource("1_black")
+
+[node name="CenterFrame" type="CSGBox3D" parent="."]
+position = Vector3(0, 2.2, 0)
+size = Vector3(0.22, 3.1, 0.35)
+material = ExtResource("1_black")
+
+[node name="RightFrame" type="CSGBox3D" parent="."]
+position = Vector3(3, 2.2, 0)
+size = Vector3(0.3, 3.6, 0.45)
+material = ExtResource("1_black")
