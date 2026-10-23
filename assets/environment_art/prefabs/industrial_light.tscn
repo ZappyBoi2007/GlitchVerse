@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="Material" path="res://assets/environment_art/materials/industrial_dark.tres" id="1_dark"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/cyan_emissive.tres" id="2_cyan"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/amber_emissive.tres" id="3_amber"]
+[node name="IndustrialLight" type="Node3D"]
+[node name="Housing" type="CSGBox3D" parent="."]
+size = Vector3(3.4, 0.35, 0.8)
+material = ExtResource("1_dark")
+[node name="Emitter" type="CSGBox3D" parent="."]
+position = Vector3(0, -0.2, 0)
+size = Vector3(2.7, 0.08, 0.42)
+material = ExtResource("2_cyan")
+[node name="NavigationLight" type="OmniLight3D" parent="."]
+position = Vector3(0, -0.5, 0)
+light_color = Color(0.65, 0.92, 1, 1)
+light_energy = 0.8
+omni_range = 6.0

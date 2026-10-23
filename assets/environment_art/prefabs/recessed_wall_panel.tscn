@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3]
+[ext_resource type="PackedScene" path="res://assets/environment_art/modular/template-wall-detail-a.glb" id="1_mesh"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/industrial_dark.tres" id="2_dark"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/industrial_edge.tres" id="3_edge"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/cyan_emissive.tres" id="4_glow"]
+[node name="RecessedWallPanel" type="Node3D"]
+[node name="ImportedPanel" parent="." instance=ExtResource("1_mesh")]
+scale = Vector3(1.8, 1.8, 1.8)
+[node name="Backing" type="CSGBox3D" parent="."]
+position = Vector3(0, 1.5, 0.12)
+size = Vector3(3.8, 3, 0.18)
+material = ExtResource("2_dark")
+[node name="FrameTop" type="CSGBox3D" parent="."]
+position = Vector3(0, 3, 0)
+size = Vector3(4, 0.16, 0.3)
+material = ExtResource("3_edge")
+[node name="FrameBottom" type="CSGBox3D" parent="."]
+size = Vector3(4, 0.16, 0.3)
+material = ExtResource("3_edge")
+[node name="StatusStrip" type="CSGBox3D" parent="."]
+position = Vector3(0, 2.72, -0.11)
+size = Vector3(2.8, 0.07, 0.08)
+material = ExtResource("4_glow")
