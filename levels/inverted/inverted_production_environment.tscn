@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/gravity_reactor.tscn" id="1_reactor"]
 [ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/gravity_stabilizer_housing.tscn" id="2_stabilizer"]
@@ -16,13 +16,15 @@
 [ext_resource type="Material" path="res://assets/environment_art/materials/industrial_dark.tres" id="14_dark"]
 [ext_resource type="Material" path="res://assets/environment_art/materials/cyan_emissive.tres" id="15_cyan"]
 [ext_resource type="Material" path="res://assets/environment_art/materials/hazard_yellow.tres" id="16_hazard"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/painted_panel.tres" id="17_panel"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/level2_dark_alloy.tres" id="18_alloy"]
 
 [sub_resource type="Environment" id="ProductionEnvironment"]
 background_mode = 1
 background_color = Color(0.006, 0.011, 0.02, 1)
 ambient_light_source = 3
-ambient_light_color = Color(0.32, 0.43, 0.55, 1)
-ambient_light_energy = 1.0
+ambient_light_color = Color(0.44, 0.52, 0.6, 1)
+ambient_light_energy = 1.8
 tonemap_mode = 2
 
 [node name="InvertedProductionEnvironment" type="Node3D"]
@@ -74,7 +76,7 @@ material = ExtResource("14_dark")
 [node name="CeilingShell" type="CSGBox3D" parent="Environment/Architecture"]
 position = Vector3(0, 11.1, 0)
 size = Vector3(26, 0.7, 40)
-material = ExtResource("12_black")
+material = ExtResource("18_alloy")
 
 [node name="CeilingBeamArrival" type="CSGBox3D" parent="Environment/Architecture"]
 position = Vector3(0, 10.65, 14)
@@ -131,6 +133,53 @@ position = Vector3(12.35, 5.1, -12)
 size = Vector3(1.25, 10.2, 1.5)
 material = ExtResource("13_steel")
 
+[node name="WallPaneling" type="Node3D" parent="Environment/Architecture"]
+
+[node name="WestPanelArrival" type="CSGBox3D" parent="Environment/Architecture/WallPaneling"]
+position = Vector3(-12.58, 4.8, 12)
+size = Vector3(0.12, 7.4, 7.2)
+material = ExtResource("17_panel")
+
+[node name="WestPanelCore" type="CSGBox3D" parent="Environment/Architecture/WallPaneling"]
+position = Vector3(-12.58, 4.8, 1)
+size = Vector3(0.12, 7.4, 8.6)
+material = ExtResource("17_panel")
+
+[node name="WestPanelExit" type="CSGBox3D" parent="Environment/Architecture/WallPaneling"]
+position = Vector3(-12.58, 4.8, -11.5)
+size = Vector3(0.12, 7.4, 9.2)
+material = ExtResource("17_panel")
+
+[node name="EastPanelArrival" type="CSGBox3D" parent="Environment/Architecture/WallPaneling"]
+position = Vector3(12.58, 4.8, 12)
+size = Vector3(0.12, 7.4, 7.2)
+material = ExtResource("17_panel")
+
+[node name="EastPanelCore" type="CSGBox3D" parent="Environment/Architecture/WallPaneling"]
+position = Vector3(12.58, 4.8, 1)
+size = Vector3(0.12, 7.4, 8.6)
+material = ExtResource("17_panel")
+
+[node name="EastPanelExit" type="CSGBox3D" parent="Environment/Architecture/WallPaneling"]
+position = Vector3(12.58, 4.8, -11.5)
+size = Vector3(0.12, 7.4, 9.2)
+material = ExtResource("17_panel")
+
+[node name="WestPanelSpine" type="CSGBox3D" parent="Environment/Architecture/WallPaneling"]
+position = Vector3(-12.47, 4.8, 6.5)
+size = Vector3(0.18, 8.2, 0.35)
+material = ExtResource("13_steel")
+
+[node name="EastPanelSpine" type="CSGBox3D" parent="Environment/Architecture/WallPaneling"]
+position = Vector3(12.47, 4.8, 6.5)
+size = Vector3(0.18, 8.2, 0.35)
+material = ExtResource("13_steel")
+
+[node name="ArrivalBulkheadInset" type="CSGBox3D" parent="Environment/Architecture/WallPaneling"]
+position = Vector3(0, 4.9, 19.58)
+size = Vector3(18, 7.6, 0.12)
+material = ExtResource("17_panel")
+
 [node name="WalkwayVisuals" type="Node3D" parent="Environment"]
 
 [node name="ArrivalDeckVisual" type="CSGBox3D" parent="Environment/WalkwayVisuals"]
@@ -151,12 +200,12 @@ material = ExtResource("13_steel")
 [node name="LeftCatwalkVisual" type="CSGBox3D" parent="Environment/WalkwayVisuals"]
 position = Vector3(-8, 1.82, -7)
 size = Vector3(3, 0.3, 10)
-material = ExtResource("12_black")
+material = ExtResource("18_alloy")
 
 [node name="RightCatwalkVisual" type="CSGBox3D" parent="Environment/WalkwayVisuals"]
 position = Vector3(8, 1.82, -7)
 size = Vector3(3, 0.3, 10)
-material = ExtResource("12_black")
+material = ExtResource("18_alloy")
 
 [node name="ArrivalGuideLeft" type="CSGBox3D" parent="Environment/WalkwayVisuals"]
 position = Vector3(-3.6, 0.05, 10.5)
@@ -217,12 +266,12 @@ material = ExtResource("13_steel")
 [node name="OverheadServiceBridge" type="CSGBox3D" parent="Environment/ReactorComplex"]
 position = Vector3(0, 9.6, 0)
 size = Vector3(12, 0.45, 1.4)
-material = ExtResource("12_black")
+material = ExtResource("18_alloy")
 
 [node name="ReactorIDPlate" type="CSGBox3D" parent="Environment/ReactorComplex"]
 position = Vector3(0, 2.55, 4.55)
 size = Vector3(4.8, 0.9, 0.16)
-material = ExtResource("12_black")
+material = ExtResource("18_alloy")
 
 [node name="ReactorLabel" type="Label3D" parent="Environment/ReactorComplex"]
 position = Vector3(0, 2.55, 4.46)
@@ -435,52 +484,52 @@ environment = SubResource("ProductionEnvironment")
 [node name="FacilityKey" type="DirectionalLight3D" parent="Lighting"]
 rotation_degrees = Vector3(-58, -24, 0)
 light_color = Color(0.62, 0.73, 0.84, 1)
-light_energy = 0.9
+light_energy = 1.15
 shadow_enabled = true
 
 [node name="ArrivalFill" type="OmniLight3D" parent="Lighting"]
 position = Vector3(0, 5.5, 13)
 light_color = Color(0.48, 0.72, 0.82, 1)
-light_energy = 1.65
+light_energy = 2.15
 omni_range = 12
-shadow_enabled = true
+shadow_enabled = false
 
 [node name="ArrivalNeutralFill" type="OmniLight3D" parent="Lighting"]
 position = Vector3(0, 4.2, 9)
 light_color = Color(0.72, 0.78, 0.84, 1)
-light_energy = 1.9
+light_energy = 2.3
 omni_range = 16
 
 [node name="CoreNeutralFill" type="OmniLight3D" parent="Lighting"]
 position = Vector3(0, 6.5, -1)
 light_color = Color(0.58, 0.66, 0.74, 1)
-light_energy = 1.65
+light_energy = 2.55
 omni_range = 14
 
 [node name="WestWorkLight" type="OmniLight3D" parent="Lighting"]
 position = Vector3(-9, 5.2, 5)
 light_color = Color(0.72, 0.84, 0.9, 1)
-light_energy = 1.35
+light_energy = 1.75
 omni_range = 9
 shadow_enabled = true
 
 [node name="EastWorkLight" type="OmniLight3D" parent="Lighting"]
 position = Vector3(9, 5.2, 5)
 light_color = Color(0.72, 0.84, 0.9, 1)
-light_energy = 1.35
+light_energy = 1.75
 omni_range = 9
 shadow_enabled = true
 
 [node name="StabilizerALight" type="OmniLight3D" parent="Lighting"]
 position = Vector3(-5, 3.2, 2)
 light_color = Color(0.15, 0.65, 0.9, 1)
-light_energy = 0.95
+light_energy = 1.65
 omni_range = 6.5
 
 [node name="StabilizerBLight" type="OmniLight3D" parent="Lighting"]
 position = Vector3(5, 3.2, -2)
 light_color = Color(0.8, 0.38, 0.08, 1)
-light_energy = 0.85
+light_energy = 1.55
 omni_range = 6.5
 
 [node name="ExitLight" type="OmniLight3D" parent="Lighting"]
@@ -489,6 +538,41 @@ light_color = Color(0.24, 0.72, 0.92, 1)
 light_energy = 1.6
 omni_range = 11
 shadow_enabled = true
+
+[node name="WestWallWash" type="OmniLight3D" parent="Lighting"]
+position = Vector3(-9.8, 6.5, 1.5)
+light_color = Color(0.54, 0.66, 0.76, 1)
+light_energy = 1.8
+omni_range = 9.5
+shadow_enabled = false
+
+[node name="EastWallWash" type="OmniLight3D" parent="Lighting"]
+position = Vector3(9.8, 6.5, 1.5)
+light_color = Color(0.54, 0.66, 0.76, 1)
+light_energy = 1.8
+omni_range = 9.5
+shadow_enabled = false
+
+[node name="CeilingBeamFill" type="OmniLight3D" parent="Lighting"]
+position = Vector3(0, 9.2, 5)
+light_color = Color(0.6, 0.7, 0.78, 1)
+light_energy = 1.35
+omni_range = 15
+shadow_enabled = false
+
+[node name="CoreFloorFill" type="OmniLight3D" parent="Lighting"]
+position = Vector3(0, 2.4, 4)
+light_color = Color(0.62, 0.7, 0.76, 1)
+light_energy = 1.8
+omni_range = 11
+shadow_enabled = false
+
+[node name="ExitNeutralFill" type="OmniLight3D" parent="Lighting"]
+position = Vector3(0, 6.5, -12)
+light_color = Color(0.5, 0.62, 0.72, 1)
+light_energy = 1.55
+omni_range = 10
+shadow_enabled = false
 
 [node name="PreviewCamera" type="Camera3D" parent="."]
 position = Vector3(0, 1.7, 16)

@@ -1,11 +1,12 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
-[ext_resource type="Material" path="res://assets/environment_art/materials/structural_black.tres" id="1_black"]
-[ext_resource type="Material" path="res://assets/environment_art/materials/brushed_steel.tres" id="2_steel"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/level2_dark_alloy.tres" id="1_black"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/industrial_edge.tres" id="2_steel"]
 [ext_resource type="Material" path="res://assets/environment_art/materials/gravity_core.tres" id="3_core"]
 [ext_resource type="Material" path="res://assets/environment_art/materials/gravity_glass.tres" id="4_glass"]
 [ext_resource type="Material" path="res://assets/environment_art/materials/cyan_emissive.tres" id="5_cyan"]
 [ext_resource type="Material" path="res://assets/environment_art/materials/magenta_emissive.tres" id="6_magenta"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/industrial_edge.tres" id="7_edge"]
 
 [sub_resource type="TorusMesh" id="OuterRing"]
 inner_radius = 2.45
@@ -103,6 +104,100 @@ radius = 1.5
 height = 0.22
 sides = 24
 material = ExtResource("2_steel")
+
+[node name="MechanicalCoilHousings" type="Node3D" parent="."]
+
+[node name="LowerWest" type="CSGBox3D" parent="MechanicalCoilHousings"]
+position = Vector3(-2.55, 2.55, 0)
+size = Vector3(1.3, 0.9, 2.25)
+material = ExtResource("1_black")
+
+[node name="LowerEast" type="CSGBox3D" parent="MechanicalCoilHousings"]
+position = Vector3(2.55, 2.55, 0)
+size = Vector3(1.3, 0.9, 2.25)
+material = ExtResource("1_black")
+
+[node name="LowerNorth" type="CSGBox3D" parent="MechanicalCoilHousings"]
+position = Vector3(0, 2.55, -2.55)
+size = Vector3(2.25, 0.9, 1.3)
+material = ExtResource("7_edge")
+
+[node name="LowerSouth" type="CSGBox3D" parent="MechanicalCoilHousings"]
+position = Vector3(0, 2.55, 2.55)
+size = Vector3(2.25, 0.9, 1.3)
+material = ExtResource("7_edge")
+
+[node name="UpperWest" type="CSGBox3D" parent="MechanicalCoilHousings"]
+position = Vector3(-2.55, 6.3, 0)
+size = Vector3(1.3, 0.9, 2.25)
+material = ExtResource("7_edge")
+
+[node name="UpperEast" type="CSGBox3D" parent="MechanicalCoilHousings"]
+position = Vector3(2.55, 6.3, 0)
+size = Vector3(1.3, 0.9, 2.25)
+material = ExtResource("7_edge")
+
+[node name="UpperNorth" type="CSGBox3D" parent="MechanicalCoilHousings"]
+position = Vector3(0, 6.3, -2.55)
+size = Vector3(2.25, 0.9, 1.3)
+material = ExtResource("1_black")
+
+[node name="UpperSouth" type="CSGBox3D" parent="MechanicalCoilHousings"]
+position = Vector3(0, 6.3, 2.55)
+size = Vector3(2.25, 0.9, 1.3)
+material = ExtResource("1_black")
+
+[node name="ConnectionArms" type="Node3D" parent="."]
+
+[node name="WestLowerArm" type="CSGBox3D" parent="ConnectionArms"]
+position = Vector3(-3.45, 2.55, 0)
+size = Vector3(1.5, 0.34, 0.48)
+material = ExtResource("2_steel")
+
+[node name="EastLowerArm" type="CSGBox3D" parent="ConnectionArms"]
+position = Vector3(3.45, 2.55, 0)
+size = Vector3(1.5, 0.34, 0.48)
+material = ExtResource("2_steel")
+
+[node name="NorthUpperArm" type="CSGBox3D" parent="ConnectionArms"]
+position = Vector3(0, 6.3, -3.45)
+size = Vector3(0.48, 0.34, 1.5)
+material = ExtResource("2_steel")
+
+[node name="SouthUpperArm" type="CSGBox3D" parent="ConnectionArms"]
+position = Vector3(0, 6.3, 3.45)
+size = Vector3(0.48, 0.34, 1.5)
+material = ExtResource("2_steel")
+
+[node name="BaseEquipment" type="Node3D" parent="."]
+
+[node name="WestPowerUnit" type="CSGBox3D" parent="BaseEquipment"]
+position = Vector3(-3.25, 1.25, 2.15)
+rotation_degrees = Vector3(0, -18, 0)
+size = Vector3(1.4, 1.35, 1.05)
+material = ExtResource("7_edge")
+
+[node name="EastPowerUnit" type="CSGBox3D" parent="BaseEquipment"]
+position = Vector3(3.25, 1.25, -2.15)
+rotation_degrees = Vector3(0, -18, 0)
+size = Vector3(1.4, 1.35, 1.05)
+material = ExtResource("7_edge")
+
+[node name="WestCable" type="CSGCylinder3D" parent="BaseEquipment"]
+position = Vector3(-2.5, 0.92, 2.15)
+rotation_degrees = Vector3(0, 0, 90)
+radius = 0.16
+height = 2.2
+sides = 12
+material = ExtResource("5_cyan")
+
+[node name="EastCable" type="CSGCylinder3D" parent="BaseEquipment"]
+position = Vector3(2.5, 0.92, -2.15)
+rotation_degrees = Vector3(0, 0, 90)
+radius = 0.16
+height = 2.2
+sides = 12
+material = ExtResource("6_magenta")
 
 [node name="StructuralStruts" type="Node3D" parent="."]
 
@@ -212,8 +307,15 @@ material = ExtResource("2_steel")
 
 [node name="ReactorLight" type="OmniLight3D" parent="."]
 position = Vector3(0, 4.7, 0)
-light_color = Color(0.66, 0.17, 0.78, 1)
-light_energy = 1.4
-omni_range = 11.0
-shadow_enabled = true
+light_color = Color(0.58, 0.22, 0.72, 1)
+light_energy = 1.15
+omni_range = 9.0
+shadow_enabled = false
+
+[node name="ReactorRimLight" type="OmniLight3D" parent="."]
+position = Vector3(0, 7.1, 1.2)
+light_color = Color(0.2, 0.72, 0.92, 1)
+light_energy = 0.85
+omni_range = 6.5
+shadow_enabled = false
 
