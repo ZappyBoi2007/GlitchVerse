@@ -29,6 +29,7 @@ func _run() -> void:
 	await _check_level_two()
 	await _check_level_three()
 	await _check_level_four()
+	await _check_campaign_progression()
 	print("FINAL CAMPAIGN CHECKS: %d checks, %d failures" % [checks, failures.size()])
 	quit(0 if failures.is_empty() else 1)
 
@@ -164,5 +165,36 @@ func _check_level_four() -> void:
 	level.campaign_exit._on_body_entered(flow.player)
 	await settle(4)
 	check(flow.flow_state == GameFlowManager.STATE_VICTORY, "KERNEL PANIC isolated preview reaches victory")
+	flow.queue_free()
+	await settle(3)
+
+
+func _check_campaign_progression() -> void:
+	var main_scene := load("res://main.tscn") as PackedScene
+	var flow := main_scene.instantiate() as GameFlowManager
+	flow.level_transition_delay = 0.0
+	root.add_child(flow)
+	await settle(14)
+	var expected_paths := [
+		"res://levels/access_denied/access_denied_system_breach_level.tscn",
+		"res://levels/inverted/inverted_level.tscn",
+		"res://levels/clock_failure/clock_failure_level.tscn",
+		"res://levels/kernel_panic/kernel_panic_level.tscn",
+	]
+	check(flow.level_scenes.size() == 4, "main registers exactly four campaign levels")
+	for index in range(expected_paths.size()):
+		check(flow.level_scenes[index].resource_path == expected_paths[index], "campaign level %d path is correct" % (index + 1))
+	check(flow.current_level is AccessDeniedSystemBreachLevel, "F5 campaign begins in ACCESS DENIED")
+	for level_index in range(4):
+		check(flow.current_level_index == level_index, "campaign reaches level index %d" % level_index)
+		flow.current_level.mark_puzzle_completed()
+		flow.current_level.mark_exit_unlocked()
+		flow.current_level.finish_level()
+		await settle(12)
+	check(flow.flow_state == GameFlowManager.STATE_VICTORY, "fourth completion produces final campaign victory")
+	check(flow.total_score >= 400, "campaign accumulates nonzero scored results")
+	flow.replay_game()
+	await settle(14)
+	check(flow.current_level_index == 0 and flow.total_score == 0, "replay resets score and returns to Level 1")
 	flow.queue_free()
 	await settle(3)
