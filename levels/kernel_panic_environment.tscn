@@ -1,17 +1,27 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=20 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/recessed_wall_panel.tscn" id="ArtWallPanel"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/reinforced_floor_tile.tscn" id="ArtFloorTile"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/door_frame.tscn" id="ArtDoorFrame"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/cable_tray.tscn" id="ArtCableTray"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/relay_console.tscn" id="ArtConsole"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/machinery_housing.tscn" id="ArtMachinery"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/industrial_light.tscn" id="ArtLight"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/maintenance_hatch.tscn" id="ArtHatch"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/safety_railing.tscn" id="ArtRail"]
 
 [sub_resource type="StandardMaterial3D" id="Floor"]
-albedo_color = Color(0.075, 0.08, 0.13, 1)
+albedo_color = Color(0.11, 0.12, 0.2, 1)
 metallic = 0.72
 roughness = 0.38
 
 [sub_resource type="StandardMaterial3D" id="Wall"]
-albedo_color = Color(0.105, 0.09, 0.16, 1)
+albedo_color = Color(0.15, 0.13, 0.22, 1)
 metallic = 0.82
 roughness = 0.32
 
 [sub_resource type="StandardMaterial3D" id="Structure"]
-albedo_color = Color(0.2, 0.17, 0.27, 1)
+albedo_color = Color(0.25, 0.21, 0.34, 1)
 metallic = 0.9
 roughness = 0.24
 
@@ -49,7 +59,7 @@ background_mode = 1
 background_color = Color(0.009, 0.006, 0.025, 1)
 ambient_light_source = 3
 ambient_light_color = Color(0.68, 0.32, 0.78, 1)
-ambient_light_energy = 0.55
+ambient_light_energy = 0.78
 tonemap_mode = 2
 
 [node name="KernelPanicEnvironment" type="Node3D"]
@@ -637,7 +647,7 @@ environment = SubResource("World")
 [node name="KernelKey" type="DirectionalLight3D" parent="Lighting"]
 rotation_degrees = Vector3(-55, 20, 0)
 light_color = Color(0.913725, 0.784314, 1.000000, 1)
-light_energy = 0.95
+light_energy = 1.2
 shadow_enabled = true
 
 [node name="ApproachMagenta" type="OmniLight3D" parent="Lighting"]
@@ -687,3 +697,89 @@ position = Vector3(0, 70, 1)
 rotation_degrees = Vector3(-90, 0, 0)
 current = false
 fov = 60.0
+
+[node name="ProductionArtPass" type="Node3D" parent="Environment/KernelApproach"]
+
+[node name="ProductionArtPass" type="Node3D" parent="Environment/GravityDistortion"]
+
+[node name="ProductionArtPass" type="Node3D" parent="Environment/CorePowerNetwork"]
+
+[node name="ProductionArtPass" type="Node3D" parent="Environment/FinalSecurityChamber"]
+
+[node name="ProductionArtPass" type="Node3D" parent="Environment/KernelShutdown"]
+
+[node name="ApproachPanelA" parent="Environment/KernelApproach/ProductionArtPass" instance=ExtResource("ArtWallPanel")]
+position = Vector3(-7.65, 0.2, 34.5)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(1.1, 1.1, 1.1)
+
+[node name="ApproachPanelB" parent="Environment/KernelApproach/ProductionArtPass" instance=ExtResource("ArtWallPanel")]
+position = Vector3(7.65, 0.2, 34.5)
+rotation_degrees = Vector3(0, -90, 0)
+scale = Vector3(1.1, 1.1, 1.1)
+
+[node name="ApproachLight" parent="Environment/KernelApproach/ProductionArtPass" instance=ExtResource("ArtLight")]
+position = Vector3(0, 5.2, 34)
+scale = Vector3(1.4, 1.4, 1.4)
+
+[node name="GravityCableLeft" parent="Environment/GravityDistortion/ProductionArtPass" instance=ExtResource("ArtCableTray")]
+position = Vector3(-8, 8, 18)
+rotation_degrees = Vector3(0, 45, -20)
+scale = Vector3(1.6, 1.4, 1.4)
+
+[node name="GravityCableRight" parent="Environment/GravityDistortion/ProductionArtPass" instance=ExtResource("ArtCableTray")]
+position = Vector3(8, 9, 13)
+rotation_degrees = Vector3(0, -40, 25)
+scale = Vector3(1.6, 1.4, 1.4)
+
+[node name="GravityMachineA" parent="Environment/GravityDistortion/ProductionArtPass" instance=ExtResource("ArtMachinery")]
+position = Vector3(-9, 0, 23)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(0.85, 0.85, 0.85)
+
+[node name="GravityMachineB" parent="Environment/GravityDistortion/ProductionArtPass" instance=ExtResource("ArtMachinery")]
+position = Vector3(9, 0, 10)
+rotation_degrees = Vector3(0, -90, 0)
+scale = Vector3(0.85, 0.85, 0.85)
+
+[node name="CoreCableWest" parent="Environment/CorePowerNetwork/ProductionArtPass" instance=ExtResource("ArtCableTray")]
+position = Vector3(-9, 8, 2)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(2.1, 1.5, 1.5)
+
+[node name="CoreCableEast" parent="Environment/CorePowerNetwork/ProductionArtPass" instance=ExtResource("ArtCableTray")]
+position = Vector3(9, 8, 2)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(2.1, 1.5, 1.5)
+
+[node name="CoreMachineWest" parent="Environment/CorePowerNetwork/ProductionArtPass" instance=ExtResource("ArtMachinery")]
+position = Vector3(-10, 0, -2)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(1, 1, 1)
+
+[node name="CoreMachineEast" parent="Environment/CorePowerNetwork/ProductionArtPass" instance=ExtResource("ArtMachinery")]
+position = Vector3(10, 0, 6)
+rotation_degrees = Vector3(0, -90, 0)
+scale = Vector3(1, 1, 1)
+
+[node name="SecurityPanel" parent="Environment/FinalSecurityChamber/ProductionArtPass" instance=ExtResource("ArtWallPanel")]
+position = Vector3(0, 0.2, -18.15)
+scale = Vector3(1.25, 1.25, 1.25)
+
+[node name="SecurityLight" parent="Environment/FinalSecurityChamber/ProductionArtPass" instance=ExtResource("ArtLight")]
+position = Vector3(0, 5.1, -13)
+scale = Vector3(1.5, 1.5, 1.5)
+
+[node name="ShutdownConsoleShell" parent="Environment/KernelShutdown/ProductionArtPass" instance=ExtResource("ArtConsole")]
+position = Vector3(0, 0.2, -26.2)
+rotation_degrees = Vector3(0, 180, 0)
+scale = Vector3(1, 1, 1)
+
+[node name="VictoryDoorFrame" parent="Environment/KernelShutdown/ProductionArtPass" instance=ExtResource("ArtDoorFrame")]
+position = Vector3(0, 0, -33.65)
+scale = Vector3(1.3, 1.2, 1.2)
+
+[node name="ShutdownHatchLeft" parent="Environment/KernelShutdown/ProductionArtPass" instance=ExtResource("ArtHatch")]
+position = Vector3(-7.65, 2.5, -28)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(1.1, 1.1, 1.1)

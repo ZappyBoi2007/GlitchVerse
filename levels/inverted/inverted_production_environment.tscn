@@ -1,0 +1,497 @@
+[gd_scene load_steps=18 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/gravity_reactor.tscn" id="1_reactor"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/gravity_stabilizer_housing.tscn" id="2_stabilizer"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/tether_fixture.tscn" id="3_tether"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/observation_window.tscn" id="4_window"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/machinery_housing.tscn" id="5_machinery"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/cable_tray.tscn" id="6_cables"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/door_frame.tscn" id="7_door"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/safety_railing.tscn" id="8_rail"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/industrial_light.tscn" id="9_light"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/recessed_wall_panel.tscn" id="10_panel"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/relay_console.tscn" id="11_console"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/structural_black.tres" id="12_black"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/brushed_steel.tres" id="13_steel"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/industrial_dark.tres" id="14_dark"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/cyan_emissive.tres" id="15_cyan"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/hazard_yellow.tres" id="16_hazard"]
+
+[sub_resource type="Environment" id="ProductionEnvironment"]
+background_mode = 1
+background_color = Color(0.006, 0.011, 0.02, 1)
+ambient_light_source = 3
+ambient_light_color = Color(0.32, 0.43, 0.55, 1)
+ambient_light_energy = 1.0
+tonemap_mode = 2
+
+[node name="InvertedProductionEnvironment" type="Node3D"]
+
+[node name="Environment" type="Node3D" parent="."]
+
+[node name="Architecture" type="Node3D" parent="Environment"]
+
+[node name="FloorShell" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(0, -0.65, 0)
+size = Vector3(26, 1.2, 40)
+material = ExtResource("12_black")
+
+[node name="FloorInset" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(0, -0.02, 4)
+size = Vector3(18, 0.08, 28)
+material = ExtResource("13_steel")
+
+[node name="WestWall" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(-13, 5.25, 0)
+size = Vector3(0.75, 11.8, 40)
+material = ExtResource("14_dark")
+
+[node name="EastWall" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(13, 5.25, 0)
+size = Vector3(0.75, 11.8, 40)
+material = ExtResource("14_dark")
+
+[node name="ArrivalBulkhead" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(0, 5.25, 20)
+size = Vector3(26, 11.8, 0.75)
+material = ExtResource("14_dark")
+
+[node name="ExitBulkheadLeft" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(-8, 5.25, -20)
+size = Vector3(10, 11.8, 0.75)
+material = ExtResource("14_dark")
+
+[node name="ExitBulkheadRight" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(8, 5.25, -20)
+size = Vector3(10, 11.8, 0.75)
+material = ExtResource("14_dark")
+
+[node name="ExitBulkheadTop" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(0, 9.2, -20)
+size = Vector3(6, 3.9, 0.75)
+material = ExtResource("14_dark")
+
+[node name="CeilingShell" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(0, 11.1, 0)
+size = Vector3(26, 0.7, 40)
+material = ExtResource("12_black")
+
+[node name="CeilingBeamArrival" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(0, 10.65, 14)
+size = Vector3(25, 0.55, 0.75)
+material = ExtResource("13_steel")
+
+[node name="CeilingBeamNorth" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(0, 10.65, 7)
+size = Vector3(25, 0.55, 0.75)
+material = ExtResource("13_steel")
+
+[node name="CeilingBeamCore" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(0, 10.65, 0)
+size = Vector3(25, 0.75, 0.9)
+material = ExtResource("13_steel")
+
+[node name="CeilingBeamSouth" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(0, 10.65, -8)
+size = Vector3(25, 0.55, 0.75)
+material = ExtResource("13_steel")
+
+[node name="CeilingBeamExit" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(0, 10.65, -15)
+size = Vector3(25, 0.55, 0.75)
+material = ExtResource("13_steel")
+
+[node name="WestColumnArrival" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(-12.35, 5.1, 13.5)
+size = Vector3(1.25, 10.2, 1.5)
+material = ExtResource("13_steel")
+
+[node name="EastColumnArrival" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(12.35, 5.1, 13.5)
+size = Vector3(1.25, 10.2, 1.5)
+material = ExtResource("13_steel")
+
+[node name="WestColumnCore" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(-12.35, 5.1, 1.5)
+size = Vector3(1.25, 10.2, 1.5)
+material = ExtResource("13_steel")
+
+[node name="EastColumnCore" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(12.35, 5.1, 1.5)
+size = Vector3(1.25, 10.2, 1.5)
+material = ExtResource("13_steel")
+
+[node name="WestColumnExit" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(-12.35, 5.1, -12)
+size = Vector3(1.25, 10.2, 1.5)
+material = ExtResource("13_steel")
+
+[node name="EastColumnExit" type="CSGBox3D" parent="Environment/Architecture"]
+position = Vector3(12.35, 5.1, -12)
+size = Vector3(1.25, 10.2, 1.5)
+material = ExtResource("13_steel")
+
+[node name="WalkwayVisuals" type="Node3D" parent="Environment"]
+
+[node name="ArrivalDeckVisual" type="CSGBox3D" parent="Environment/WalkwayVisuals"]
+position = Vector3(0, -0.18, 14)
+size = Vector3(12, 0.36, 10)
+material = ExtResource("13_steel")
+
+[node name="ReactorDeckVisual" type="CSGBox3D" parent="Environment/WalkwayVisuals"]
+position = Vector3(0, -0.18, 0)
+size = Vector3(20, 0.36, 12)
+material = ExtResource("13_steel")
+
+[node name="UpperExitDeckVisual" type="CSGBox3D" parent="Environment/WalkwayVisuals"]
+position = Vector3(0, 3.82, -14)
+size = Vector3(12, 0.36, 8)
+material = ExtResource("13_steel")
+
+[node name="LeftCatwalkVisual" type="CSGBox3D" parent="Environment/WalkwayVisuals"]
+position = Vector3(-8, 1.82, -7)
+size = Vector3(3, 0.3, 10)
+material = ExtResource("12_black")
+
+[node name="RightCatwalkVisual" type="CSGBox3D" parent="Environment/WalkwayVisuals"]
+position = Vector3(8, 1.82, -7)
+size = Vector3(3, 0.3, 10)
+material = ExtResource("12_black")
+
+[node name="ArrivalGuideLeft" type="CSGBox3D" parent="Environment/WalkwayVisuals"]
+position = Vector3(-3.6, 0.05, 10.5)
+size = Vector3(0.16, 0.08, 5.5)
+material = ExtResource("15_cyan")
+
+[node name="ArrivalGuideRight" type="CSGBox3D" parent="Environment/WalkwayVisuals"]
+position = Vector3(3.6, 0.05, 10.5)
+size = Vector3(0.16, 0.08, 5.5)
+material = ExtResource("15_cyan")
+
+[node name="ExitGuideLeft" type="CSGBox3D" parent="Environment/WalkwayVisuals"]
+position = Vector3(-3.6, 4.04, -14)
+size = Vector3(0.16, 0.08, 6.5)
+material = ExtResource("16_hazard")
+
+[node name="ExitGuideRight" type="CSGBox3D" parent="Environment/WalkwayVisuals"]
+position = Vector3(3.6, 4.04, -14)
+size = Vector3(0.16, 0.08, 6.5)
+material = ExtResource("16_hazard")
+
+[node name="ArrivalRailLeft" parent="Environment/WalkwayVisuals" instance=ExtResource("8_rail")]
+position = Vector3(-5.65, 0.1, 13)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(1.5, 1, 1)
+
+[node name="ArrivalRailRight" parent="Environment/WalkwayVisuals" instance=ExtResource("8_rail")]
+position = Vector3(5.65, 0.1, 13)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(1.5, 1, 1)
+
+[node name="UpperRailLeft" parent="Environment/WalkwayVisuals" instance=ExtResource("8_rail")]
+position = Vector3(-5.65, 4.05, -14)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(1.5, 1, 1)
+
+[node name="UpperRailRight" parent="Environment/WalkwayVisuals" instance=ExtResource("8_rail")]
+position = Vector3(5.65, 4.05, -14)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(1.5, 1, 1)
+
+[node name="ReactorComplex" type="Node3D" parent="Environment"]
+
+[node name="GravityReactor" parent="Environment/ReactorComplex" instance=ExtResource("1_reactor")]
+
+[node name="WestReactorSupport" type="CSGBox3D" parent="Environment/ReactorComplex"]
+position = Vector3(-5.2, 4.8, 0)
+rotation_degrees = Vector3(0, 0, -14)
+size = Vector3(0.65, 8.3, 1.1)
+material = ExtResource("13_steel")
+
+[node name="EastReactorSupport" type="CSGBox3D" parent="Environment/ReactorComplex"]
+position = Vector3(5.2, 4.8, 0)
+rotation_degrees = Vector3(0, 0, 14)
+size = Vector3(0.65, 8.3, 1.1)
+material = ExtResource("13_steel")
+
+[node name="OverheadServiceBridge" type="CSGBox3D" parent="Environment/ReactorComplex"]
+position = Vector3(0, 9.6, 0)
+size = Vector3(12, 0.45, 1.4)
+material = ExtResource("12_black")
+
+[node name="ReactorIDPlate" type="CSGBox3D" parent="Environment/ReactorComplex"]
+position = Vector3(0, 2.55, 4.55)
+size = Vector3(4.8, 0.9, 0.16)
+material = ExtResource("12_black")
+
+[node name="ReactorLabel" type="Label3D" parent="Environment/ReactorComplex"]
+position = Vector3(0, 2.55, 4.46)
+text = "GRAVITY CONTAINMENT // G-02"
+font_size = 22
+outline_size = 7
+modulate = Color(0.62, 0.9, 1, 1)
+
+[node name="StabilizerSystems" type="Node3D" parent="Environment"]
+
+[node name="StabilizerA_Housing" parent="Environment/StabilizerSystems" instance=ExtResource("2_stabilizer")]
+position = Vector3(-5, 0, 2)
+rotation_degrees = Vector3(0, 22, 0)
+
+[node name="StabilizerB_Housing" parent="Environment/StabilizerSystems" instance=ExtResource("2_stabilizer")]
+position = Vector3(5, 0, -2)
+rotation_degrees = Vector3(0, -158, 0)
+
+[node name="StabilizerAConduit" type="CSGBox3D" parent="Environment/StabilizerSystems"]
+position = Vector3(-3.25, 0.2, 1)
+rotation_degrees = Vector3(0, -29.7, 0)
+size = Vector3(0.52, 0.32, 4.05)
+material = ExtResource("15_cyan")
+
+[node name="StabilizerBConduit" type="CSGBox3D" parent="Environment/StabilizerSystems"]
+position = Vector3(3.25, 0.2, -1)
+rotation_degrees = Vector3(0, -29.7, 0)
+size = Vector3(0.52, 0.32, 4.05)
+material = ExtResource("16_hazard")
+
+[node name="StabilizerALabelPlate" type="CSGBox3D" parent="Environment/StabilizerSystems"]
+position = Vector3(-5, 3.7, 0.55)
+size = Vector3(2.8, 0.55, 0.16)
+material = ExtResource("12_black")
+
+[node name="StabilizerALabel" type="Label3D" parent="Environment/StabilizerSystems"]
+position = Vector3(-5, 3.7, 0.46)
+text = "STABILIZER A"
+font_size = 18
+outline_size = 6
+modulate = Color(0.35, 0.9, 1, 1)
+
+[node name="StabilizerBLabelPlate" type="CSGBox3D" parent="Environment/StabilizerSystems"]
+position = Vector3(5, 3.7, -0.55)
+rotation_degrees = Vector3(0, 180, 0)
+size = Vector3(2.8, 0.55, 0.16)
+material = ExtResource("12_black")
+
+[node name="StabilizerBLabel" type="Label3D" parent="Environment/StabilizerSystems"]
+position = Vector3(5, 3.7, -0.46)
+rotation_degrees = Vector3(0, 180, 0)
+text = "STABILIZER B"
+font_size = 18
+outline_size = 6
+modulate = Color(1, 0.61, 0.18, 1)
+
+[node name="TetherMounts" type="Node3D" parent="Environment"]
+
+[node name="EntryTetherFixture" parent="Environment/TetherMounts" instance=ExtResource("3_tether")]
+position = Vector3(0, 7, 7)
+
+[node name="EntryFixtureCeilingBrace" type="CSGBox3D" parent="Environment/TetherMounts"]
+position = Vector3(0, 9, 7.55)
+size = Vector3(4.8, 3.2, 0.55)
+material = ExtResource("13_steel")
+
+[node name="ExitTetherFixture" parent="Environment/TetherMounts" instance=ExtResource("3_tether")]
+position = Vector3(0, 9, -8)
+rotation_degrees = Vector3(0, 180, 0)
+
+[node name="ExitFixtureCeilingBrace" type="CSGBox3D" parent="Environment/TetherMounts"]
+position = Vector3(0, 9, -8.55)
+size = Vector3(4.8, 3.2, 0.55)
+material = ExtResource("13_steel")
+
+[node name="ServiceInfrastructure" type="Node3D" parent="Environment"]
+
+[node name="WestObservationWindow" parent="Environment/ServiceInfrastructure" instance=ExtResource("4_window")]
+position = Vector3(-12.55, 3.2, 8)
+rotation_degrees = Vector3(0, 90, 0)
+
+[node name="EastObservationWindow" parent="Environment/ServiceInfrastructure" instance=ExtResource("4_window")]
+position = Vector3(12.55, 3.2, 8)
+rotation_degrees = Vector3(0, -90, 0)
+
+[node name="WestMachineryA" parent="Environment/ServiceInfrastructure" instance=ExtResource("5_machinery")]
+position = Vector3(-10.9, 0, 15)
+rotation_degrees = Vector3(0, 90, 0)
+
+[node name="EastMachineryA" parent="Environment/ServiceInfrastructure" instance=ExtResource("5_machinery")]
+position = Vector3(10.9, 0, 15)
+rotation_degrees = Vector3(0, -90, 0)
+
+[node name="WestMachineryB" parent="Environment/ServiceInfrastructure" instance=ExtResource("5_machinery")]
+position = Vector3(-10.9, 0, -2)
+rotation_degrees = Vector3(0, 90, 0)
+
+[node name="EastMachineryB" parent="Environment/ServiceInfrastructure" instance=ExtResource("5_machinery")]
+position = Vector3(10.9, 0, -2)
+rotation_degrees = Vector3(0, -90, 0)
+
+[node name="WestMonitoringConsole" parent="Environment/ServiceInfrastructure" instance=ExtResource("11_console")]
+position = Vector3(-9.6, 0.1, 7.5)
+rotation_degrees = Vector3(0, 65, 0)
+
+[node name="EastMonitoringConsole" parent="Environment/ServiceInfrastructure" instance=ExtResource("11_console")]
+position = Vector3(9.6, 0.1, 7.5)
+rotation_degrees = Vector3(0, -65, 0)
+
+[node name="ArrivalCableTrayWest" parent="Environment/ServiceInfrastructure" instance=ExtResource("6_cables")]
+position = Vector3(-8.5, 8.8, 10)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(2.2, 1.2, 1.2)
+
+[node name="ArrivalCableTrayEast" parent="Environment/ServiceInfrastructure" instance=ExtResource("6_cables")]
+position = Vector3(8.5, 8.8, 10)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(2.2, 1.2, 1.2)
+
+[node name="CoreCableTrayWest" parent="Environment/ServiceInfrastructure" instance=ExtResource("6_cables")]
+position = Vector3(-8.5, 8.8, -3)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(2.2, 1.2, 1.2)
+
+[node name="CoreCableTrayEast" parent="Environment/ServiceInfrastructure" instance=ExtResource("6_cables")]
+position = Vector3(8.5, 8.8, -3)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(2.2, 1.2, 1.2)
+
+[node name="WestWallPanel" parent="Environment/ServiceInfrastructure" instance=ExtResource("10_panel")]
+position = Vector3(-12.55, 0.4, -13.5)
+rotation_degrees = Vector3(0, 90, 0)
+
+[node name="EastWallPanel" parent="Environment/ServiceInfrastructure" instance=ExtResource("10_panel")]
+position = Vector3(12.55, 0.4, -13.5)
+rotation_degrees = Vector3(0, -90, 0)
+
+[node name="ArrivalLightWest" parent="Environment/ServiceInfrastructure" instance=ExtResource("9_light")]
+position = Vector3(-7.5, 10.25, 14)
+scale = Vector3(1.25, 1.25, 1.25)
+
+[node name="ArrivalLightEast" parent="Environment/ServiceInfrastructure" instance=ExtResource("9_light")]
+position = Vector3(7.5, 10.25, 14)
+scale = Vector3(1.25, 1.25, 1.25)
+
+[node name="CoreLightWest" parent="Environment/ServiceInfrastructure" instance=ExtResource("9_light")]
+position = Vector3(-8, 10.25, 0)
+scale = Vector3(1.25, 1.25, 1.25)
+
+[node name="CoreLightEast" parent="Environment/ServiceInfrastructure" instance=ExtResource("9_light")]
+position = Vector3(8, 10.25, 0)
+scale = Vector3(1.25, 1.25, 1.25)
+
+[node name="ExitAssembly" type="Node3D" parent="Environment"]
+
+[node name="UpperExitFrame" parent="Environment/ExitAssembly" instance=ExtResource("7_door")]
+position = Vector3(0, 4, -19.35)
+scale = Vector3(1.35, 1.2, 1.15)
+
+[node name="ExitHeaderPlate" type="CSGBox3D" parent="Environment/ExitAssembly"]
+position = Vector3(0, 8.85, -19)
+size = Vector3(7.2, 0.75, 0.3)
+material = ExtResource("12_black")
+
+[node name="ExitHeader" type="Label3D" parent="Environment/ExitAssembly"]
+position = Vector3(0, 8.85, -18.82)
+text = "UPPER REACTOR EXIT"
+font_size = 25
+outline_size = 8
+modulate = Color(0.42, 0.9, 1, 1)
+
+[node name="ExitServiceCabinetLeft" parent="Environment/ExitAssembly" instance=ExtResource("5_machinery")]
+position = Vector3(-8.8, 4, -17.8)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(0.9, 0.9, 0.9)
+
+[node name="ExitServiceCabinetRight" parent="Environment/ExitAssembly" instance=ExtResource("5_machinery")]
+position = Vector3(8.8, 4, -17.8)
+rotation_degrees = Vector3(0, -90, 0)
+scale = Vector3(0.9, 0.9, 0.9)
+
+[node name="IntegrationMarkers" type="Node3D" parent="."]
+
+[node name="PlayerSpawn" type="Marker3D" parent="IntegrationMarkers"]
+position = Vector3(0, 0.05, 16)
+
+[node name="StabilizerA" type="Marker3D" parent="IntegrationMarkers"]
+position = Vector3(-5, 0.9, 2)
+
+[node name="StabilizerB" type="Marker3D" parent="IntegrationMarkers"]
+position = Vector3(5, 0.9, -2)
+
+[node name="EntryGrappleAnchor" type="Marker3D" parent="IntegrationMarkers"]
+position = Vector3(0, 7, 7)
+
+[node name="ExitGrappleAnchor" type="Marker3D" parent="IntegrationMarkers"]
+position = Vector3(0, 9, -8)
+
+[node name="MaintenanceVectorWall" type="Marker3D" parent="IntegrationMarkers"]
+position = Vector3(9.5, 3.5, -5)
+
+[node name="CampaignExit" type="Marker3D" parent="IntegrationMarkers"]
+position = Vector3(0, 4.05, -15.5)
+
+[node name="Lighting" type="Node3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Lighting"]
+environment = SubResource("ProductionEnvironment")
+
+[node name="FacilityKey" type="DirectionalLight3D" parent="Lighting"]
+rotation_degrees = Vector3(-58, -24, 0)
+light_color = Color(0.62, 0.73, 0.84, 1)
+light_energy = 0.9
+shadow_enabled = true
+
+[node name="ArrivalFill" type="OmniLight3D" parent="Lighting"]
+position = Vector3(0, 5.5, 13)
+light_color = Color(0.48, 0.72, 0.82, 1)
+light_energy = 1.65
+omni_range = 12
+shadow_enabled = true
+
+[node name="ArrivalNeutralFill" type="OmniLight3D" parent="Lighting"]
+position = Vector3(0, 4.2, 9)
+light_color = Color(0.72, 0.78, 0.84, 1)
+light_energy = 1.9
+omni_range = 16
+
+[node name="CoreNeutralFill" type="OmniLight3D" parent="Lighting"]
+position = Vector3(0, 6.5, -1)
+light_color = Color(0.58, 0.66, 0.74, 1)
+light_energy = 1.65
+omni_range = 14
+
+[node name="WestWorkLight" type="OmniLight3D" parent="Lighting"]
+position = Vector3(-9, 5.2, 5)
+light_color = Color(0.72, 0.84, 0.9, 1)
+light_energy = 1.35
+omni_range = 9
+shadow_enabled = true
+
+[node name="EastWorkLight" type="OmniLight3D" parent="Lighting"]
+position = Vector3(9, 5.2, 5)
+light_color = Color(0.72, 0.84, 0.9, 1)
+light_energy = 1.35
+omni_range = 9
+shadow_enabled = true
+
+[node name="StabilizerALight" type="OmniLight3D" parent="Lighting"]
+position = Vector3(-5, 3.2, 2)
+light_color = Color(0.15, 0.65, 0.9, 1)
+light_energy = 0.95
+omni_range = 6.5
+
+[node name="StabilizerBLight" type="OmniLight3D" parent="Lighting"]
+position = Vector3(5, 3.2, -2)
+light_color = Color(0.8, 0.38, 0.08, 1)
+light_energy = 0.85
+omni_range = 6.5
+
+[node name="ExitLight" type="OmniLight3D" parent="Lighting"]
+position = Vector3(0, 7, -15)
+light_color = Color(0.24, 0.72, 0.92, 1)
+light_energy = 1.6
+omni_range = 11
+shadow_enabled = true
+
+[node name="PreviewCamera" type="Camera3D" parent="."]
+position = Vector3(0, 1.7, 16)
+rotation_degrees = Vector3(-8.4, 0, 0)
+current = false
+fov = 76.0
