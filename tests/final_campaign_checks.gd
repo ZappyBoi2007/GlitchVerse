@@ -26,6 +26,9 @@ func wait_seconds(seconds: float) -> void:
 
 func _run() -> void:
 	await _check_level_one()
+	await _check_level_two()
+	await _check_level_three()
+	await _check_level_four()
 	print("FINAL CAMPAIGN CHECKS: %d checks, %d failures" % [checks, failures.size()])
 	quit(0 if failures.is_empty() else 1)
 
@@ -71,5 +74,95 @@ func _check_level_one() -> void:
 	await settle(14)
 	level = flow.current_level as AccessDeniedSystemBreachLevel
 	check(not level.bridge.is_deployed and not level.relay_a.is_restored and not level.rewire_console.door_powered, "replay reconstructs bridge, relay, and REWIRE state")
+	flow.queue_free()
+	await settle(3)
+
+
+func _check_level_two() -> void:
+	var preview := load("res://levels/inverted/inverted_preview.tscn") as PackedScene
+	var flow := preview.instantiate() as GameFlowManager
+	flow.level_transition_delay = 0.0
+	root.add_child(flow)
+	await settle(12)
+	var level := flow.current_level as InvertedLevel
+	check(level != null and level.has_valid_player_spawn(), "INVERTED loads with a valid spawn")
+	check(level.get_node_or_null("EntryGrappleAnchor") is GrappleAnchor, "INVERTED supplies TETHER traversal")
+	check(level.get_node_or_null("MaintenanceVectorWall") is VectorRunSurface, "INVERTED supplies marked VECTOR RUN geometry")
+	var start_a := level.stabilizer_a.global_position
+	var start_b := level.stabilizer_b.global_position
+	check(level.stabilizer_a.toggle_polarity(flow.player), "POLARITY activates Stabilizer A")
+	check(level.stabilizer_b.toggle_polarity(flow.player), "POLARITY activates Stabilizer B")
+	await wait_seconds(level.stabilizer_a.travel_duration + 0.15)
+	check(level.stabilizer_a.global_position.y > start_a.y + 3.5, "Stabilizer A physically changes position")
+	check(level.stabilizer_b.global_position.y > start_b.y + 3.5, "Stabilizer B physically changes position")
+	check(level.is_puzzle_complete() and level.is_exit_unlocked(), "two stabilizers unlock INVERTED exit")
+	level.campaign_exit._on_body_entered(flow.player)
+	await settle(4)
+	check(flow.flow_state == GameFlowManager.STATE_VICTORY, "INVERTED isolated preview completes")
+	flow.queue_free()
+	await settle(3)
+
+
+func _check_level_three() -> void:
+	var preview := load("res://levels/clock_failure/clock_failure_preview.tscn") as PackedScene
+	var flow := preview.instantiate() as GameFlowManager
+	flow.level_transition_delay = 0.0
+	root.add_child(flow)
+	await settle(12)
+	var level := flow.current_level as ClockFailureLevel
+	check(level != null and not level.cycle_hazard.is_disabled, "CLOCK FAILURE starts with live cyclic hazard")
+	check(not level.sync_a.available, "Sync A starts gated")
+	level.cycle_hazard._on_body_entered(flow.player)
+	await settle(3)
+	check(flow.flow_state == GameFlowManager.STATE_FAILED, "live hazard produces recoverable failure")
+	flow.restart_current_level()
+	await settle(12)
+	level = flow.current_level as ClockFailureLevel
+	for _hit in range(3):
+		level.security_construct.take_damage(1)
+	await settle(2)
+	check(not level.sync_a.available, "security defeat alone cannot bypass REWIRE")
+	check(bool(level.rewire_console.interact(flow.player).success), "CLOCK FAILURE REWIRE accepts interaction")
+	await settle(2)
+	check(level.cycle_hazard.is_disabled, "REWIRE physically disables cyclic hazard")
+	check(level.sync_a.available, "security plus REWIRE unlock Sync A")
+	check(bool(level.sync_a.interact(flow.player).success), "Sync A restores")
+	check(level.sync_b.available and bool(level.sync_b.interact(flow.player).success), "ordered Sync B restores")
+	check(level.is_puzzle_complete() and level.is_exit_unlocked(), "CLOCK FAILURE terminals unlock exit")
+	level.campaign_exit._on_body_entered(flow.player)
+	await settle(4)
+	check(flow.flow_state == GameFlowManager.STATE_VICTORY, "CLOCK FAILURE isolated preview completes")
+	flow.queue_free()
+	await settle(3)
+
+
+func _check_level_four() -> void:
+	var preview := load("res://levels/kernel_panic/kernel_panic_preview.tscn") as PackedScene
+	var flow := preview.instantiate() as GameFlowManager
+	flow.level_transition_delay = 0.0
+	root.add_child(flow)
+	await settle(12)
+	var level := flow.current_level as KernelPanicLevel
+	check(level != null and not level.shutdown_terminal.available, "KERNEL PANIC shutdown starts safeguarded")
+	check(level.polarity_component.toggle_polarity(flow.player), "kernel power component accepts POLARITY")
+	await wait_seconds(level.polarity_component.travel_duration + 0.12)
+	check(level.rewire_console.available, "POLARITY unlocks core REWIRE")
+	check(bool(level.rewire_console.interact(flow.player).success), "core REWIRE disables shield power")
+	await settle(2)
+	var shield_collision := level.core_shield.get_node_or_null("CollisionShape3D") as CollisionShape3D
+	check(shield_collision != null, "core shield exposes deterministic collision node")
+	check(
+		shield_collision != null and not level.core_shield.visible and shield_collision.disabled,
+		"core shield becomes visibly and physically nonblocking"
+	)
+	for _hit in range(3):
+		level.security_construct.take_damage(1)
+	await settle(2)
+	check(level.shutdown_terminal.available, "POLARITY, REWIRE and combat unlock shutdown terminal")
+	check(bool(level.shutdown_terminal.interact(flow.player).success), "kernel shutdown interaction completes")
+	check(level.is_puzzle_complete() and level.is_exit_unlocked(), "shutdown unlocks final extraction")
+	level.campaign_exit._on_body_entered(flow.player)
+	await settle(4)
+	check(flow.flow_state == GameFlowManager.STATE_VICTORY, "KERNEL PANIC isolated preview reaches victory")
 	flow.queue_free()
 	await settle(3)
