@@ -3,6 +3,8 @@ extends RigidBody3D
 
 ## A vertically constrained RigidBody3D whose gravity direction can be inverted.
 
+signal state_changed(gravity_inverted: bool)
+
 @export var interaction_name := "GRAVITY CRATE"
 @export_range(1.0, 8.0, 0.25) var upward_travel_limit := 3.1
 @export var normal_material: Material
@@ -34,6 +36,7 @@ func apply_ability(ability: StringName, _source: Node) -> String:
 		return "This crate accepts GRAVITY only."
 	gravity_inverted = not gravity_inverted
 	_update_state()
+	state_changed.emit(gravity_inverted)
 	return "GRAVITY CRATE // %s" % ("UPWARD" if gravity_inverted else "DOWNWARD")
 
 

@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://ui/debugger_hud.gd" id="1_hud"]
+[ext_resource type="Script" path="res://ui/game_flow_hud.gd" id="2_flow_hud"]
 
 [node name="HUD" type="CanvasLayer"]
 layer = 10
@@ -124,4 +125,93 @@ offset_top = -8.0
 offset_right = 1.0
 offset_bottom = 8.0
 color = Color(1, 0.28, 0.8, 0.95)
+mouse_filter = 2
+
+[node name="FlowHUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_flow_hud")
+
+[node name="Level" type="Label" parent="FlowHUD"]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -260.0
+offset_top = 18.0
+offset_right = 260.0
+offset_bottom = 44.0
+theme_override_colors/font_color = Color(0.76, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 15
+text = "LEVEL 01 // INITIALIZING"
+horizontal_alignment = 1
+mouse_filter = 2
+
+[node name="Timer" type="Label" parent="FlowHUD"]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_top = 46.0
+offset_right = 0.0
+offset_bottom = 70.0
+text = "TIME 00:00"
+horizontal_alignment = 1
+mouse_filter = 2
+
+[node name="Score" type="Label" parent="FlowHUD"]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 0.0
+offset_top = 46.0
+offset_right = 120.0
+offset_bottom = 70.0
+text = "SCORE 00000"
+horizontal_alignment = 1
+mouse_filter = 2
+
+[node name="Objective" type="Label" parent="FlowHUD"]
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -360.0
+offset_top = -50.0
+offset_right = 360.0
+offset_bottom = -22.0
+theme_override_colors/font_color = Color(0.82, 0.92, 1, 1)
+text = "OBJECTIVE // INITIALIZING"
+horizontal_alignment = 1
+mouse_filter = 2
+
+[node name="ResultPanel" type="ColorRect" parent="FlowHUD"]
+visible = false
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -90.0
+offset_right = 240.0
+offset_bottom = 90.0
+color = Color(0.012, 0.02, 0.04, 0.94)
+mouse_filter = 2
+
+[node name="Title" type="Label" parent="FlowHUD/ResultPanel"]
+offset_left = 20.0
+offset_top = 24.0
+offset_right = 460.0
+offset_bottom = 60.0
+theme_override_font_sizes/font_size = 24
+text = "SIMULATION COMPLETE"
+horizontal_alignment = 1
+mouse_filter = 2
+
+[node name="Detail" type="Label" parent="FlowHUD/ResultPanel"]
+offset_left = 20.0
+offset_top = 75.0
+offset_right = 460.0
+offset_bottom = 145.0
+text = "Press R to replay"
+horizontal_alignment = 1
 mouse_filter = 2

@@ -1,12 +1,22 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://levels/test_chamber.gd" id="1_room"]
 [ext_resource type="PackedScene" path="res://interactive/phaseable_barrier.tscn" id="2_phase"]
 [ext_resource type="PackedScene" path="res://interactive/gravity_crate.tscn" id="3_gravity"]
 [ext_resource type="PackedScene" path="res://interactive/moving_hazard.tscn" id="4_freeze"]
+[ext_resource type="PackedScene" path="res://interactive/puzzle_exit.tscn" id="5_exit"]
+[ext_resource type="Script" path="res://levels/demo_puzzle_controller.gd" id="6_puzzle"]
 
 [node name="TestChamber" type="Node3D"]
 script = ExtResource("1_room")
+level_id = "debug_chamber"
+level_display_name = "REALITY DEBUGGER CALIBRATION"
+par_time_seconds = 90.0
+base_score = 1000
+
+[node name="PlayerSpawn" type="Marker3D" parent="."]
+position = Vector3(0, 0.05, 11)
+rotation_degrees = Vector3(0, 180, 0)
 
 [node name="PhaseableBarrier" parent="." instance=ExtResource("2_phase")]
 position = Vector3(0, 2.2, 16.7)
@@ -16,3 +26,12 @@ position = Vector3(0, 0.85, 20)
 
 [node name="MovingHazard" parent="." instance=ExtResource("4_freeze")]
 position = Vector3(0, 1.2, 22.7)
+
+[node name="PuzzleExit" parent="." instance=ExtResource("5_exit")]
+position = Vector3(0, 2.1, 25.2)
+
+[node name="DemoPuzzleController" type="Node" parent="."]
+script = ExtResource("6_puzzle")
+phase_barrier_path = NodePath("../PhaseableBarrier")
+gravity_crate_path = NodePath("../GravityCrate")
+moving_hazard_path = NodePath("../MovingHazard")

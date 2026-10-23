@@ -1,4 +1,4 @@
-extends Node3D
+extends GameplayLevel
 
 ## Builds the Milestone 1 chamber entirely from Godot primitives.
 ## Each solid receives both a BoxMesh and matching BoxShape3D collision.
@@ -17,6 +17,9 @@ func _ready() -> void:
 	_build_corridor()
 	_build_decorations()
 	_build_lighting()
+	$DemoPuzzleController.puzzle_solved.connect(_on_puzzle_solved)
+	$DemoPuzzleController.progress_changed.connect(report_objective)
+	$PuzzleExit.exit_reached.connect(_on_exit_reached)
 
 
 func _create_materials() -> void:
@@ -103,21 +106,9 @@ func _build_corridor() -> void:
 	_add_box("CorridorLeft", Vector3(-4, 2.5, 21), Vector3(0.6, 5.5, 9), dark_metal)
 	_add_box("CorridorRight", Vector3(4, 2.5, 21), Vector3(0.6, 5.5, 9), dark_metal)
 	_add_box("CorridorCeiling", Vector3(0, 5.15, 21), Vector3(8.6, 0.5, 9), dark_metal)
-	_add_box("ExitDoor", Vector3(0, 2.1, 25.2), Vector3(4.2, 4.2, 0.45), exit_material)
 	_add_box("ExitHeader", Vector3(0, 4.55, 25.0), Vector3(5.6, 0.35, 0.5), magenta)
 	_add_glow_strip(Vector3(-3.65, 0.08, 21), Vector3(0.09, 0.09, 7.6), cyan)
 	_add_glow_strip(Vector3(3.65, 0.08, 21), Vector3(0.09, 0.09, 7.6), cyan)
-
-	var exit_label := Label3D.new()
-	exit_label.text = "EXIT // LOCKED"
-	exit_label.font_size = 48
-	exit_label.modulate = Color("07100b")
-	exit_label.outline_size = 8
-	exit_label.outline_modulate = Color("55ff9a")
-	exit_label.position = Vector3(0, 3.7, 24.94)
-	exit_label.rotation_degrees = Vector3(0, 180, 0)
-	add_child(exit_label)
-
 
 func _build_decorations() -> void:
 	for z_position in [-12.0, -4.0, 4.0, 12.0]:
@@ -150,3 +141,13 @@ func _add_omni_light(position: Vector3, color: Color, energy: float, range_value
 	light.omni_range = range_value
 	light.shadow_enabled = false
 	add_child(light)
+
+
+func _on_puzzle_solved() -> void:
+	mark_puzzle_completed()
+	$PuzzleExit.unlock_exit()
+	mark_exit_unlocked()
+
+
+func _on_exit_reached() -> void:
+	finish_level()
