@@ -7,6 +7,7 @@ Integration history:
 - `795e98d` — recoverable checkpoint for the tether and Level 1 reliability fixes.
 - `04bcf5d` — local merge of current `origin/main` (`51bafd9`).
 - `ca9ec23` — clean local merge of Jefin's Level 3/4 contribution (`0e69a7d`).
+- `33cc1f1` — clean local merge of Jefin's complete production-art branch (`db45a8e`).
 
 Nothing from this branch has been pushed or merged back into GitHub `main`.
 
@@ -44,6 +45,8 @@ Solution:
 
 Restart/replay reconstructs the environment wrapper and therefore restores the bridge, enemy, relay, REWIRE, door, health, objective, timer and score state.
 
+The latest production-art pass is active. Its two imported lobby floor inlays are hidden by the gameplay wrapper because their scaled visual bounds rise roughly two metres and one contained the spawn camera. No authored gameplay collision was removed.
+
 ## Reusable production contracts
 
 - `InteractionController`: camera ray, 4 m range, F input, targets `player_interactable` nodes implementing `interact(player)`.
@@ -59,7 +62,11 @@ Gameplay scene: `res://levels/inverted/inverted_level.tscn`
 
 F6 preview: `res://levels/inverted/inverted_preview.tscn`
 
+Production environment: `res://levels/inverted/inverted_production_environment.tscn`
+
 Solution: use TETHER to enter the vertical reactor, aim at both amber/violet stabilizer masses and press Q. Each collision-bearing mass moves along a constrained four-metre track. When both stabilizers reach their inverted positions, the upper reactor exit activates. Use the overhead TETHER route or the marked VECTOR maintenance wall to reach it.
+
+The production scene is instanced once at identity. Existing collision decks, catwalks, launch steps, stabilizers, TETHER anchors and VECTOR wall remain authoritative; only their obsolete primitive presentation is hidden. `FloorShell` and `FloorInset` are hidden because they visually bridged deliberate gaps without collision. The decorative exit assembly is moved from `z=-19.35` to the supported upper deck at `z=-15.7`, and the completion trigger sits beyond it at `z=-17.5`.
 
 ## Level 3 — CLOCK FAILURE
 
@@ -115,7 +122,15 @@ Anushree's newer UI remains isolated on `origin/feature/anushree-ui` under `scen
 
 Headless checks cannot prove the swing/release feel, BLADE encounter circulation, console readability, CSG collision refresh on a rendered frame, doorway clearance under live input, mouse feel, audio balance, or visual performance.
 
-Levels 3 and 4 now use Jefin's production environments exactly once; their retired procedural greyboxes are not built. Automated physics rays confirm all four documented launch/landing sightlines hit the real reusable TETHER anchors after integration. The two arcs, landing comfort, signage readability, enemy circulation, hazard fairness and route bypasses still require a full human route playtest.
+All four levels now use Jefin's latest production art. Levels 3 and 4 instance their environments exactly once; their retired procedural greyboxes are not built. Automated physics rays confirm all documented launch/landing sightlines hit the real reusable TETHER anchors after integration. Levels 3 and 4 intentionally start close to large emissive mission displays; those openings are visually aggressive but do not add collision. Swing arcs, landing comfort, signage readability, enemy circulation, hazard fairness and route bypasses still require a full human route playtest.
+
+Forward+ 1280×720 first-person review captures are stored locally under `.godot/final-environment-art/`:
+
+- `level_1_access_denied.png`
+- `level_2_inverted.png`
+- `level_2_upper_exit.png`
+- `level_3_clock_failure.png`
+- `level_4_kernel_panic.png`
 
 ## Automated validation
 
@@ -123,7 +138,7 @@ Levels 3 and 4 now use Jefin's production environments exactly once; their retir
 
 Latest automated results:
 
-- Final campaign: 137 checks, 0 failures
+- Final campaign: 163 checks, 0 failures
 - Legacy GameFlow/debugger integration: 48 checks, 0 failures
 - Combat mobility: 41 checks, 0 failures
 - Momentum/VECTOR RUN: 35 checks, 0 failures
@@ -132,7 +147,7 @@ Latest automated results:
 - Reality Fragments: 25 checks, 0 failures
 - NULL SPINDLE: 14 checks, 0 failures
 - Legacy ACCESS DENIED: 28 checks, 0 failures
-- Integrated Level 3 and Level 4 previews: independent 120-frame headless runtime smokes passed
+- All four production environment scenes and all four gameplay previews: independent 120-frame headless runtime smokes passed
 - Production `main.tscn`: import, parse and 300-frame smoke passed
 
 ## Windows export

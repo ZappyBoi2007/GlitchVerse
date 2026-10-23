@@ -33,6 +33,7 @@ func _ready() -> void:
 	if not _validate_environment_contract():
 		fail_level("SYSTEM BREACH ENVIRONMENT MARKERS ARE INCOMPLETE")
 		return
+	_apply_production_art_safety()
 	_repair_power_approach_alignment()
 	_add_route_readability()
 	_build_exit_vestibule()
@@ -40,6 +41,20 @@ func _ready() -> void:
 	_apply_rewire_state(false)
 	_bind_player_health.call_deferred()
 	_report_progress()
+
+
+func _apply_production_art_safety() -> void:
+	# The imported raised-floor model is roughly two metres tall at the authored
+	# 1.3 scale. Both lobby inlays overlap the arrival volume, and the left one
+	# contains the spawned first-person camera. Keep the production art pass but
+	# suppress only these collision-free decorative obstructions at runtime.
+	for path in [
+		"Environment/ArrivalChamber/ProductionArtPass/LobbyFloorInlayA",
+		"Environment/ArrivalChamber/ProductionArtPass/LobbyFloorInlayB",
+	]:
+		var inlay := environment.get_node_or_null(path) as Node3D
+		if inlay != null:
+			inlay.visible = false
 
 
 func _validate_environment_contract() -> bool:

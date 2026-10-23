@@ -15,6 +15,15 @@ func check(ok: bool, description: String) -> void:
 		print("FAIL: ", description)
 
 
+func subtree_has_no_collision(node: Node) -> bool:
+	if not node.find_children("*", "CollisionObject3D", true, false).is_empty():
+		return false
+	for shape in node.find_children("*", "CSGShape3D", true, false):
+		if (shape as CSGShape3D).use_collision:
+			return false
+	return true
+
+
 func settle(frames := 8) -> void:
 	for _frame in range(frames):
 		await process_frame
@@ -49,6 +58,11 @@ func _check_level_one() -> void:
 	check(level != null, "production ACCESS DENIED loads through GameFlowManager")
 	check(level.environment.scene_file_path.ends_with("access_denied_system_breach_environment.tscn"), "Level 1 instances Jefin's production environment")
 	check(level.get_node_or_null("Environment") == level.environment, "Level 1 contains exactly one production environment instance")
+	var level_one_art := level.environment.get_node("Environment/ArrivalChamber/ProductionArtPass")
+	check(level_one_art != null, "Level 1 uses Jefin's latest production art pass")
+	check(subtree_has_no_collision(level_one_art), "Level 1 production art adds no duplicate collision")
+	check(not (level.environment.get_node("Environment/ArrivalChamber/ProductionArtPass/LobbyFloorInlayA") as Node3D).visible, "overscaled Level 1 lobby inlay A cannot contain the spawn camera")
+	check(not (level.environment.get_node("Environment/ArrivalChamber/ProductionArtPass/LobbyFloorInlayB") as Node3D).visible, "overscaled Level 1 lobby inlay B cannot obstruct the arrival route")
 	check(level.environment.transform.is_equal_approx(Transform3D.IDENTITY), "production environment has no accidental wrapper transform")
 	check(flow.player.scale.is_equal_approx(Vector3.ONE), "shared player keeps unit scale in Level 1")
 	check(level.has_valid_player_spawn(), "Level 1 resolves Jefin's PlayerSpawn marker")
@@ -171,11 +185,53 @@ func _check_level_two() -> void:
 	await settle(12)
 	var level := flow.current_level as InvertedLevel
 	check(level != null and level.has_valid_player_spawn(), "INVERTED loads with a valid spawn")
+	check(level.environment.scene_file_path.ends_with("inverted_production_environment.tscn"), "INVERTED instances Jefin's production environment")
+	check(level.get_node_or_null("InvertedProductionEnvironment") == level.environment, "INVERTED contains exactly one production environment instance")
+	check(level.environment.transform.is_equal_approx(Transform3D.IDENTITY), "INVERTED production environment uses identity transform")
+	check(level.get_player_spawn_transform().origin.is_equal_approx(Vector3(0.0, 0.05, 16.0)), "INVERTED uses the production PlayerSpawn marker")
+	var floor_shell := level.environment.get_node("Environment/Architecture/FloorShell") as CSGShape3D
+	var floor_inset := level.environment.get_node("Environment/Architecture/FloorInset") as CSGShape3D
+	check(not floor_shell.visible and not floor_inset.visible, "unsupported broad production floor shells are hidden")
+	check(subtree_has_no_collision(level.environment), "INVERTED production art contributes no duplicate collision")
+	var supported_surfaces := true
+	var inverted_physics := level.get_world_3d().direct_space_state
+	for support in [
+		["ArrivalDeck", Vector3(0, 2, 14), Vector3(0, -2, 14)],
+		["ReactorDeck", Vector3(0, 2, 0), Vector3(0, -2, 0)],
+		["UpperExitDeck", Vector3(0, 6, -14), Vector3(0, 2, -14)],
+		["LeftCatwalk", Vector3(-8, 4, -7), Vector3(-8, 0, -7)],
+		["RightCatwalk", Vector3(8, 4, -7), Vector3(8, 0, -7)],
+	]:
+		var support_body := level.get_node(support[0]) as StaticBody3D
+		var support_mesh := support_body.get_node("Mesh") as MeshInstance3D
+		var support_shape := support_body.get_node("CollisionShape3D") as CollisionShape3D
+		var support_hit := inverted_physics.intersect_ray(PhysicsRayQueryParameters3D.create(support[1], support[2]))
+		supported_surfaces = supported_surfaces and not support_mesh.visible and not support_shape.disabled and support_hit.get("collider") == support_body
+	check(supported_surfaces, "each visible production deck/catwalk is backed by retained procedural collision")
 	check(level.get_node_or_null("EntryGrappleAnchor") is GrappleAnchor, "INVERTED supplies TETHER traversal")
 	check(level.get_node_or_null("ExitGrappleAnchor") is GrappleAnchor, "INVERTED upper route has a dedicated visible anchor")
+	check(not (level.get_node("EntryGrappleAnchor/Mesh") as MeshInstance3D).visible and not (level.get_node("ExitGrappleAnchor/Mesh") as MeshInstance3D).visible, "production fixtures replace only the functional anchor spheres")
+	check((level.get_node("EntryGrappleAnchor/CollisionShape3D") as CollisionShape3D).disabled == false and (level.get_node("ExitGrappleAnchor/CollisionShape3D") as CollisionShape3D).disabled == false, "both hidden anchor spheres retain gameplay collision")
+	var entry_marker := level.markers.get_node("EntryGrappleAnchor") as Node3D
+	var exit_anchor_marker := level.markers.get_node("ExitGrappleAnchor") as Node3D
+	check((level.get_node("EntryGrappleAnchor") as Node3D).global_position.is_equal_approx(entry_marker.global_position), "entry TETHER anchor aligns with production fixture marker")
+	check((level.get_node("ExitGrappleAnchor") as Node3D).global_position.is_equal_approx(exit_anchor_marker.global_position), "exit TETHER anchor aligns with production fixture marker")
+	var entry_ray := PhysicsRayQueryParameters3D.create(Vector3(0, 1.6, 16), entry_marker.global_position)
+	var exit_ray := PhysicsRayQueryParameters3D.create(Vector3(0, 2.7, -6.6), exit_anchor_marker.global_position)
+	check(inverted_physics.intersect_ray(entry_ray).get("collider") == level.get_node("EntryGrappleAnchor"), "entry fixture has direct physics line of sight to its TETHER anchor")
+	check(inverted_physics.intersect_ray(exit_ray).get("collider") == level.get_node("ExitGrappleAnchor"), "upper launch perch has direct physics line of sight to its TETHER anchor")
 	check(level.get_node_or_null("ExitLaunchStepC") is StaticBody3D, "INVERTED supplies a distinct upper-route launch perch")
 	check(level.get_node_or_null("UpperLandingGlow") is StaticBody3D, "INVERTED marks the intended landing edge")
 	check(level.get_node_or_null("MaintenanceVectorWall") is VectorRunSurface, "INVERTED supplies marked VECTOR RUN geometry")
+	var direct_procedural_lights := 0
+	for child in level.get_children():
+		if child is Light3D:
+			direct_procedural_lights += 1
+	check(direct_procedural_lights == 0, "production lighting replaces all procedural Level 2 lights")
+	var visible_exit_frame := level.environment.get_node("Environment/ExitAssembly/UpperExitFrame") as Node3D
+	check(is_equal_approx(visible_exit_frame.global_position.z, InvertedLevel.VISIBLE_EXIT_PLANE_Z), "decorative upper doorway is aligned to the supported physical exit deck")
+	check(level.campaign_exit.global_position.z < InvertedLevel.VISIBLE_EXIT_PLANE_Z and level.campaign_exit.global_position.z >= -18.0, "completion trigger is beyond the visible doorway and remains on physical deck collision")
+	check(not level.campaign_exit.beacon.visible, "production exit deck replaces the legacy beacon disc")
 	level.campaign_exit._on_body_entered(flow.player)
 	check(flow.flow_state == GameFlowManager.STATE_PLAYING, "locked INVERTED trigger cannot complete progression")
 	var start_a := level.stabilizer_a.global_position
@@ -190,6 +246,9 @@ func _check_level_two() -> void:
 	flow.player.global_position = Vector3(0, 0.05, -6.0)
 	await settle_physics(3)
 	check(flow.flow_state == GameFlowManager.STATE_PLAYING, "lower launch area cannot prematurely complete INVERTED")
+	flow.player.global_position = (level.markers.get_node("CampaignExit") as Node3D).global_position
+	await settle_physics(3)
+	check(flow.flow_state == GameFlowManager.STATE_PLAYING, "former z=-15.5 exit marker cannot complete before crossing the visible doorway")
 	flow.player.global_position = level.campaign_exit.global_position
 	await settle_physics(5)
 	check(flow.flow_state == GameFlowManager.STATE_VICTORY, "INVERTED isolated preview completes")
@@ -206,6 +265,9 @@ func _check_level_three() -> void:
 	var level := flow.current_level as ClockFailureLevel
 	check(level != null and not level.cycle_hazard.is_disabled, "CLOCK FAILURE starts with live cyclic hazard")
 	check(level.environment.scene_file_path.ends_with("clock_failure_environment.tscn"), "CLOCK FAILURE instances Jefin's production environment")
+	var clock_art := level.environment.get_node("Environment/TimingChamber/ProductionArtPass")
+	check(clock_art != null, "CLOCK FAILURE uses Jefin's latest production art pass")
+	check(subtree_has_no_collision(clock_art), "CLOCK FAILURE production art adds no duplicate collision")
 	check(level.get_node_or_null("EntryPlatform") == null, "CLOCK FAILURE does not overlap the retired procedural greybox")
 	check(level.get_player_spawn_transform().origin.is_equal_approx(Vector3(0.0, 0.4, 35.0)), "CLOCK FAILURE uses the production PlayerSpawn")
 	check(level.grapple_anchor_a != null and level.grapple_anchor_b != null, "CLOCK FAILURE binds both production TETHER markers")
@@ -280,6 +342,9 @@ func _check_level_four() -> void:
 	var level := flow.current_level as KernelPanicLevel
 	check(level != null and not level.shutdown_terminal.available, "KERNEL PANIC shutdown starts safeguarded")
 	check(level.environment.scene_file_path.ends_with("kernel_panic_environment.tscn"), "KERNEL PANIC instances Jefin's production environment")
+	var kernel_art := level.environment.get_node("Environment/CorePowerNetwork/ProductionArtPass")
+	check(kernel_art != null, "KERNEL PANIC uses Jefin's latest production art pass")
+	check(subtree_has_no_collision(kernel_art), "KERNEL PANIC production art adds no duplicate collision")
 	check(level.get_node_or_null("EntryDeck") == null, "KERNEL PANIC does not overlap the retired procedural greybox")
 	check(level.get_player_spawn_transform().origin.is_equal_approx(Vector3(0.0, 0.4, 39.0)), "KERNEL PANIC uses the production PlayerSpawn")
 	check(level.grapple_anchor_a != null and level.grapple_anchor_b != null, "KERNEL PANIC binds both production TETHER markers")
