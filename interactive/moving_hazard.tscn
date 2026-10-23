@@ -1,22 +1,38 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://interactive/moving_hazard.gd" id="1_script"]
 
 [sub_resource type="StandardMaterial3D" id="Material_moving"]
-albedo_color = Color(0.36, 0.025, 0.08, 1)
+albedo_color = Color(0.2, 0.08, 0.3, 1)
 metallic = 0.45
 roughness = 0.32
 emission_enabled = true
-emission = Color(1, 0.04, 0.22, 1)
-emission_energy_multiplier = 2.5
+emission = Color(0.733333, 0.552941, 0.980392, 1)
+emission_energy_multiplier = 2.2
 
 [sub_resource type="StandardMaterial3D" id="Material_frozen"]
-albedo_color = Color(0.08, 0.16, 0.45, 1)
+albedo_color = Color(0.16, 0.12, 0.28, 1)
 metallic = 0.35
 roughness = 0.18
 emission_enabled = true
-emission = Color(0.22, 0.45, 1, 1)
-emission_energy_multiplier = 2.2
+emission = Color(0.86, 0.78, 1, 1)
+emission_energy_multiplier = 2.8
+
+[sub_resource type="StandardMaterial3D" id="Material_freeze_trim"]
+albedo_color = Color(0.2, 0.1, 0.3, 1)
+metallic = 0.4
+roughness = 0.22
+emission_enabled = true
+emission = Color(0.733333, 0.552941, 0.980392, 1)
+emission_energy_multiplier = 2.7
+
+[sub_resource type="StandardMaterial3D" id="Material_freeze_highlight"]
+transparency = 1
+albedo_color = Color(0.733333, 0.552941, 0.980392, 0.12)
+roughness = 0.2
+emission_enabled = true
+emission = Color(0.733333, 0.552941, 0.980392, 1)
+emission_energy_multiplier = 3.2
 
 [sub_resource type="BoxMesh" id="Mesh_hazard"]
 material = SubResource("Material_moving")
@@ -24,6 +40,14 @@ size = Vector3(0.65, 2.4, 0.65)
 
 [sub_resource type="BoxShape3D" id="Shape_hazard"]
 size = Vector3(0.65, 2.4, 0.65)
+
+[sub_resource type="BoxMesh" id="Mesh_freeze_cap"]
+material = SubResource("Material_freeze_trim")
+size = Vector3(0.78, 0.12, 0.78)
+
+[sub_resource type="BoxMesh" id="Mesh_freeze_highlight"]
+material = SubResource("Material_freeze_highlight")
+size = Vector3(0.79, 2.54, 0.79)
 
 [node name="MovingHazard" type="AnimatableBody3D"]
 script = ExtResource("1_script")
@@ -33,12 +57,28 @@ frozen_material = SubResource("Material_frozen")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("Mesh_hazard")
 
+[node name="TargetHighlight" type="MeshInstance3D" parent="."]
+visible = false
+cast_shadow = 0
+mesh = SubResource("Mesh_freeze_highlight")
+
+[node name="IdentityCapTop" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.14, 0)
+cast_shadow = 0
+mesh = SubResource("Mesh_freeze_cap")
+
+[node name="IdentityCapBottom" type="MeshInstance3D" parent="."]
+position = Vector3(0, -1.14, 0)
+cast_shadow = 0
+mesh = SubResource("Mesh_freeze_cap")
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("Shape_hazard")
 
 [node name="Label3D" type="Label3D" parent="."]
 position = Vector3(0, 1.55, 0)
-text = "[3] FREEZE"
-font_size = 30
+billboard = 1
+text = "03 // FREEZE\nSTOP MOTION"
+font_size = 27
 outline_size = 7
-modulate = Color(1, 0.45, 0.55, 1)
+modulate = Color(0.733333, 0.552941, 0.980392, 1)

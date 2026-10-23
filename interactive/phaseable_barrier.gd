@@ -10,6 +10,7 @@ signal state_changed(is_phased: bool)
 @export var phased_material: Material
 
 @onready var mesh: MeshInstance3D = $MeshInstance3D
+@onready var target_highlight: MeshInstance3D = $TargetHighlight
 @onready var solid_collision: CollisionShape3D = $SolidCollision
 @onready var occupancy_sensor: Area3D = $OccupancySensor
 
@@ -40,6 +41,10 @@ func apply_ability(ability: StringName, _source: Node) -> String:
 	_update_state()
 	state_changed.emit(is_phased)
 	return "PHASE BARRIER // %s" % ("PHASED" if is_phased else "SOLID")
+
+
+func set_debugger_highlight(enabled: bool, _ability_color: Color) -> void:
+	target_highlight.visible = enabled
 
 
 func _update_state() -> void:
