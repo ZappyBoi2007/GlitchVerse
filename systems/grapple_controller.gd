@@ -16,17 +16,18 @@ signal grapple_detached(reason: StringName)
 @export_range(0.5, 3.0, 0.1) var anchor_arrival_cutoff := 1.25
 
 @export_category("Swing Feel")
-@export_range(0.0, 20.0, 0.25) var swing_acceleration := 7.0
-@export_range(0.0, 20.0, 0.25) var air_steering_strength := 3.5
-@export_range(0.0, 2.0, 0.01) var swing_damping := 0.02
+@export_range(0.0, 20.0, 0.25) var swing_acceleration := 8.0
+@export_range(0.0, 20.0, 0.25) var air_steering_strength := 4.0
+@export_range(0.0, 2.0, 0.01) var swing_damping := 0.01
 @export_range(5.0, 40.0, 0.5) var maximum_speed := 18.0
-@export_range(0.8, 1.3, 0.01) var release_momentum_multiplier := 1.0
-@export_range(1.0, 20.0, 0.5) var attachment_responsiveness := 7.0
+@export_range(0.8, 1.3, 0.01) var release_momentum_multiplier := 1.05
+@export_range(1.0, 20.0, 0.5) var attachment_responsiveness := 9.0
 @export_range(0.0, 3.0, 0.05) var reel_in_speed := 0.0
-@export_range(0.0, 12.0, 0.25) var minimum_attach_tangent_speed := 4.5
-@export_range(0.0, 8.0, 0.25) var maximum_attach_assist := 3.0
-@export_range(0.0, 1.0, 0.05) var grounded_assist_multiplier := 0.55
-@export_range(0.0, 3.0, 0.1) var maximum_vertical_attach_assist := 0.8
+@export_range(0.0, 12.0, 0.25) var minimum_attach_tangent_speed := 6.0
+@export_range(0.0, 8.0, 0.25) var maximum_attach_assist := 5.0
+@export_range(0.0, 1.0, 0.05) var grounded_assist_multiplier := 0.65
+@export_range(0.0, 3.0, 0.1) var maximum_vertical_attach_assist := 1.0
+@export_range(0.0, 12.0, 0.25) var safe_reel_in_speed := 4.0
 
 @export_category("Safety")
 @export_range(0.1, 2.0, 0.05) var rope_extension_tolerance := 0.65
@@ -47,6 +48,9 @@ var _environment_release_remaining := 0.0
 var _obstruction_elapsed := 0.0
 var _last_distance := 0.0
 var last_release_speed := 0.0
+var last_death_position := Vector3.ZERO
+var last_cleanup_reason: StringName = &"none"
+var _target_rope_length := 0.0
 
 
 func _ready() -> void:
@@ -124,6 +128,10 @@ func try_attach_target(target: Node) -> bool:
 	active_target = target_node
 	_anchor_position = point
 	rope_length = clampf(distance, minimum_rope_length, minf(maximum_rope_length, maximum_range))
+	_target_rope_length = rope_length
+	var target_limit := _get_target_rope_limit(target_node)
+	if target_limit > 0.0:
+		_target_rope_length = clampf(minf(rope_length, target_limit), minimum_rope_length, rope_length)
 	_last_distance = distance
 	_obstruction_elapsed = 0.0
 	tether_beam.visible = true
@@ -162,9 +170,11 @@ func _clear_grapple(emit_feedback: bool, reason: StringName) -> void:
 		last_release_speed = player.velocity.length()
 	active_target = null
 	rope_length = 0.0
+	_target_rope_length = 0.0
 	tether_beam.visible = false
 	_environment_release_remaining = 0.0
 	_obstruction_elapsed = 0.0
+	last_cleanup_reason = reason
 	if emit_feedback:
 		_play_audio(&"grapple_detach", -8.0)
 		grapple_detached.emit(reason)
@@ -190,10 +200,16 @@ func get_debug_snapshot() -> Dictionary:
 				swing_speed = (player.velocity - radial * player.velocity.dot(radial)).length()
 	return {
 		"state": "ATTACHED" if is_grappling() else "IDLE",
+		"target": active_target.name if is_instance_valid(active_target) else "NONE",
+		"anchor_position": _anchor_position,
+		"player_velocity": player.velocity if player != null else Vector3.ZERO,
 		"horizontal_speed": horizontal_speed,
 		"rope_length": rope_length,
+		"target_rope_length": _target_rope_length,
 		"swing_speed": swing_speed,
 		"last_release_speed": last_release_speed,
+		"last_death_position": last_death_position,
+		"cleanup_reason": last_cleanup_reason,
 	}
 
 
@@ -205,7 +221,9 @@ func _apply_attachment_assist(anchor_point: Vector3) -> void:
 		return
 	radial_out = radial_out.normalized()
 	var horizontal_velocity := Vector3(player.velocity.x, 0.0, player.velocity.z)
-	var preferred := horizontal_velocity.normalized()
+	var preferred := _get_target_travel_direction(active_target)
+	if preferred.is_zero_approx():
+		preferred = horizontal_velocity.normalized()
 	if preferred.is_zero_approx():
 		preferred = -camera.global_basis.z
 		preferred.y = 0.0
@@ -215,7 +233,11 @@ func _apply_attachment_assist(anchor_point: Vector3) -> void:
 		return
 	tangent = tangent.normalized()
 	var current_speed := maxf(0.0, player.velocity.dot(tangent))
-	var assist_speed := minf(maximum_attach_assist, maxf(0.0, minimum_attach_tangent_speed - current_speed))
+	var assist_multiplier := _get_target_assist_multiplier(active_target)
+	var assist_speed := minf(
+		maximum_attach_assist * assist_multiplier,
+		maxf(0.0, minimum_attach_tangent_speed * assist_multiplier - current_speed)
+	)
 	if player.is_on_floor():
 		assist_speed *= grounded_assist_multiplier
 	var assist_velocity := tangent * assist_speed
@@ -236,7 +258,11 @@ func _apply_tether_velocity(delta: float) -> void:
 		cancel_grapple(&"range_exceeded")
 		return
 	if reel_in_speed > 0.0:
-		rope_length = maxf(minimum_rope_length, rope_length - reel_in_speed * delta)
+		_target_rope_length = maxf(minimum_rope_length, _target_rope_length - reel_in_speed * delta)
+	if rope_length > _target_rope_length:
+		var target_reel_speed := _get_target_reel_in_speed(active_target)
+		var active_reel_speed := maxf(safe_reel_in_speed, target_reel_speed)
+		rope_length = move_toward(rope_length, _target_rope_length, active_reel_speed * delta)
 
 	var radial_out := rope_offset / distance
 	var has_swing_input := _apply_swing_input(radial_out, delta)
@@ -382,12 +408,30 @@ func _target_pulls_player(target: Node) -> bool:
 	return not target.has_method("pulls_player") or bool(target.call("pulls_player"))
 
 
+func _get_target_rope_limit(target: Node) -> float:
+	return float(target.call("get_grapple_rope_limit")) if target.has_method("get_grapple_rope_limit") else 0.0
+
+
+func _get_target_reel_in_speed(target: Node) -> float:
+	return float(target.call("get_grapple_reel_in_speed")) if target.has_method("get_grapple_reel_in_speed") else 0.0
+
+
+func _get_target_assist_multiplier(target: Node) -> float:
+	return float(target.call("get_grapple_assist_multiplier")) if target.has_method("get_grapple_assist_multiplier") else 1.0
+
+
+func _get_target_travel_direction(target: Node) -> Vector3:
+	return target.call("get_grapple_travel_direction") as Vector3 if target.has_method("get_grapple_travel_direction") else Vector3.ZERO
+
+
 func _set_target_highlight(target: Node, enabled: bool) -> void:
 	if is_instance_valid(target) and target.has_method("set_grapple_highlight"):
 		target.call("set_grapple_highlight", enabled)
 
 
 func _on_player_defeated() -> void:
+	if player != null:
+		last_death_position = player.global_position
 	cancel_grapple(&"player_defeated")
 
 

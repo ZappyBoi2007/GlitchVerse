@@ -48,15 +48,82 @@ func _check_level_one() -> void:
 	var level := flow.current_level as AccessDeniedSystemBreachLevel
 	check(level != null, "production ACCESS DENIED loads through GameFlowManager")
 	check(level.environment.scene_file_path.ends_with("access_denied_system_breach_environment.tscn"), "Level 1 instances Jefin's production environment")
+	check(level.get_node_or_null("Environment") == level.environment, "Level 1 contains exactly one production environment instance")
+	check(level.environment.transform.is_equal_approx(Transform3D.IDENTITY), "production environment has no accidental wrapper transform")
+	check(flow.player.scale.is_equal_approx(Vector3.ONE), "shared player keeps unit scale in Level 1")
 	check(level.has_valid_player_spawn(), "Level 1 resolves Jefin's PlayerSpawn marker")
+	check(level.get_player_spawn_transform().origin.is_equal_approx(Vector3(-2.0, 0.4, 35.0)), "Level 1 begins at the intended unobstructed observation spawn")
 	check(level.get_node_or_null("GrappleAnchor_01_Runtime") is GrappleAnchor, "first real grapple marker is integrated")
 	check(level.get_node_or_null("GrappleAnchor_02_Runtime") is GrappleAnchor, "second real grapple marker is integrated")
+	var primary_anchor := level.get_node("GrappleAnchor_01_Runtime") as GrappleAnchor
+	var secondary_anchor := level.get_node("GrappleAnchor_02_Runtime") as GrappleAnchor
+	var grapple := flow.player.find_child("GrappleController", true, false) as GrappleController
+	var launch_marker := level.markers.get_node("TetherLaunch_01") as Marker3D
+	var fall_marker := level.markers.get_node("FallZoneMarker") as Marker3D
+	var initial_rope_distance := launch_marker.global_position.distance_to(primary_anchor.get_grapple_point())
+	var fall_volume_top := fall_marker.global_position.y + 0.5
+	check(absf(initial_rope_distance - 7.647876) < 0.001, "Level 1 first launch-to-anchor distance is measured at 7.65 metres")
+	check(is_equal_approx(fall_volume_top, -4.5), "Level 1 fall volume begins at y=-4.5")
+	check(primary_anchor.get_grapple_point().y - primary_anchor.maximum_initial_rope_length > fall_volume_top + 4.0, "primary anchor safe rope target clears the fall volume by over four metres")
+	check(primary_anchor.get_grapple_prompt() == "E // SWING", "cyan anchor exposes the SWING prompt")
+	check(level.pull_handle.get_grapple_prompt() == "E // DEPLOY BRIDGE", "amber handle exposes the machinery prompt")
+	var hud := flow.get_node("CampaignHUD") as CampaignHUD
+	hud._on_grapple_target(primary_anchor, true)
+	check(hud.prompt_label.text == "E // SWING", "HUD shows SWING only for a valid grapple anchor ray target")
+	hud._on_grapple_target(primary_anchor, false)
+	check(hud.prompt_label.text.is_empty(), "HUD clears a stale tether prompt when the grapple ray loses its target")
+	hud._on_grapple_target(level.pull_handle, true)
+	check(hud.prompt_label.text == "E // DEPLOY BRIDGE", "HUD distinguishes the machinery pull handle from a swing anchor")
+	hud._on_grapple_target(level.pull_handle, false)
+
+	var approach := level.environment.get_node("Environment/SecurityInterception/PowerApproach")
+	var approach_floor := approach.get_node("ApproachFloor") as CSGBox3D
+	var approach_left_rail := approach.get_node("ApproachLeftRail") as CSGBox3D
+	var approach_right_rail := approach.get_node("ApproachRightRail") as CSGBox3D
+	check(approach_floor.position.is_equal_approx(Vector3(-37.7, 0.0, -7.2)), "integration wrapper aligns the diagonal power walkway with both wall openings")
+	check(approach_left_rail.size.y <= 1.0 and approach_right_rail.size.y <= 1.0, "power walkway rails remain below the first-person sight line")
+	check(approach_left_rail.use_collision and approach_right_rail.use_collision, "corrected power walkway rails preserve matching collision")
+	check(not is_equal_approx(approach_left_rail.position.x, -39.1), "left rail uses the walkway's rotated local offset instead of the authored world-X offset")
+	var physics := flow.player.get_world_3d().direct_space_state
+	var corridor_forward := Basis.from_euler(Vector3(0.0, deg_to_rad(-48.0), 0.0)) * Vector3.FORWARD
+	var floor_hits := 0
+	var sample_distances: Array[float] = [-7.0, -3.5, 0.0, 3.5, 7.0]
+	for distance in sample_distances:
+		var floor_sample: Vector3 = approach_floor.global_position + corridor_forward * distance + Vector3.UP * 1.5
+		var floor_query := PhysicsRayQueryParameters3D.create(floor_sample, floor_sample + Vector3.DOWN * 3.0)
+		var floor_hit := physics.intersect_ray(floor_query)
+		if floor_hit.get("collider") == approach_floor:
+			floor_hits += 1
+	check(floor_hits == 5, "corrected power walkway has continuous matching collision along its centre line")
+	var local_right := Basis.from_euler(Vector3(0.0, deg_to_rad(-48.0), 0.0)) * Vector3.RIGHT
+	var left_query := PhysicsRayQueryParameters3D.create(approach_floor.global_position + Vector3.UP * 0.65, approach_floor.global_position - local_right * 3.0 + Vector3.UP * 0.65)
+	var right_query := PhysicsRayQueryParameters3D.create(approach_floor.global_position + Vector3.UP * 0.65, approach_floor.global_position + local_right * 3.0 + Vector3.UP * 0.65)
+	check(physics.intersect_ray(left_query).get("collider") == approach_left_rail, "left corrected rail blocks the walkway edge")
+	check(physics.intersect_ray(right_query).get("collider") == approach_right_rail, "right corrected rail blocks the walkway edge")
+	check(level.get_node_or_null("IntegrationRouteGuides/PowerApproachGuide_01") is StaticBody3D, "wrapper supplies lightweight amber route guidance")
+	check(level.environment.get_node_or_null("Lighting/PowerApproachFill") is OmniLight3D, "power approach receives a shadowless readability fill light")
+	check(primary_anchor.maximum_initial_rope_length < initial_rope_distance and secondary_anchor.maximum_initial_rope_length <= 5.0, "Level 1 anchors use scene-specific safe rope limits")
 	check(not level.is_exit_unlocked(), "Level 1 exit starts locked")
 	check(level.get_node_or_null("ExitSafetyGeometry/NorthDoorSeal") is StaticBody3D, "wrapper seals the north door bypass without editing Jefin's scene")
 	check(level.get_node_or_null("ExitSafetyGeometry/SouthDoorSeal") is StaticBody3D, "wrapper seals the south door bypass without editing Jefin's scene")
 	check(level.campaign_exit.global_position.x > AccessDeniedSystemBreachLevel.DOOR_PLANE_X + 1.4, "Level 1 exit trigger sits fully beyond the door plane")
 	level.campaign_exit._on_body_entered(flow.player)
 	check(flow.flow_state == GameFlowManager.STATE_PLAYING, "locked Level 1 trigger cannot complete progression")
+
+	# Reproduce the reported late attach: already below the ledge and falling fast.
+	# A valid connection must remove unsafe outward fall speed and reel toward the
+	# authored safe radius without teleporting the CharacterBody3D.
+	flow.player.global_position = Vector3(-20.5, -3.5, 30.0)
+	flow.player.velocity = Vector3(0.0, -7.0, 0.0)
+	check(grapple.try_attach_target(primary_anchor), "late but valid first-anchor acquisition succeeds")
+	await settle_physics(66)
+	check(flow.flow_state == GameFlowManager.STATE_PLAYING, "late attached player remains above the failure volume")
+	check(flow.player.global_position.y > fall_volume_top, "safe reeling prevents the attached player entering the kill plane")
+	check(grapple.get_rope_length() <= primary_anchor.maximum_initial_rope_length + 0.05, "late attachment converges to the anchor's safe rope length")
+	grapple.cancel_grapple(&"crossing_safety_test")
+	flow.player.global_transform = level.get_player_spawn_transform()
+	flow.player.velocity = Vector3.ZERO
+	await settle_physics(2)
 
 	level.pull_handle.on_grapple_attached(null)
 	await wait_seconds(level.bridge.deployment_duration + 0.12)
@@ -67,6 +134,7 @@ func _check_level_one() -> void:
 		level.enemy.take_damage(1)
 	await settle(3)
 	check(level.enemy.is_deactivated() and level.relay_a.available, "security defeat unlocks Relay A")
+	check(level.objective_description.contains("WEST CYAN BEACON"), "Relay A objective supplies spatial guidance instead of only a relay name")
 	check(bool(level.relay_a.interact(flow.player).success), "Relay A restores through F-interaction contract")
 	check(not level.is_exit_unlocked(), "one restored relay cannot unlock the final exit")
 	check(level.rewire_console.available, "Relay A unlocks REWIRE console")

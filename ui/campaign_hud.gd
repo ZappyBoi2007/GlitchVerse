@@ -129,10 +129,13 @@ func _on_polarity_target(_target: Node, valid: bool) -> void:
 		crosshair.modulate = Color("c07cff")
 
 
-func _on_grapple_target(_target: Node, valid: bool) -> void:
+func _on_grapple_target(target: Node, valid: bool) -> void:
 	if valid:
-		prompt_label.text = "E // TETHER"
-		crosshair.modulate = Color("55eaff")
+		prompt_label.text = str(target.call("get_grapple_prompt")) if target.has_method("get_grapple_prompt") else "E // SWING"
+		crosshair.modulate = Color("ffb347") if target.is_in_group("tether_pull_handle") else Color("55eaff")
+	elif prompt_label.text.begins_with("E //"):
+		prompt_label.text = ""
+		crosshair.modulate = Color.WHITE
 
 
 func _on_action_result(message: String, success: bool) -> void:

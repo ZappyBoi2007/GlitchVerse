@@ -120,7 +120,10 @@ func _run() -> void:
 	check(not vector_run.begin_wall_run(wall, Vector3.LEFT, 1), "active grapple blocks competing wall-run state")
 	var momentum_before_release := player.velocity
 	grapple.cancel_grapple(&"test_release")
-	check(player.velocity.distance_to(momentum_before_release) < 0.01, "grapple release preserves transition momentum")
+	check(
+		player.velocity.distance_to(momentum_before_release * grapple.release_momentum_multiplier) < 0.01,
+		"grapple release preserves momentum with the configured bounded release boost"
+	)
 	check(vector_run.begin_wall_run(wall, Vector3.LEFT, 1), "wall run can begin after grapple release")
 	vector_run.stop_wall_run(&"test")
 

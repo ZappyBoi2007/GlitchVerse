@@ -81,7 +81,10 @@ func _run() -> void:
 	var release_velocity := player.velocity
 	grapple.cancel_grapple(&"test_cancel")
 	check(not grapple.is_grappling() and not grapple.tether_beam.visible, "cancel clears attachment and tether")
-	check(player.velocity.distance_to(release_velocity) < 0.01, "release preserves current momentum")
+	check(
+		player.velocity.distance_to(release_velocity * grapple.release_momentum_multiplier) < 0.01,
+		"release preserves current momentum with the configured bounded boost"
+	)
 
 	# The controller contributes velocity before the player's sole move_and_slide call.
 	# A temporary wall verifies the body cannot be pulled through collision.

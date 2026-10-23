@@ -27,10 +27,17 @@ func _process(_delta: float) -> void:
 	var movement_state := "VECTOR RUN" if vector_run != null and vector_run.is_wall_running() else str(data.state)
 	readout.text = (
 		"MOVEMENT DEBUG\n"
-		+ "State: %s\n" % movement_state
+		+ "State: %s  Target: %s\n" % [movement_state, str(data.target)]
+		+ "Anchor: %s\n" % _vector_text(data.anchor_position)
+		+ "Velocity: %s\n" % _vector_text(data.player_velocity)
 		+ "Horizontal: %.2f m/s\n" % float(data.horizontal_speed)
-		+ "Rope: %.2f m\n" % float(data.rope_length)
+		+ "Rope: %.2f / %.2f m\n" % [float(data.rope_length), float(data.target_rope_length)]
 		+ "Swing: %.2f m/s\n" % float(data.swing_speed)
 		+ "Grounded: %s\n" % str(player.is_on_floor())
-		+ "Release: %.2f m/s" % float(data.last_release_speed)
+		+ "Release: %.2f m/s\n" % float(data.last_release_speed)
+		+ "Death: %s  Cleanup: %s" % [_vector_text(data.last_death_position), str(data.cleanup_reason)]
 	)
+
+
+func _vector_text(value: Vector3) -> String:
+	return "(%.2f, %.2f, %.2f)" % [value.x, value.y, value.z]

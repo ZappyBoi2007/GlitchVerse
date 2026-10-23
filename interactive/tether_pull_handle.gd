@@ -35,6 +35,10 @@ func get_grapple_point() -> Vector3:
 	return grapple_point.global_position
 
 
+func get_grapple_prompt() -> String:
+	return "E // DEPLOY BRIDGE"
+
+
 func on_grapple_attached(_source: Node) -> void:
 	if one_shot and is_pulled:
 		return

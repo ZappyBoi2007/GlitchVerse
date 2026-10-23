@@ -33,6 +33,8 @@ func _ready() -> void:
 	if not _validate_environment_contract():
 		fail_level("SYSTEM BREACH ENVIRONMENT MARKERS ARE INCOMPLETE")
 		return
+	_repair_power_approach_alignment()
+	_add_route_readability()
 	_build_exit_vestibule()
 	_spawn_gameplay()
 	_apply_rewire_state(false)
@@ -52,8 +54,16 @@ func _validate_environment_contract() -> bool:
 
 
 func _spawn_gameplay() -> void:
-	_spawn_at_marker(ANCHOR_SCENE, "GrappleAnchor_01", "GrappleAnchor_01_Runtime")
-	_spawn_at_marker(ANCHOR_SCENE, "GrappleAnchor_02", "GrappleAnchor_02_Runtime")
+	var primary_anchor := _spawn_at_marker(ANCHOR_SCENE, "GrappleAnchor_01", "GrappleAnchor_01_Runtime") as GrappleAnchor
+	primary_anchor.maximum_initial_rope_length = 7.0
+	primary_anchor.automatic_reel_in_speed = 4.5
+	primary_anchor.attachment_assist_multiplier = 1.2
+	primary_anchor.preferred_travel_direction = Vector3.LEFT
+	var secondary_anchor := _spawn_at_marker(ANCHOR_SCENE, "GrappleAnchor_02", "GrappleAnchor_02_Runtime") as GrappleAnchor
+	secondary_anchor.maximum_initial_rope_length = 5.0
+	secondary_anchor.automatic_reel_in_speed = 3.5
+	secondary_anchor.attachment_assist_multiplier = 1.05
+	secondary_anchor.preferred_travel_direction = Vector3.LEFT
 
 	var bridge_shape := environment.get_node("Environment/BrokenCrossing/Platforms/RetractableBridgeSection") as CSGShape3D
 	bridge = SystemBreachBridge.new()
@@ -120,6 +130,74 @@ func _build_exit_vestibule() -> void:
 	_add_runtime_box(geometry, "VestibuleSouthWall", Vector3(35.4, 2.75, 34.5), Vector3(4.8, 5.5, 0.7), structure)
 	_add_runtime_box(geometry, "VestibuleEndWall", Vector3(37.8, 2.75, 30.0), Vector3(0.7, 5.5, 9.0), structure)
 	_add_runtime_box(geometry, "ExitClearanceStrip", Vector3(35.4, 0.31, 30.0), Vector3(3.8, 0.08, 0.32), clearance, false)
+
+
+func _repair_power_approach_alignment() -> void:
+	# Jefin's source scene remains untouched. The authored diagonal floor enters
+	# through the combat-room wall, while its rails use unrotated world-X offsets.
+	# Correct those transforms in the integration wrapper so visuals and collision
+	# form one readable corridor between the two authored wall openings.
+	var approach := environment.get_node("Environment/SecurityInterception/PowerApproach")
+	var floor := approach.get_node("ApproachFloor") as CSGBox3D
+	var left_rail := approach.get_node("ApproachLeftRail") as CSGBox3D
+	var right_rail := approach.get_node("ApproachRightRail") as CSGBox3D
+	floor.position = Vector3(-37.7, 0.0, -7.2)
+	floor.rotation_degrees = Vector3(0.0, -48.0, 0.0)
+	var local_right := Basis.from_euler(Vector3(0.0, deg_to_rad(-48.0), 0.0)) * Vector3.RIGHT
+	var rail_offset := local_right * 2.5
+	left_rail.position = floor.position - rail_offset + Vector3(0.0, 0.75, 0.0)
+	right_rail.position = floor.position + rail_offset + Vector3(0.0, 0.75, 0.0)
+	for rail in [left_rail, right_rail]:
+		rail.rotation_degrees = floor.rotation_degrees
+		rail.size = Vector3(0.28, 1.0, 18.0)
+		rail.use_collision = true
+
+	var props := environment.get_node("Environment/SecurityInterception/SecurityProps")
+	var threshold_left := props.get_node("OnwardThresholdLeft") as CSGBox3D
+	var threshold_right := props.get_node("OnwardThresholdRight") as CSGBox3D
+	threshold_left.position = Vector3(-45.5, 0.35, -1.8)
+	threshold_right.position = Vector3(-43.8, 0.35, -2.9)
+	threshold_left.rotation_degrees = Vector3(0.0, -48.0, 0.0)
+	threshold_right.rotation_degrees = Vector3(0.0, -48.0, 0.0)
+	threshold_left.size = Vector3(1.1, 0.08, 0.24)
+	threshold_right.size = Vector3(1.1, 0.08, 0.24)
+	var route_sign := props.get_node("PowerRouteSign") as Label3D
+	route_sign.position = Vector3(-46.2, 3.2, -1.75)
+	route_sign.text = "POWER DIVERSION // FOLLOW AMBER"
+
+
+func _add_route_readability() -> void:
+	var guides := Node3D.new()
+	guides.name = "IntegrationRouteGuides"
+	add_child(guides)
+	var amber := _runtime_emissive(Color("ff9b2f"), 1.05)
+	var cyan := _runtime_emissive(Color("45dfff"), 1.0)
+	for index in range(4):
+		var guide := _add_runtime_box(
+			guides,
+			"PowerApproachGuide_%02d" % (index + 1),
+			Vector3(-43.7 + index * 3.35, 0.29, -2.2 - index * 3.0),
+			Vector3(1.6, 0.06, 0.22),
+			amber,
+			false
+		)
+		guide.rotation_degrees = Vector3(0.0, -48.0, 0.0)
+	_add_runtime_box(guides, "RelayAGuide", Vector3(-54.5, 0.29, 2.0), Vector3(4.2, 0.06, 0.24), cyan, false)
+
+	var lighting := environment.get_node("Lighting")
+	_add_fill_light(lighting, "SecurityFill", Vector3(-50.0, 3.0, 3.0), Color("77cfff"), 0.8, 11.0)
+	_add_fill_light(lighting, "PowerApproachFill", Vector3(-38.0, 3.0, -7.0), Color("ffb05a"), 1.15, 13.0)
+
+
+func _add_fill_light(parent: Node, node_name: String, position_value: Vector3, color: Color, energy: float, range_value: float) -> void:
+	var light := OmniLight3D.new()
+	light.name = node_name
+	light.position = position_value
+	light.light_color = color
+	light.light_energy = energy
+	light.omni_range = range_value
+	light.shadow_enabled = false
+	parent.add_child(light)
 
 
 func _add_runtime_box(
@@ -254,7 +332,7 @@ func _report_progress() -> void:
 	if _bridge_deployed and not enemy.is_deactivated():
 		message = "DISABLE SECURITY CONSTRUCT"
 	elif enemy.is_deactivated() and not _relay_a_restored:
-		message = "F // RESTORE RELAY A"
+		message = "F // RESTORE RELAY A // WEST CYAN BEACON"
 	elif _relay_a_restored and not _rewired:
 		message = "F // REWIRE POWER TO DOOR ROUTE"
 	elif _rewired and not _relay_b_restored:
