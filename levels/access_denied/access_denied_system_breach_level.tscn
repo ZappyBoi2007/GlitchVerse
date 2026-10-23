@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://levels/access_denied/access_denied_system_breach_level.gd" id="1"]
+[ext_resource type="PackedScene" path="res://levels/access_denied_system_breach_environment.tscn" id="2"]
+
+[node name="AccessDeniedSystemBreachLevel" type="Node3D"]
+script = ExtResource("1")
+level_id = "access_denied"
+level_display_name = "LEVEL 1 // ACCESS DENIED"
+par_time_seconds = 240.0
+base_score = 1800
+player_spawn_path = NodePath("Environment/InteractionMarkers/PlayerSpawn")
+
+[node name="Environment" parent="." instance=ExtResource("2")]

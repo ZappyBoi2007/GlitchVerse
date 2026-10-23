@@ -525,6 +525,10 @@ func _build_placeholder_streams() -> void:
 	_streams[&"construct_death"] = _make_tone(0.55, 310.0, 52.0, 0.25, 0.09)
 	_streams[&"player_hurt"] = _make_tone(0.2, 170.0, 70.0, 0.24, 0.05)
 	_streams[&"bridge_deploy"] = _make_tone(0.65, 85.0, 210.0, 0.2, 0.05, 7.0)
+	_streams[&"rewire_switch"] = _make_tone(0.5, 150.0, 640.0, 0.2, 0.03, 6.0)
+	_streams[&"relay_restore"] = _make_tone(0.55, 260.0, 920.0, 0.18, 0.02)
+	_streams[&"polarity_shift"] = _make_tone(0.65, 90.0, 520.0, 0.22, 0.04)
+	_streams[&"shutdown"] = _make_tone(1.1, 420.0, 48.0, 0.24, 0.05, 5.0)
 
 	_streams[&"phase_idle_loop"] = _make_tone(4.0, 220.0, 220.0, 0.08, 0.0, 5.0, true)
 	_streams[&"phase_active_loop"] = _make_tone(4.0, 330.0, 330.0, 0.11, 0.0, 7.0, true)

@@ -42,7 +42,9 @@ func make_fixture(with_spawn: bool, fail_on_ready: bool = false) -> PackedScene:
 	return packed
 
 func _run() -> void:
-	var flow = load("res://main.tscn").instantiate()
+	# The production main now owns the four-level action campaign. Keep this
+	# regression's original debugger contracts isolated in their exact fixture.
+	var flow = load("res://tests/legacy_main_fixture.tscn").instantiate()
 	root.add_child(flow)
 	await settle()
 	check(flow.flow_state == &"playing", "main starts playing")
@@ -218,7 +220,7 @@ func _run() -> void:
 	check(flow.flow_state == &"failed", "falling below kill height triggers failure")
 	flow.queue_free()
 	await settle()
-	var menu_flow = load("res://main.tscn").instantiate()
+	var menu_flow = load("res://tests/legacy_main_fixture.tscn").instantiate()
 	menu_flow.auto_start = false
 	root.add_child(menu_flow)
 	await settle()
