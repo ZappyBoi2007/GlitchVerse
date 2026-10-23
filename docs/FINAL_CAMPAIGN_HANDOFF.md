@@ -8,8 +8,10 @@ Integration history:
 - `04bcf5d` — local merge of current `origin/main` (`51bafd9`).
 - `ca9ec23` — clean local merge of Jefin's Level 3/4 contribution (`0e69a7d`).
 - `33cc1f1` — clean local merge of Jefin's complete production-art branch (`db45a8e`).
+- `4d8f904` — validated four-level final environment integration (last pushed campaign baseline).
+- `5277b2b` — conflict-free local merge of Jefin's final Level 2 polish (`3ac16dd`).
 
-Nothing from this branch has been pushed or merged back into GitHub `main`.
+The campaign baseline through `4d8f904` is pushed. The Level 2 polish merge remains local and has not been pushed or merged into GitHub `main`.
 
 The `codex-pre-momentum-grapple-checkpoint` stash remains preserved and was not applied or dropped.
 
@@ -67,6 +69,8 @@ Production environment: `res://levels/inverted/inverted_production_environment.t
 Solution: use TETHER to enter the vertical reactor, aim at both amber/violet stabilizer masses and press Q. Each collision-bearing mass moves along a constrained four-metre track. When both stabilizers reach their inverted positions, the upper reactor exit activates. Use the overhead TETHER route or the marked VECTOR maintenance wall to reach it.
 
 The production scene is instanced once at identity. Existing collision decks, catwalks, launch steps, stabilizers, TETHER anchors and VECTOR wall remain authoritative; only their obsolete primitive presentation is hidden. `FloorShell` and `FloorInset` are hidden because they visually bridged deliberate gaps without collision. The decorative exit assembly is moved from `z=-19.35` to the supported upper deck at `z=-15.7`, and the completion trigger sits beyond it at `z=-17.5`.
+
+Jefin's final polish (`3ac16dd`) is active: the production scene uses the revised dark-alloy/painted-panel materials, stabilizer housing and expanded reactor assembly. The gameplay wrapper still creates exactly one production environment and suppresses the retired procedural reactor/core meshes, so these visual additions do not duplicate gameplay geometry or collision.
 
 ## Level 3 — CLOCK FAILURE
 
@@ -132,6 +136,8 @@ Forward+ 1280×720 first-person review captures are stored locally under `.godot
 - `level_3_clock_failure.png`
 - `level_4_kernel_panic.png`
 
+The post-polish Forward+ gameplay-camera capture is stored at `.godot/final-level2-polish/level_2_integrated.png` (1280×720).
+
 ## Automated validation
 
 `res://tests/final_campaign_checks.gd` exercises actual Level 1 bridge/combat/relay/REWIRE state, Level 2 constrained POLARITY motion, Level 3 hazard failure/restart and ordered terminals, Level 4 shield/combat/shutdown gating, all four scene paths, campaign transitions, scoring, victory and replay.
@@ -149,6 +155,8 @@ Latest automated results:
 - Legacy ACCESS DENIED: 28 checks, 0 failures
 - All four production environment scenes and all four gameplay previews: independent 120-frame headless runtime smokes passed
 - Production `main.tscn`: import, parse and 300-frame smoke passed
+
+Post-polish focused validation repeated the final campaign (163/163), legacy integration (48/48), ACCESS DENIED TETHER (12/12), Momentum/VECTOR RUN (35/35), combat mobility (41/41) and movement (6/6) suites. All 61 GDScript files parsed; the polished production environment, integrated Level 2 preview and production main scene completed headless runtime smokes.
 
 ## Windows export
 
