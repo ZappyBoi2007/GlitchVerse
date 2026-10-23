@@ -1,0 +1,1628 @@
+[gd_scene load_steps=25 format=3]
+
+[ext_resource type="PackedScene" path="res://levels/access_denied.tscn" id="1"]
+[ext_resource type="Shader" path="res://levels/access_denied_assets/scifi/panel.gdshader" id="2"]
+[ext_resource type="Shader" path="res://levels/access_denied_assets/scifi/energy.gdshader" id="3"]
+[ext_resource type="Shader" path="res://levels/access_denied_assets/scifi/stars.gdshader" id="4"]
+[ext_resource type="Script" path="res://levels/access_denied_assets/scifi/hover.gd" id="5"]
+
+[sub_resource type="ShaderMaterial" id="floor"]
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.16, 0.21, 0.27, 1)
+shader_parameter/metal = 0.65
+
+[sub_resource type="ShaderMaterial" id="wall"]
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.57, 0.63, 0.68, 1)
+shader_parameter/metal = 0.25
+
+[sub_resource type="ShaderMaterial" id="trim"]
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.23, 0.3, 0.37, 1)
+shader_parameter/metal = 0.7
+
+[sub_resource type="ShaderMaterial" id="prop"]
+shader = ExtResource("2")
+shader_parameter/base_color = Color(0.27, 0.33, 0.38, 1)
+shader_parameter/metal = 0.55
+
+[sub_resource type="ShaderMaterial" id="cyan"]
+shader = ExtResource("3")
+shader_parameter/tint = Color(0.02, 0.75, 1, 0.7)
+
+[sub_resource type="ShaderMaterial" id="pink"]
+shader = ExtResource("3")
+shader_parameter/tint = Color(1, 0.025, 0.55, 0.95)
+
+[sub_resource type="ShaderMaterial" id="sky_mat"]
+shader = ExtResource("4")
+[sub_resource type="Sky" id="sky"]
+sky_material = SubResource("sky_mat")
+[sub_resource type="Environment" id="env"]
+background_mode = 2
+sky = SubResource("sky")
+ambient_light_source = 3
+ambient_light_color = Color(0.56, 0.68, 0.85, 1)
+ambient_light_energy = 0.55
+tonemap_mode = 2
+[sub_resource type="BoxMesh" id="drone"]
+size = Vector3(2.4, 0.7, 1.4)
+material = SubResource("trim")
+[sub_resource type="SphereMesh" id="core"]
+radius = 0.3
+height = 0.6
+material = SubResource("cyan")
+[sub_resource type="StandardMaterial3D" id="NeonCyan"]
+shading_mode = 0
+albedo_color = Color(0.02, 0.8, 1, 1)
+emission_enabled = true
+emission = Color(0.02, 0.8, 1, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="StandardMaterial3D" id="NeonViolet"]
+shading_mode = 0
+albedo_color = Color(0.5, 0.12, 1, 1)
+emission_enabled = true
+emission = Color(0.5, 0.12, 1, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="StandardMaterial3D" id="NeonPink"]
+shading_mode = 0
+albedo_color = Color(1, 0.04, 0.45, 1)
+emission_enabled = true
+emission = Color(1, 0.04, 0.45, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="BoxMesh" id="NeonStripMesh"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="BoxMesh" id="FloatSlabMesh"]
+size = Vector3(5.5, 0.65, 2.2)
+material = SubResource("trim")
+
+[sub_resource type="BoxMesh" id="FloatShardMesh"]
+size = Vector3(1.1, 4.2, 0.85)
+material = SubResource("prop")
+
+[sub_resource type="CylinderMesh" id="FloatPodMesh"]
+top_radius = 0.7
+bottom_radius = 0.95
+height = 3.2
+radial_segments = 12
+rings = 2
+material = SubResource("trim")
+
+[sub_resource type="TorusMesh" id="FloatRingMesh"]
+inner_radius = 0.75
+outer_radius = 1.25
+rings = 24
+ring_segments = 12
+material = SubResource("trim")
+
+[node name="AccessDeniedScifi" instance=ExtResource("1")]
+
+[node name="StartRoom_FloorMain" parent="Geometry/StartRoom/Floors"]
+material = SubResource("floor")
+
+[node name="StartRoom_FloorFront" parent="Geometry/StartRoom/Floors"]
+material = SubResource("floor")
+
+[node name="StartRoom_FloorNorthReturn" parent="Geometry/StartRoom/Floors"]
+material = SubResource("floor")
+
+[node name="StartRoom_SouthWall" parent="Geometry/StartRoom/Walls"]
+material = SubResource("wall")
+
+[node name="StartRoom_SouthWestAngle" parent="Geometry/StartRoom/Walls"]
+material = SubResource("wall")
+
+[node name="StartRoom_SouthEastAngle" parent="Geometry/StartRoom/Walls"]
+material = SubResource("wall")
+
+[node name="StartRoom_WestLowerWall" parent="Geometry/StartRoom/Walls"]
+material = SubResource("wall")
+
+[node name="StartRoom_WestUpperWall" parent="Geometry/StartRoom/Walls"]
+material = SubResource("wall")
+
+[node name="StartRoom_EastLowerWall" parent="Geometry/StartRoom/Walls"]
+material = SubResource("wall")
+
+[node name="StartRoom_EastUpperWall" parent="Geometry/StartRoom/Walls"]
+material = SubResource("wall")
+
+[node name="StartRoom_NorthWallLeft" parent="Geometry/StartRoom/Walls"]
+material = SubResource("wall")
+
+[node name="StartRoom_NorthWallRight" parent="Geometry/StartRoom/Walls"]
+material = SubResource("wall")
+
+[node name="StartRoom_StairReturnLeft" parent="Geometry/StartRoom/Walls"]
+material = SubResource("wall")
+
+[node name="StartRoom_StairReturnRight" parent="Geometry/StartRoom/Walls"]
+material = SubResource("wall")
+
+[node name="StartRoom_Central_Step01" parent="Geometry/StartRoom/Stairs"]
+material = SubResource("wall")
+
+[node name="StartRoom_Central_Step02" parent="Geometry/StartRoom/Stairs"]
+material = SubResource("wall")
+
+[node name="StartRoom_Central_Step03" parent="Geometry/StartRoom/Stairs"]
+material = SubResource("wall")
+
+[node name="StartRoom_Central_Step04" parent="Geometry/StartRoom/Stairs"]
+material = SubResource("wall")
+
+[node name="StartRoom_Central_Step05" parent="Geometry/StartRoom/Stairs"]
+material = SubResource("wall")
+
+[node name="StartRoom_Central_Step06" parent="Geometry/StartRoom/Stairs"]
+material = SubResource("wall")
+
+[node name="StartRoom_Central_Step07" parent="Geometry/StartRoom/Stairs"]
+material = SubResource("wall")
+
+[node name="StartRoom_Central_Step08" parent="Geometry/StartRoom/Stairs"]
+material = SubResource("wall")
+
+[node name="StartRoom_Crate01" parent="Geometry/StartRoom/Props"]
+material = SubResource("prop")
+
+[node name="StartRoom_Crate01_TopBand" parent="Geometry/StartRoom/Props"]
+material = SubResource("trim")
+
+[node name="StartRoom_Crate02" parent="Geometry/StartRoom/Props"]
+material = SubResource("prop")
+
+[node name="StartRoom_Crate02_TopBand" parent="Geometry/StartRoom/Props"]
+material = SubResource("trim")
+
+[node name="StartRoom_Crate03" parent="Geometry/StartRoom/Props"]
+material = SubResource("prop")
+
+[node name="StartRoom_Crate03_TopBand" parent="Geometry/StartRoom/Props"]
+material = SubResource("trim")
+
+[node name="StartRoom_ForegroundBlock" parent="Geometry/StartRoom/Props"]
+material = SubResource("prop")
+
+[node name="IntroCorridor_Segment01" parent="Geometry/IntroCorridor/Floors"]
+material = SubResource("floor")
+
+[node name="IntroCorridor_Turn01" parent="Geometry/IntroCorridor/Floors"]
+material = SubResource("floor")
+
+[node name="IntroCorridor_ExplorationBay" parent="Geometry/IntroCorridor/Floors"]
+material = SubResource("floor")
+
+[node name="IntroCorridor_Segment02" parent="Geometry/IntroCorridor/Floors"]
+material = SubResource("floor")
+
+[node name="IntroCorridor_Turn02" parent="Geometry/IntroCorridor/Floors"]
+material = SubResource("floor")
+
+[node name="IntroCorridor_Segment03" parent="Geometry/IntroCorridor/Floors"]
+material = SubResource("floor")
+
+[node name="IntroCorridor_SouthWall" parent="Geometry/IntroCorridor/Walls"]
+material = SubResource("wall")
+
+[node name="IntroCorridor_WestBayWall" parent="Geometry/IntroCorridor/Walls"]
+material = SubResource("wall")
+
+[node name="IntroCorridor_NorthBayWall" parent="Geometry/IntroCorridor/Walls"]
+material = SubResource("wall")
+
+[node name="IntroCorridor_VerticalOuterWall" parent="Geometry/IntroCorridor/Walls"]
+material = SubResource("wall")
+
+[node name="IntroCorridor_VerticalInnerWall" parent="Geometry/IntroCorridor/Walls"]
+material = SubResource("wall")
+
+[node name="IntroCorridor_TurnWallWest" parent="Geometry/IntroCorridor/Walls"]
+material = SubResource("wall")
+
+[node name="IntroCorridor_FinalOuterWall" parent="Geometry/IntroCorridor/Walls"]
+material = SubResource("wall")
+
+[node name="IntroCorridor_FinalInnerWall" parent="Geometry/IntroCorridor/Walls"]
+material = SubResource("wall")
+
+[node name="IntroCorridor_FinalInnerWall2" parent="Geometry/IntroCorridor/Walls"]
+material = SubResource("wall")
+
+[node name="IntroCorridor_StartSouthWall" parent="Geometry/IntroCorridor/Walls"]
+material = SubResource("wall")
+
+[node name="IntroCorridor_StartSouthWall3" parent="Geometry/IntroCorridor/Walls"]
+material = SubResource("wall")
+
+[node name="IntroCorridor_StartSouthWall2" parent="Geometry/IntroCorridor/Walls"]
+material = SubResource("wall")
+
+[node name="IntroCorridor_Crate01" parent="Geometry/IntroCorridor/Props"]
+material = SubResource("prop")
+
+[node name="IntroCorridor_Crate01_TopBand" parent="Geometry/IntroCorridor/Props"]
+material = SubResource("trim")
+
+[node name="IntroCorridor_Crate02" parent="Geometry/IntroCorridor/Props"]
+material = SubResource("prop")
+
+[node name="IntroCorridor_Crate02_TopBand" parent="Geometry/IntroCorridor/Props"]
+material = SubResource("trim")
+
+[node name="IntroCorridor_WallSupport01" parent="Geometry/IntroCorridor/Props"]
+material = SubResource("trim")
+
+[node name="IntroCorridor_WallSupport02" parent="Geometry/IntroCorridor/Props"]
+material = SubResource("trim")
+
+[node name="PhaseGate_Floor" parent="Geometry/PhaseGateArea/Floors"]
+material = SubResource("floor")
+
+[node name="PhaseGate_WestWall" parent="Geometry/PhaseGateArea/Walls"]
+material = SubResource("wall")
+
+[node name="PhaseGate_EastWallSouth" parent="Geometry/PhaseGateArea/Walls"]
+material = SubResource("wall")
+
+[node name="PhaseGate_EastWallNorth" parent="Geometry/PhaseGateArea/Walls"]
+material = SubResource("wall")
+
+[node name="PhaseGate_SouthWallLeft" parent="Geometry/PhaseGateArea/Walls"]
+material = SubResource("wall")
+
+[node name="PhaseGate_SouthWallRight" parent="Geometry/PhaseGateArea/Walls"]
+material = SubResource("wall")
+
+[node name="PhaseGate_NorthWallLeft" parent="Geometry/PhaseGateArea/Walls"]
+material = SubResource("wall")
+
+[node name="PhaseGate_NorthWallRight" parent="Geometry/PhaseGateArea/Walls"]
+material = SubResource("wall")
+
+[node name="PhaseGate_FrameLeft" parent="Geometry/PhaseGateArea/GateFrame"]
+material = SubResource("trim")
+
+[node name="PhaseGate_FrameRight" parent="Geometry/PhaseGateArea/GateFrame"]
+material = SubResource("trim")
+
+[node name="PhaseGate_FrameTop" parent="Geometry/PhaseGateArea/GateFrame"]
+material = SubResource("trim")
+
+[node name="UpperRoom_Floor" parent="Geometry/UpperRoom/Floors"]
+material = SubResource("floor")
+
+[node name="UpperRoom_WestWall" parent="Geometry/UpperRoom/Walls"]
+material = SubResource("wall")
+
+[node name="UpperRoom_NorthWall" parent="Geometry/UpperRoom/Walls"]
+material = SubResource("wall")
+
+[node name="UpperRoom_SouthWallLeft" parent="Geometry/UpperRoom/Walls"]
+material = SubResource("wall")
+
+[node name="UpperRoom_SouthWallRight" parent="Geometry/UpperRoom/Walls"]
+material = SubResource("wall")
+
+[node name="UpperRoom_EastWallNorth" parent="Geometry/UpperRoom/Walls"]
+material = SubResource("wall")
+
+[node name="UpperRoom_EastWallSouth" parent="Geometry/UpperRoom/Walls"]
+material = SubResource("wall")
+
+[node name="UpperRoom_EntryReturnLeft" parent="Geometry/UpperRoom/Walls"]
+material = SubResource("wall")
+
+[node name="UpperRoom_EntryReturnRight" parent="Geometry/UpperRoom/Walls"]
+material = SubResource("wall")
+
+[node name="UpperRoom_Entry_Step01" parent="Geometry/UpperRoom/Structures"]
+material = SubResource("wall")
+
+[node name="UpperRoom_Entry_Step02" parent="Geometry/UpperRoom/Structures"]
+material = SubResource("wall")
+
+[node name="UpperRoom_Entry_Step03" parent="Geometry/UpperRoom/Structures"]
+material = SubResource("wall")
+
+[node name="UpperRoom_Entry_Step04" parent="Geometry/UpperRoom/Structures"]
+material = SubResource("wall")
+
+[node name="UpperRoom_Entry_Step05" parent="Geometry/UpperRoom/Structures"]
+material = SubResource("wall")
+
+[node name="UpperRoom_Entry_Step06" parent="Geometry/UpperRoom/Structures"]
+material = SubResource("wall")
+
+[node name="UpperRoom_Entry_Step07" parent="Geometry/UpperRoom/Structures"]
+material = SubResource("wall")
+
+[node name="UpperRoom_CentralStructure" parent="Geometry/UpperRoom/Structures"]
+material = SubResource("wall")
+
+[node name="UpperRoom_CentralStructureTrim" parent="Geometry/UpperRoom/Structures"]
+material = SubResource("trim")
+
+[node name="UpperRoom_CyanCube" parent="Geometry/UpperRoom/Structures"]
+material = SubResource("cyan")
+
+[node name="UpperRoom_Crate01" parent="Geometry/UpperRoom/Props"]
+material = SubResource("prop")
+
+[node name="UpperRoom_Crate01_TopBand" parent="Geometry/UpperRoom/Props"]
+material = SubResource("trim")
+
+[node name="UpperRoom_Crate02" parent="Geometry/UpperRoom/Props"]
+material = SubResource("prop")
+
+[node name="UpperRoom_Crate02_TopBand" parent="Geometry/UpperRoom/Props"]
+material = SubResource("trim")
+
+[node name="UpperRoom_Crate03" parent="Geometry/UpperRoom/Props"]
+material = SubResource("prop")
+
+[node name="UpperRoom_Crate03_TopBand" parent="Geometry/UpperRoom/Props"]
+material = SubResource("trim")
+
+[node name="UpperRoom_ObservationBench" parent="Geometry/UpperRoom/Props"]
+material = SubResource("prop")
+
+[node name="Bridge_UpperRoomLanding" parent="Geometry/BridgeChallenge/EntryWalkway"]
+material = SubResource("floor")
+
+[node name="Bridge_DiagonalEntry" parent="Geometry/BridgeChallenge/EntryWalkway"]
+material = SubResource("floor")
+
+[node name="Bridge_CentralSpan" parent="Geometry/BridgeChallenge/BridgeSegments"]
+material = SubResource("floor")
+
+[node name="Bridge_NorthSpur" parent="Geometry/BridgeChallenge/BridgeSegments"]
+material = SubResource("floor")
+
+[node name="Bridge_DamagedStub" parent="Geometry/BridgeChallenge/BridgeSegments"]
+material = SubResource("floor")
+
+[node name="Bridge_EastDiagonal" parent="Geometry/BridgeChallenge/BridgeSegments"]
+material = SubResource("floor")
+
+[node name="Bridge_EastNarrow" parent="Geometry/BridgeChallenge/BridgeSegments"]
+material = SubResource("floor")
+
+[node name="Bridge_LowerConnector" parent="Geometry/BridgeChallenge/BridgeSegments"]
+material = SubResource("floor")
+
+[node name="Bridge_WestIsland" parent="Geometry/BridgeChallenge/PlatformIslands"]
+material = SubResource("floor")
+
+[node name="Bridge_WestBrokenLip" parent="Geometry/BridgeChallenge/PlatformIslands"]
+material = SubResource("floor")
+
+[node name="Bridge_CentralHub" parent="Geometry/BridgeChallenge/PlatformIslands"]
+material = SubResource("floor")
+
+[node name="Bridge_NorthIsland" parent="Geometry/BridgeChallenge/PlatformIslands"]
+material = SubResource("floor")
+
+[node name="Bridge_EastIsland" parent="Geometry/BridgeChallenge/PlatformIslands"]
+material = SubResource("floor")
+
+[node name="Bridge_LowerSidePlatform" parent="Geometry/BridgeChallenge/PlatformIslands"]
+material = SubResource("floor")
+
+[node name="Bridge_SupportTowerWest" parent="Geometry/BridgeChallenge/Supports"]
+material = SubResource("trim")
+
+[node name="Bridge_SupportTowerWest_Cap" parent="Geometry/BridgeChallenge/Supports"]
+material = SubResource("wall")
+
+[node name="Bridge_SupportTowerWest_Inset" parent="Geometry/BridgeChallenge/Supports"]
+material = SubResource("trim")
+
+[node name="Bridge_SupportTowerCenter" parent="Geometry/BridgeChallenge/Supports"]
+material = SubResource("trim")
+
+[node name="Bridge_SupportTowerCenter_Cap" parent="Geometry/BridgeChallenge/Supports"]
+material = SubResource("wall")
+
+[node name="Bridge_SupportTowerCenter_Inset" parent="Geometry/BridgeChallenge/Supports"]
+material = SubResource("trim")
+
+[node name="Bridge_SupportTowerNorth" parent="Geometry/BridgeChallenge/Supports"]
+material = SubResource("trim")
+
+[node name="Bridge_SupportTowerNorth_Cap" parent="Geometry/BridgeChallenge/Supports"]
+material = SubResource("wall")
+
+[node name="Bridge_SupportTowerNorth_Inset" parent="Geometry/BridgeChallenge/Supports"]
+material = SubResource("trim")
+
+[node name="Bridge_SupportTowerEast" parent="Geometry/BridgeChallenge/Supports"]
+material = SubResource("trim")
+
+[node name="Bridge_SupportTowerEast_Cap" parent="Geometry/BridgeChallenge/Supports"]
+material = SubResource("wall")
+
+[node name="Bridge_SupportTowerEast_Inset" parent="Geometry/BridgeChallenge/Supports"]
+material = SubResource("trim")
+
+[node name="Bridge_SupportTowerSouth" parent="Geometry/BridgeChallenge/Supports"]
+material = SubResource("trim")
+
+[node name="Bridge_SupportTowerSouth_Cap" parent="Geometry/BridgeChallenge/Supports"]
+material = SubResource("wall")
+
+[node name="Bridge_SupportTowerSouth_Inset" parent="Geometry/BridgeChallenge/Supports"]
+material = SubResource("trim")
+
+[node name="Bridge_SupportBeamWest" parent="Geometry/BridgeChallenge/Supports"]
+material = SubResource("trim")
+
+[node name="Bridge_SupportBeamEast" parent="Geometry/BridgeChallenge/Supports"]
+material = SubResource("trim")
+
+[node name="Bridge_EntryRailNorth_TopRail" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_EntryRailNorth_Post01" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_EntryRailNorth_Post02" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_EntryRailNorth_Post03" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_EntryRailNorth_Post04" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_EntryRailNorth_Post05" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_WestIslandRail_TopRail" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_WestIslandRail_Post02" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_WestIslandRail_Post03" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_CentralHubRail_TopRail" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_CentralHubRail_Post01" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_CentralHubRail_Post02" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_CentralHubRail_Post03" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_NorthSpurRail_TopRail" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_NorthSpurRail_Post01" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_NorthSpurRail_Post02" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_NorthSpurRail_Post03" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_NorthSpurRail_Post04" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_EastRail_TopRail" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_EastRail_Post01" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_EastRail_Post02" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_EastRail_Post03" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_EastRail_Post04" parent="Geometry/BridgeChallenge/Railings"]
+material = SubResource("trim")
+
+[node name="Bridge_UpperExit_Step01" parent="Geometry/BridgeChallenge/Stairs"]
+material = SubResource("wall")
+
+[node name="Bridge_UpperExit_Step02" parent="Geometry/BridgeChallenge/Stairs"]
+material = SubResource("wall")
+
+[node name="Bridge_UpperExit_Step03" parent="Geometry/BridgeChallenge/Stairs"]
+material = SubResource("wall")
+
+[node name="Bridge_UpperExit_Step04" parent="Geometry/BridgeChallenge/Stairs"]
+material = SubResource("wall")
+
+[node name="ExitApproach_LowerWalkway" parent="Geometry/ExitApproach/Walkways"]
+material = SubResource("floor")
+
+[node name="ExitApproach_UpperLanding" parent="Geometry/ExitApproach/Walkways"]
+material = SubResource("floor")
+
+[node name="ExitApproach_Rise_Step01" parent="Geometry/ExitApproach/Stairs"]
+material = SubResource("wall")
+
+[node name="ExitApproach_Rise_Step02" parent="Geometry/ExitApproach/Stairs"]
+material = SubResource("wall")
+
+[node name="ExitApproach_Rise_Step03" parent="Geometry/ExitApproach/Stairs"]
+material = SubResource("wall")
+
+[node name="ExitApproach_Rise_Step04" parent="Geometry/ExitApproach/Stairs"]
+material = SubResource("wall")
+
+[node name="ExitApproach_InnerRail_TopRail" parent="Geometry/ExitApproach/Walls"]
+material = SubResource("trim")
+
+[node name="ExitApproach_InnerRail_Post01" parent="Geometry/ExitApproach/Walls"]
+material = SubResource("trim")
+
+[node name="ExitApproach_InnerRail_Post02" parent="Geometry/ExitApproach/Walls"]
+material = SubResource("trim")
+
+[node name="ExitApproach_InnerRail_Post03" parent="Geometry/ExitApproach/Walls"]
+material = SubResource("trim")
+
+[node name="ExitApproach_InnerRail_Post04" parent="Geometry/ExitApproach/Walls"]
+material = SubResource("trim")
+
+[node name="ExitRoom_Floor" parent="Geometry/ExitRoom/Floors"]
+material = SubResource("floor")
+
+[node name="ExitRoom_NorthWall" parent="Geometry/ExitRoom/Walls"]
+material = SubResource("wall")
+
+[node name="ExitRoom_WestWallNorth" parent="Geometry/ExitRoom/Walls"]
+material = SubResource("wall")
+
+[node name="ExitRoom_WestWallSouth" parent="Geometry/ExitRoom/Walls"]
+material = SubResource("wall")
+
+[node name="ExitRoom_EastWall" parent="Geometry/ExitRoom/Walls"]
+material = SubResource("wall")
+
+[node name="ExitRoom_SouthWallLeft" parent="Geometry/ExitRoom/Walls"]
+material = SubResource("wall")
+
+[node name="ExitRoom_SouthWallRight" parent="Geometry/ExitRoom/Walls"]
+material = SubResource("wall")
+
+[node name="ExitRoom_EntryReturnLeft" parent="Geometry/ExitRoom/Walls"]
+material = SubResource("wall")
+
+[node name="ExitRoom_EntryReturnRight" parent="Geometry/ExitRoom/Walls"]
+material = SubResource("wall")
+
+[node name="ExitRoom_PortalFrameLeft" parent="Geometry/ExitRoom/Portal"]
+material = SubResource("pink")
+
+[node name="ExitRoom_PortalFrameRight" parent="Geometry/ExitRoom/Portal"]
+material = SubResource("pink")
+
+[node name="ExitRoom_PortalFrameTop" parent="Geometry/ExitRoom/Portal"]
+material = SubResource("pink")
+
+[node name="ExitRoom_PortalThreshold" parent="Geometry/ExitRoom/Portal"]
+material = SubResource("pink")
+
+[node name="ExitRoom_Crate01" parent="Geometry/ExitRoom/Props"]
+material = SubResource("prop")
+
+[node name="ExitRoom_Crate01_TopBand" parent="Geometry/ExitRoom/Props"]
+material = SubResource("trim")
+
+[node name="ExitRoom_Crate02" parent="Geometry/ExitRoom/Props"]
+material = SubResource("prop")
+
+[node name="ExitRoom_Crate02_TopBand" parent="Geometry/ExitRoom/Props"]
+material = SubResource("trim")
+
+[node name="ExitRoom_Crate03" parent="Geometry/ExitRoom/Props"]
+material = SubResource("prop")
+
+[node name="ExitRoom_Crate03_TopBand" parent="Geometry/ExitRoom/Props"]
+material = SubResource("trim")
+
+[node name="ExitRoom_Column01" parent="Geometry/ExitRoom/Props"]
+material = SubResource("trim")
+
+[node name="ExitRoom_Column02" parent="Geometry/ExitRoom/Props"]
+material = SubResource("trim")
+
+[node name="SideRoom_Corridor01" parent="Geometry/OptionalSideRoom/Corridor"]
+material = SubResource("floor")
+
+[node name="SideRoom_Corridor02" parent="Geometry/OptionalSideRoom/Corridor"]
+material = SubResource("floor")
+
+[node name="SideRoom_Transition_Step01" parent="Geometry/OptionalSideRoom/Stairs"]
+material = SubResource("wall")
+
+[node name="SideRoom_Transition_Step02" parent="Geometry/OptionalSideRoom/Stairs"]
+material = SubResource("wall")
+
+[node name="SideRoom_Transition_Step03" parent="Geometry/OptionalSideRoom/Stairs"]
+material = SubResource("wall")
+
+[node name="SideRoom_Transition_Step04" parent="Geometry/OptionalSideRoom/Stairs"]
+material = SubResource("wall")
+
+[node name="SideRoom_Floor" parent="Geometry/OptionalSideRoom/Floors"]
+material = SubResource("floor")
+
+[node name="SideRoom_CorridorNorthWall" parent="Geometry/OptionalSideRoom/Walls"]
+material = SubResource("wall")
+
+[node name="SideRoom_CorridorSouthWall" parent="Geometry/OptionalSideRoom/Walls"]
+material = SubResource("wall")
+
+[node name="SideRoom_NorthWall" parent="Geometry/OptionalSideRoom/Walls"]
+material = SubResource("wall")
+
+[node name="SideRoom_SouthWall" parent="Geometry/OptionalSideRoom/Walls"]
+material = SubResource("wall")
+
+[node name="SideRoom_EastWall" parent="Geometry/OptionalSideRoom/Walls"]
+material = SubResource("wall")
+
+[node name="SideRoom_WestWallNorth" parent="Geometry/OptionalSideRoom/Walls"]
+material = SubResource("wall")
+
+[node name="SideRoom_WestWallSouth" parent="Geometry/OptionalSideRoom/Walls"]
+material = SubResource("wall")
+
+[node name="SideRoom_Crate01" parent="Geometry/OptionalSideRoom/Props"]
+material = SubResource("prop")
+
+[node name="SideRoom_Crate01_TopBand" parent="Geometry/OptionalSideRoom/Props"]
+material = SubResource("trim")
+
+[node name="SideRoom_Crate02" parent="Geometry/OptionalSideRoom/Props"]
+material = SubResource("prop")
+
+[node name="SideRoom_Crate02_TopBand" parent="Geometry/OptionalSideRoom/Props"]
+material = SubResource("trim")
+
+[node name="SideRoom_Crate03" parent="Geometry/OptionalSideRoom/Props"]
+material = SubResource("prop")
+
+[node name="SideRoom_Crate03_TopBand" parent="Geometry/OptionalSideRoom/Props"]
+material = SubResource("trim")
+
+[node name="SideRoom_WallSupport01" parent="Geometry/OptionalSideRoom/Props"]
+material = SubResource("trim")
+
+[node name="SideRoom_WallSupport02" parent="Geometry/OptionalSideRoom/Props"]
+material = SubResource("trim")
+
+[node name="BarrierPanel" parent="PuzzlePlaceholders/PhaseBarrier01"]
+material = SubResource("cyan")
+
+[node name="BarrierGlowStripLeft" parent="PuzzlePlaceholders/PhaseBarrier01"]
+material = SubResource("cyan")
+
+[node name="BarrierGlowStripRight" parent="PuzzlePlaceholders/PhaseBarrier01"]
+material = SubResource("cyan")
+
+[node name="WorldEnvironment" parent="Lighting"]
+environment = SubResource("env")
+[node name="KeyLight" parent="Lighting"]
+light_energy = 0.72
+[node name="FillLight" parent="Lighting"]
+light_energy = 0.22
+[node name="ScifiDecor" type="Node3D" parent="."]
+
+[node name="Drone1" type="Node3D" parent="ScifiDecor"]
+position = Vector3(-46, 10, -12)
+script = ExtResource("5")
+phase = 0
+[node name="Body" type="Node3D" parent="ScifiDecor/Drone1"]
+[node name="Hull" type="MeshInstance3D" parent="ScifiDecor/Drone1/Body"]
+mesh = SubResource("drone")
+material_override = SubResource("NeonCyan")
+[node name="Core" type="MeshInstance3D" parent="ScifiDecor/Drone1/Body"]
+position = Vector3(0, -0.5, 0)
+mesh = SubResource("core")
+
+[node name="Drone2" type="Node3D" parent="ScifiDecor"]
+position = Vector3(-40, 5, 25)
+script = ExtResource("5")
+phase = 0.9
+[node name="Body" type="Node3D" parent="ScifiDecor/Drone2"]
+[node name="Hull" type="MeshInstance3D" parent="ScifiDecor/Drone2/Body"]
+mesh = SubResource("drone")
+material_override = SubResource("NeonViolet")
+[node name="Core" type="MeshInstance3D" parent="ScifiDecor/Drone2/Body"]
+position = Vector3(0, -0.5, 0)
+mesh = SubResource("core")
+
+[node name="Drone3" type="Node3D" parent="ScifiDecor"]
+position = Vector3(-12, 12, -30)
+script = ExtResource("5")
+phase = 1.8
+[node name="Body" type="Node3D" parent="ScifiDecor/Drone3"]
+[node name="Hull" type="MeshInstance3D" parent="ScifiDecor/Drone3/Body"]
+mesh = SubResource("drone")
+material_override = SubResource("NeonPink")
+[node name="Core" type="MeshInstance3D" parent="ScifiDecor/Drone3/Body"]
+position = Vector3(0, -0.5, 0)
+mesh = SubResource("core")
+
+[node name="Drone4" type="Node3D" parent="ScifiDecor"]
+position = Vector3(10, 12, -26)
+script = ExtResource("5")
+phase = 2.7
+[node name="Body" type="Node3D" parent="ScifiDecor/Drone4"]
+[node name="Hull" type="MeshInstance3D" parent="ScifiDecor/Drone4/Body"]
+mesh = SubResource("drone")
+material_override = SubResource("NeonCyan")
+[node name="Core" type="MeshInstance3D" parent="ScifiDecor/Drone4/Body"]
+position = Vector3(0, -0.5, 0)
+mesh = SubResource("core")
+
+[node name="Drone5" type="Node3D" parent="ScifiDecor"]
+position = Vector3(45, 10, -18)
+script = ExtResource("5")
+phase = 3.6
+[node name="Body" type="Node3D" parent="ScifiDecor/Drone5"]
+[node name="Hull" type="MeshInstance3D" parent="ScifiDecor/Drone5/Body"]
+mesh = SubResource("drone")
+material_override = SubResource("NeonViolet")
+[node name="Core" type="MeshInstance3D" parent="ScifiDecor/Drone5/Body"]
+position = Vector3(0, -0.5, 0)
+mesh = SubResource("core")
+
+[node name="Drone6" type="Node3D" parent="ScifiDecor"]
+position = Vector3(43, 8, 19)
+script = ExtResource("5")
+phase = 4.5
+[node name="Body" type="Node3D" parent="ScifiDecor/Drone6"]
+[node name="Hull" type="MeshInstance3D" parent="ScifiDecor/Drone6/Body"]
+mesh = SubResource("drone")
+material_override = SubResource("NeonPink")
+[node name="Core" type="MeshInstance3D" parent="ScifiDecor/Drone6/Body"]
+position = Vector3(0, -0.5, 0)
+mesh = SubResource("core")
+
+[node name="Drone7" type="Node3D" parent="ScifiDecor"]
+position = Vector3(4, -3, -9)
+script = ExtResource("5")
+phase = 5.4
+[node name="Body" type="Node3D" parent="ScifiDecor/Drone7"]
+[node name="Hull" type="MeshInstance3D" parent="ScifiDecor/Drone7/Body"]
+mesh = SubResource("drone")
+material_override = SubResource("NeonCyan")
+[node name="Core" type="MeshInstance3D" parent="ScifiDecor/Drone7/Body"]
+position = Vector3(0, -0.5, 0)
+mesh = SubResource("core")
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/StartRoom/Walls/StartRoom_SouthWall"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(11.65, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/StartRoom/Walls/StartRoom_SouthWestAngle"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(5.15, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/StartRoom/Walls/StartRoom_SouthEastAngle"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(5.15, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/StartRoom/Walls/StartRoom_WestLowerWall"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(0.16, 0.07, 4.496191400000001)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/StartRoom/Walls/StartRoom_WestUpperWall"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(0.16, 0.07, 8.3956665)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/StartRoom/Walls/StartRoom_EastLowerWall"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(0.16, 0.07, 4.7691406)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/StartRoom/Walls/StartRoom_EastUpperWall"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(0.16, 0.07, 7.492285000000001)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/StartRoom/Walls/StartRoom_NorthWallLeft"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(5.7994140000000005, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/StartRoom/Walls/StartRoom_NorthWallRight"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(5.727636700000001, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/StartRoom/Walls/StartRoom_StairReturnLeft"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(0.16, 0.07, 4.65)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/StartRoom/Walls/StartRoom_StairReturnRight"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(0.16, 0.07, 4.65)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/IntroCorridor/Walls/IntroCorridor_SouthWall"]
+position = Vector3(0, 1.835, 0)
+scale = Vector3(9.65, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/IntroCorridor/Walls/IntroCorridor_WestBayWall"]
+position = Vector3(0, 1.835, 0)
+scale = Vector3(0.16, 0.07, 7.65)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/IntroCorridor/Walls/IntroCorridor_NorthBayWall"]
+position = Vector3(0, 1.835, 0)
+scale = Vector3(17.024828, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/IntroCorridor/Walls/IntroCorridor_VerticalOuterWall"]
+position = Vector3(0, 1.8422265, 0)
+scale = Vector3(0.16, 0.07, 9.891211)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/IntroCorridor/Walls/IntroCorridor_VerticalInnerWall"]
+position = Vector3(0, 1.835, 0)
+scale = Vector3(0.16, 0.07, 6.2021483)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/IntroCorridor/Walls/IntroCorridor_TurnWallWest"]
+position = Vector3(0, 1.835, 0)
+scale = Vector3(2.408789, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/IntroCorridor/Walls/IntroCorridor_FinalOuterWall"]
+position = Vector3(0, 1.835, 0)
+scale = Vector3(0.16, 0.07, 6.15)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/IntroCorridor/Walls/IntroCorridor_FinalInnerWall"]
+position = Vector3(0, 1.835, 0)
+scale = Vector3(0.16, 0.07, 4.25)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/IntroCorridor/Walls/IntroCorridor_FinalInnerWall2"]
+position = Vector3(0, 2.2045924, 0)
+scale = Vector3(0.16, 0.07, 5.789844)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/IntroCorridor/Walls/IntroCorridor_StartSouthWall"]
+position = Vector3(0, 1.835, 0)
+scale = Vector3(2.042456, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/IntroCorridor/Walls/IntroCorridor_StartSouthWall3"]
+position = Vector3(0, 1.835, 0)
+scale = Vector3(2.8286804, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/IntroCorridor/Walls/IntroCorridor_StartSouthWall2"]
+position = Vector3(0, 1.835, 0)
+scale = Vector3(7.627661000000001, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/PhaseGateArea/Walls/PhaseGate_WestWall"]
+position = Vector3(0, 1.9349999999999998, 0)
+scale = Vector3(0.16, 0.07, 5.65)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/PhaseGateArea/Walls/PhaseGate_EastWallSouth"]
+position = Vector3(0, 1.9349999999999998, 0)
+scale = Vector3(0.16, 0.07, 1.65)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/PhaseGateArea/Walls/PhaseGate_SouthWallLeft"]
+position = Vector3(0, 1.8314355999999998, 0)
+scale = Vector3(2.05, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/PhaseGateArea/Walls/PhaseGate_SouthWallRight"]
+position = Vector3(0, 1.9349999999999998, 0)
+scale = Vector3(2.65, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/PhaseGateArea/Walls/PhaseGate_NorthWallLeft"]
+position = Vector3(0, 1.9349999999999998, 0)
+scale = Vector3(2.65, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/PhaseGateArea/Walls/PhaseGate_NorthWallRight"]
+position = Vector3(0, 1.9349999999999998, 0)
+scale = Vector3(2.65, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/UpperRoom/Walls/UpperRoom_WestWall"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(0.16, 0.07, 14.65)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/UpperRoom/Walls/UpperRoom_NorthWall"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(20.65, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/UpperRoom/Walls/UpperRoom_SouthWallLeft"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(12.606757, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/UpperRoom/Walls/UpperRoom_SouthWallRight"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(4.15, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/UpperRoom/Walls/UpperRoom_EastWallNorth"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(0.16, 0.07, 6.65)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/UpperRoom/Walls/UpperRoom_EastWallSouth"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(0.16, 0.07, 4.0307373)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/UpperRoom/Walls/UpperRoom_EntryReturnLeft"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(0.16, 0.07, 2.65)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/UpperRoom/Walls/UpperRoom_EntryReturnRight"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(0.16, 0.07, 2.65)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/ExitApproach/Walls/ExitApproach_InnerRail_TopRail"]
+position = Vector3(0, 0.095, 0)
+scale = Vector3(6.15, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/ExitRoom/Walls/ExitRoom_NorthWall"]
+position = Vector3(0, 2.1350000000000002, 0)
+scale = Vector3(18.65, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonPink")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/ExitRoom/Walls/ExitRoom_WestWallNorth"]
+position = Vector3(0, 2.1350000000000002, 0)
+scale = Vector3(0.16, 0.07, 10.515234)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonPink")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/ExitRoom/Walls/ExitRoom_WestWallSouth"]
+position = Vector3(0, 2.1350000000000002, 0)
+scale = Vector3(0.16, 0.07, 4.312903)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonPink")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/ExitRoom/Walls/ExitRoom_EastWall"]
+position = Vector3(0, 2.1350000000000002, 0)
+scale = Vector3(0.16, 0.07, 14.65)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonPink")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/ExitRoom/Walls/ExitRoom_SouthWallLeft"]
+position = Vector3(0, 2.1350000000000002, 0)
+scale = Vector3(5.15, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonPink")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/ExitRoom/Walls/ExitRoom_SouthWallRight"]
+position = Vector3(0, 2.1350000000000002, 0)
+scale = Vector3(9.310156000000001, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonPink")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/ExitRoom/Walls/ExitRoom_EntryReturnLeft"]
+position = Vector3(0, 2.1350000000000002, 0)
+scale = Vector3(0.16, 0.07, 2.65)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonPink")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/ExitRoom/Walls/ExitRoom_EntryReturnRight"]
+position = Vector3(0, 2.1350000000000002, 0)
+scale = Vector3(0.16, 0.07, 2.877539)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonPink")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/OptionalSideRoom/Walls/SideRoom_CorridorNorthWall"]
+position = Vector3(0, 1.835, 0)
+scale = Vector3(8.65, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonViolet")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/OptionalSideRoom/Walls/SideRoom_CorridorSouthWall"]
+position = Vector3(0, 1.835, 0)
+scale = Vector3(8.99375, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonViolet")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/OptionalSideRoom/Walls/SideRoom_NorthWall"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(12.65, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonViolet")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/OptionalSideRoom/Walls/SideRoom_SouthWall"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(12.65, 0.07, 0.16)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonViolet")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/OptionalSideRoom/Walls/SideRoom_EastWall"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(0.16, 0.07, 8.65)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonViolet")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/OptionalSideRoom/Walls/SideRoom_WestWallNorth"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(0.16, 0.07, 2.65)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonViolet")
+cast_shadow = 0
+
+[node name="NeonCap" type="MeshInstance3D" parent="Geometry/OptionalSideRoom/Walls/SideRoom_WestWallSouth"]
+position = Vector3(0, 2.035, 0)
+scale = Vector3(0.16, 0.07, 2.65)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonViolet")
+cast_shadow = 0
+
+[node name="NeonLighting" type="Node3D" parent="."]
+
+[node name="StartCyan" type="OmniLight3D" parent="NeonLighting"]
+position = Vector3(-5, 3, 21)
+light_color = Color(0.03, 0.7, 1, 1)
+light_energy = 2.2
+omni_range = 13
+shadow_enabled = false
+
+[node name="StartViolet" type="OmniLight3D" parent="NeonLighting"]
+position = Vector3(6, 3, 26)
+light_color = Color(0.55, 0.15, 1, 1)
+light_energy = 2.2
+omni_range = 10
+shadow_enabled = false
+
+[node name="IntroCyan" type="OmniLight3D" parent="NeonLighting"]
+position = Vector3(-28, 2.8, 19)
+light_color = Color(0.02, 0.7, 1, 1)
+light_energy = 2.2
+omni_range = 10
+shadow_enabled = false
+
+[node name="UpperCyan" type="OmniLight3D" parent="NeonLighting"]
+position = Vector3(-32, 6, -14)
+light_color = Color(0.02, 0.75, 1, 1)
+light_energy = 2.2
+omni_range = 14
+shadow_enabled = false
+
+[node name="BridgeViolet" type="OmniLight3D" parent="NeonLighting"]
+position = Vector3(1, 6, -1)
+light_color = Color(0.45, 0.16, 1, 1)
+light_energy = 2.2
+omni_range = 12
+shadow_enabled = false
+
+[node name="BridgeCyan" type="OmniLight3D" parent="NeonLighting"]
+position = Vector3(13, 7, -7)
+light_color = Color(0.03, 0.7, 1, 1)
+light_energy = 2.2
+omni_range = 10
+shadow_enabled = false
+
+[node name="ExitPink" type="OmniLight3D" parent="NeonLighting"]
+position = Vector3(33, 8, -27)
+light_color = Color(1, 0.04, 0.4, 1)
+light_energy = 2.2
+omni_range = 13
+shadow_enabled = false
+
+[node name="SideViolet" type="OmniLight3D" parent="NeonLighting"]
+position = Vector3(32, 4, 23)
+light_color = Color(0.55, 0.13, 1, 1)
+light_energy = 2.2
+omni_range = 12
+shadow_enabled = false
+
+[node name="BackgroundFloaters" type="Node3D" parent="ScifiDecor"]
+
+[node name="OrbitalSlab01" type="Node3D" parent="ScifiDecor/BackgroundFloaters"]
+position = Vector3(-52, 10, -27)
+script = ExtResource("5")
+amplitude = 0.85
+speed = 0.32
+phase = 0.40
+drift_radius = 0.25
+spin_speed = 0.035
+
+[node name="Body" type="Node3D" parent="ScifiDecor/BackgroundFloaters/OrbitalSlab01"]
+rotation_degrees = Vector3(-11, 15, -10)
+scale = Vector3(1.1, 1.1, 1.1)
+
+[node name="Structure" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/OrbitalSlab01/Body"]
+mesh = SubResource("FloatSlabMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 1
+
+[node name="Accent" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/OrbitalSlab01/Body"]
+position = Vector3(0, -0.65, 0)
+scale = Vector3(3.8, 0.09, 0.12)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="Glow" type="OmniLight3D" parent="ScifiDecor/BackgroundFloaters/OrbitalSlab01/Body"]
+position = Vector3(0, -0.8, 0)
+light_color = Color(0.02, 0.75, 1, 1)
+light_energy = 1.35
+omni_range = 5.0
+shadow_enabled = false
+
+[node name="SignalShard02" type="Node3D" parent="ScifiDecor/BackgroundFloaters"]
+position = Vector3(-48, 18, 10)
+script = ExtResource("5")
+amplitude = 1.1
+speed = 0.41
+phase = 1.13
+drift_radius = 0.41
+spin_speed = 0.053
+
+[node name="Body" type="Node3D" parent="ScifiDecor/BackgroundFloaters/SignalShard02"]
+rotation_degrees = Vector3(0, -24, -3)
+scale = Vector3(0.85, 0.85, 0.85)
+
+[node name="Structure" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/SignalShard02/Body"]
+mesh = SubResource("FloatShardMesh")
+material_override = SubResource("NeonViolet")
+cast_shadow = 1
+
+[node name="Accent" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/SignalShard02/Body"]
+position = Vector3(0, -0.65, 0)
+scale = Vector3(1.4, 0.09, 0.12)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonViolet")
+cast_shadow = 0
+
+[node name="RelayPod03" type="Node3D" parent="ScifiDecor/BackgroundFloaters"]
+position = Vector3(-36, 14, 35)
+script = ExtResource("5")
+amplitude = 0.7
+speed = 0.50
+phase = 1.86
+drift_radius = 0.57
+spin_speed = 0.071
+
+[node name="Body" type="Node3D" parent="ScifiDecor/BackgroundFloaters/RelayPod03"]
+rotation_degrees = Vector3(11, 38, 4)
+scale = Vector3(1, 1, 1)
+
+[node name="Structure" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/RelayPod03/Body"]
+mesh = SubResource("FloatPodMesh")
+material_override = SubResource("NeonPink")
+cast_shadow = 1
+
+[node name="Accent" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/RelayPod03/Body"]
+position = Vector3(0, -0.65, 0)
+scale = Vector3(1.4, 0.09, 0.12)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonPink")
+cast_shadow = 0
+
+[node name="OrbitalRing04" type="Node3D" parent="ScifiDecor/BackgroundFloaters"]
+position = Vector3(-20, 20, -38)
+script = ExtResource("5")
+amplitude = 1.2
+speed = 0.59
+phase = 2.59
+drift_radius = 0.73
+spin_speed = 0.089
+
+[node name="Body" type="Node3D" parent="ScifiDecor/BackgroundFloaters/OrbitalRing04"]
+rotation_degrees = Vector3(-11, 12, 11)
+scale = Vector3(1.25, 1.25, 1.25)
+
+[node name="Structure" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/OrbitalRing04/Body"]
+mesh = SubResource("FloatRingMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 1
+
+[node name="Accent" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/OrbitalRing04/Body"]
+position = Vector3(0, -0.65, 0)
+scale = Vector3(1.4, 0.09, 0.12)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="Glow" type="OmniLight3D" parent="ScifiDecor/BackgroundFloaters/OrbitalRing04/Body"]
+position = Vector3(0, -0.8, 0)
+light_color = Color(0.02, 0.75, 1, 1)
+light_energy = 1.35
+omni_range = 5.0
+shadow_enabled = false
+
+[node name="DriftSlab05" type="Node3D" parent="ScifiDecor/BackgroundFloaters"]
+position = Vector3(-5, 14, -43)
+script = ExtResource("5")
+amplitude = 0.95
+speed = 0.68
+phase = 3.32
+drift_radius = 0.25
+spin_speed = 0.107
+
+[node name="Body" type="Node3D" parent="ScifiDecor/BackgroundFloaters/DriftSlab05"]
+rotation_degrees = Vector3(0, -31, -10)
+scale = Vector3(0.85, 0.85, 0.85)
+
+[node name="Structure" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/DriftSlab05/Body"]
+mesh = SubResource("FloatSlabMesh")
+material_override = SubResource("NeonViolet")
+cast_shadow = 1
+
+[node name="Accent" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/DriftSlab05/Body"]
+position = Vector3(0, -0.65, 0)
+scale = Vector3(3.8, 0.09, 0.12)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonViolet")
+cast_shadow = 0
+
+[node name="SignalShard06" type="Node3D" parent="ScifiDecor/BackgroundFloaters"]
+position = Vector3(15, 17, -40)
+script = ExtResource("5")
+amplitude = 1.3
+speed = 0.32
+phase = 4.05
+drift_radius = 0.41
+spin_speed = 0.125
+
+[node name="Body" type="Node3D" parent="ScifiDecor/BackgroundFloaters/SignalShard06"]
+rotation_degrees = Vector3(11, 46, -3)
+scale = Vector3(1.15, 1.15, 1.15)
+
+[node name="Structure" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/SignalShard06/Body"]
+mesh = SubResource("FloatShardMesh")
+material_override = SubResource("NeonPink")
+cast_shadow = 1
+
+[node name="Accent" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/SignalShard06/Body"]
+position = Vector3(0, -0.65, 0)
+scale = Vector3(1.4, 0.09, 0.12)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonPink")
+cast_shadow = 0
+
+[node name="RelayPod07" type="Node3D" parent="ScifiDecor/BackgroundFloaters"]
+position = Vector3(35, 16, -42)
+script = ExtResource("5")
+amplitude = 0.8
+speed = 0.41
+phase = 4.78
+drift_radius = 0.57
+spin_speed = 0.035
+
+[node name="Body" type="Node3D" parent="ScifiDecor/BackgroundFloaters/RelayPod07"]
+rotation_degrees = Vector3(-11, -18, 4)
+scale = Vector3(0.9, 0.9, 0.9)
+
+[node name="Structure" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/RelayPod07/Body"]
+mesh = SubResource("FloatPodMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 1
+
+[node name="Accent" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/RelayPod07/Body"]
+position = Vector3(0, -0.65, 0)
+scale = Vector3(1.4, 0.09, 0.12)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="Glow" type="OmniLight3D" parent="ScifiDecor/BackgroundFloaters/RelayPod07/Body"]
+position = Vector3(0, -0.8, 0)
+light_color = Color(0.02, 0.75, 1, 1)
+light_energy = 1.35
+omni_range = 5.0
+shadow_enabled = false
+
+[node name="OrbitalRing08" type="Node3D" parent="ScifiDecor/BackgroundFloaters"]
+position = Vector3(50, 12, -25)
+script = ExtResource("5")
+amplitude = 1.05
+speed = 0.50
+phase = 5.51
+drift_radius = 0.73
+spin_speed = 0.053
+
+[node name="Body" type="Node3D" parent="ScifiDecor/BackgroundFloaters/OrbitalRing08"]
+rotation_degrees = Vector3(0, 27, 11)
+scale = Vector3(1.35, 1.35, 1.35)
+
+[node name="Structure" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/OrbitalRing08/Body"]
+mesh = SubResource("FloatRingMesh")
+material_override = SubResource("NeonViolet")
+cast_shadow = 1
+
+[node name="Accent" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/OrbitalRing08/Body"]
+position = Vector3(0, -0.65, 0)
+scale = Vector3(1.4, 0.09, 0.12)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonViolet")
+cast_shadow = 0
+
+[node name="DriftSlab09" type="Node3D" parent="ScifiDecor/BackgroundFloaters"]
+position = Vector3(54, 15, 4)
+script = ExtResource("5")
+amplitude = 1.15
+speed = 0.59
+phase = 6.24
+drift_radius = 0.25
+spin_speed = 0.071
+
+[node name="Body" type="Node3D" parent="ScifiDecor/BackgroundFloaters/DriftSlab09"]
+rotation_degrees = Vector3(11, -37, -10)
+scale = Vector3(1, 1, 1)
+
+[node name="Structure" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/DriftSlab09/Body"]
+mesh = SubResource("FloatSlabMesh")
+material_override = SubResource("NeonPink")
+cast_shadow = 1
+
+[node name="Accent" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/DriftSlab09/Body"]
+position = Vector3(0, -0.65, 0)
+scale = Vector3(3.8, 0.09, 0.12)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonPink")
+cast_shadow = 0
+
+[node name="SignalShard10" type="Node3D" parent="ScifiDecor/BackgroundFloaters"]
+position = Vector3(52, 10, 28)
+script = ExtResource("5")
+amplitude = 0.75
+speed = 0.68
+phase = 6.97
+drift_radius = 0.41
+spin_speed = 0.089
+
+[node name="Body" type="Node3D" parent="ScifiDecor/BackgroundFloaters/SignalShard10"]
+rotation_degrees = Vector3(-11, 20, -3)
+scale = Vector3(0.8, 0.8, 0.8)
+
+[node name="Structure" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/SignalShard10/Body"]
+mesh = SubResource("FloatShardMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 1
+
+[node name="Accent" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/SignalShard10/Body"]
+position = Vector3(0, -0.65, 0)
+scale = Vector3(1.4, 0.09, 0.12)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="Glow" type="OmniLight3D" parent="ScifiDecor/BackgroundFloaters/SignalShard10/Body"]
+position = Vector3(0, -0.8, 0)
+light_color = Color(0.02, 0.75, 1, 1)
+light_energy = 1.35
+omni_range = 5.0
+shadow_enabled = false
+
+[node name="RelayPod11" type="Node3D" parent="ScifiDecor/BackgroundFloaters"]
+position = Vector3(29, 17, 38)
+script = ExtResource("5")
+amplitude = 1.25
+speed = 0.32
+phase = 7.70
+drift_radius = 0.57
+spin_speed = 0.107
+
+[node name="Body" type="Node3D" parent="ScifiDecor/BackgroundFloaters/RelayPod11"]
+rotation_degrees = Vector3(0, -12, 4)
+scale = Vector3(1.2, 1.2, 1.2)
+
+[node name="Structure" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/RelayPod11/Body"]
+mesh = SubResource("FloatPodMesh")
+material_override = SubResource("NeonViolet")
+cast_shadow = 1
+
+[node name="Accent" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/RelayPod11/Body"]
+position = Vector3(0, -0.65, 0)
+scale = Vector3(1.4, 0.09, 0.12)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonViolet")
+cast_shadow = 0
+
+[node name="OrbitalRing12" type="Node3D" parent="ScifiDecor/BackgroundFloaters"]
+position = Vector3(8, 22, 40)
+script = ExtResource("5")
+amplitude = 0.9
+speed = 0.41
+phase = 8.43
+drift_radius = 0.73
+spin_speed = 0.125
+
+[node name="Body" type="Node3D" parent="ScifiDecor/BackgroundFloaters/OrbitalRing12"]
+rotation_degrees = Vector3(11, 33, 11)
+scale = Vector3(1.1, 1.1, 1.1)
+
+[node name="Structure" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/OrbitalRing12/Body"]
+mesh = SubResource("FloatRingMesh")
+material_override = SubResource("NeonPink")
+cast_shadow = 1
+
+[node name="Accent" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/OrbitalRing12/Body"]
+position = Vector3(0, -0.65, 0)
+scale = Vector3(1.4, 0.09, 0.12)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonPink")
+cast_shadow = 0
+
+[node name="DriftSlab13" type="Node3D" parent="ScifiDecor/BackgroundFloaters"]
+position = Vector3(-18, 16, 39)
+script = ExtResource("5")
+amplitude = 1.35
+speed = 0.50
+phase = 9.16
+drift_radius = 0.25
+spin_speed = 0.035
+
+[node name="Body" type="Node3D" parent="ScifiDecor/BackgroundFloaters/DriftSlab13"]
+rotation_degrees = Vector3(-11, -25, -10)
+scale = Vector3(0.9, 0.9, 0.9)
+
+[node name="Structure" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/DriftSlab13/Body"]
+mesh = SubResource("FloatSlabMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 1
+
+[node name="Accent" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/DriftSlab13/Body"]
+position = Vector3(0, -0.65, 0)
+scale = Vector3(3.8, 0.09, 0.12)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonCyan")
+cast_shadow = 0
+
+[node name="Glow" type="OmniLight3D" parent="ScifiDecor/BackgroundFloaters/DriftSlab13/Body"]
+position = Vector3(0, -0.8, 0)
+light_color = Color(0.02, 0.75, 1, 1)
+light_energy = 1.35
+omni_range = 5.0
+shadow_enabled = false
+
+[node name="SignalShard14" type="Node3D" parent="ScifiDecor/BackgroundFloaters"]
+position = Vector3(-45, 12, 34)
+script = ExtResource("5")
+amplitude = 1
+speed = 0.59
+phase = 9.89
+drift_radius = 0.41
+spin_speed = 0.053
+
+[node name="Body" type="Node3D" parent="ScifiDecor/BackgroundFloaters/SignalShard14"]
+rotation_degrees = Vector3(0, 41, -3)
+scale = Vector3(1.05, 1.05, 1.05)
+
+[node name="Structure" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/SignalShard14/Body"]
+mesh = SubResource("FloatShardMesh")
+material_override = SubResource("NeonViolet")
+cast_shadow = 1
+
+[node name="Accent" type="MeshInstance3D" parent="ScifiDecor/BackgroundFloaters/SignalShard14/Body"]
+position = Vector3(0, -0.65, 0)
+scale = Vector3(1.4, 0.09, 0.12)
+mesh = SubResource("NeonStripMesh")
+material_override = SubResource("NeonViolet")
+cast_shadow = 0
+
+
+
