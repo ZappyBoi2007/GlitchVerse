@@ -20,6 +20,11 @@ func settle(frames := 8) -> void:
 		await process_frame
 
 
+func settle_physics(frames := 6) -> void:
+	for _frame in range(frames):
+		await physics_frame
+
+
 func wait_seconds(seconds: float) -> void:
 	await create_timer(seconds).timeout
 
@@ -47,6 +52,11 @@ func _check_level_one() -> void:
 	check(level.get_node_or_null("GrappleAnchor_01_Runtime") is GrappleAnchor, "first real grapple marker is integrated")
 	check(level.get_node_or_null("GrappleAnchor_02_Runtime") is GrappleAnchor, "second real grapple marker is integrated")
 	check(not level.is_exit_unlocked(), "Level 1 exit starts locked")
+	check(level.get_node_or_null("ExitSafetyGeometry/NorthDoorSeal") is StaticBody3D, "wrapper seals the north door bypass without editing Jefin's scene")
+	check(level.get_node_or_null("ExitSafetyGeometry/SouthDoorSeal") is StaticBody3D, "wrapper seals the south door bypass without editing Jefin's scene")
+	check(level.campaign_exit.global_position.x > AccessDeniedSystemBreachLevel.DOOR_PLANE_X + 1.4, "Level 1 exit trigger sits fully beyond the door plane")
+	level.campaign_exit._on_body_entered(flow.player)
+	check(flow.flow_state == GameFlowManager.STATE_PLAYING, "locked Level 1 trigger cannot complete progression")
 
 	level.pull_handle.on_grapple_attached(null)
 	await wait_seconds(level.bridge.deployment_duration + 0.12)
@@ -58,6 +68,7 @@ func _check_level_one() -> void:
 	await settle(3)
 	check(level.enemy.is_deactivated() and level.relay_a.available, "security defeat unlocks Relay A")
 	check(bool(level.relay_a.interact(flow.player).success), "Relay A restores through F-interaction contract")
+	check(not level.is_exit_unlocked(), "one restored relay cannot unlock the final exit")
 	check(level.rewire_console.available, "Relay A unlocks REWIRE console")
 	check(bool(level.rewire_console.interact(flow.player).success), "REWIRE routes power to door state")
 	var machinery := level.environment.get_node("Environment/PowerDiversion/Machinery")
@@ -67,8 +78,13 @@ func _check_level_one() -> void:
 	check(level.is_puzzle_complete() and level.is_exit_unlocked(), "both relays clear lockdown and unlock exit")
 	var final_door := level.environment.get_node("Environment/FinalContainmentExit/ContainmentDoor/LockedDoorPanel") as CSGShape3D
 	check(not final_door.visible and not final_door.use_collision, "containment door becomes visibly and physically passable")
-	level.campaign_exit._on_body_entered(flow.player)
-	await settle(5)
+	var door_label := level.environment.get_node("Environment/FinalContainmentExit/ContainmentDoor/ContainmentExitLabel") as Label3D
+	check(door_label.text.contains("OPEN"), "unlocked doorway is visibly identified from the approach")
+	flow.player.global_position = Vector3(31.5, 0.4, 30.0)
+	await settle_physics(3)
+	check(flow.flow_state == GameFlowManager.STATE_PLAYING, "approach-side proximity cannot trigger Level 1 completion")
+	flow.player.global_position = level.campaign_exit.global_position
+	await settle_physics(5)
 	check(flow.flow_state == GameFlowManager.STATE_VICTORY, "Level 1 completion reaches victory in isolated preview")
 
 	flow.replay_game()
@@ -88,7 +104,12 @@ func _check_level_two() -> void:
 	var level := flow.current_level as InvertedLevel
 	check(level != null and level.has_valid_player_spawn(), "INVERTED loads with a valid spawn")
 	check(level.get_node_or_null("EntryGrappleAnchor") is GrappleAnchor, "INVERTED supplies TETHER traversal")
+	check(level.get_node_or_null("ExitGrappleAnchor") is GrappleAnchor, "INVERTED upper route has a dedicated visible anchor")
+	check(level.get_node_or_null("ExitLaunchStepC") is StaticBody3D, "INVERTED supplies a distinct upper-route launch perch")
+	check(level.get_node_or_null("UpperLandingGlow") is StaticBody3D, "INVERTED marks the intended landing edge")
 	check(level.get_node_or_null("MaintenanceVectorWall") is VectorRunSurface, "INVERTED supplies marked VECTOR RUN geometry")
+	level.campaign_exit._on_body_entered(flow.player)
+	check(flow.flow_state == GameFlowManager.STATE_PLAYING, "locked INVERTED trigger cannot complete progression")
 	var start_a := level.stabilizer_a.global_position
 	var start_b := level.stabilizer_b.global_position
 	check(level.stabilizer_a.toggle_polarity(flow.player), "POLARITY activates Stabilizer A")
@@ -97,8 +118,12 @@ func _check_level_two() -> void:
 	check(level.stabilizer_a.global_position.y > start_a.y + 3.5, "Stabilizer A physically changes position")
 	check(level.stabilizer_b.global_position.y > start_b.y + 3.5, "Stabilizer B physically changes position")
 	check(level.is_puzzle_complete() and level.is_exit_unlocked(), "two stabilizers unlock INVERTED exit")
-	level.campaign_exit._on_body_entered(flow.player)
-	await settle(4)
+	check(level.objective_description.contains("VIOLET BEACONS"), "INVERTED completion reports a contextual upper-route hint")
+	flow.player.global_position = Vector3(0, 0.05, -6.0)
+	await settle_physics(3)
+	check(flow.flow_state == GameFlowManager.STATE_PLAYING, "lower launch area cannot prematurely complete INVERTED")
+	flow.player.global_position = level.campaign_exit.global_position
+	await settle_physics(5)
 	check(flow.flow_state == GameFlowManager.STATE_VICTORY, "INVERTED isolated preview completes")
 	flow.queue_free()
 	await settle(3)

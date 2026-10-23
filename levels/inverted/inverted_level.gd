@@ -30,14 +30,26 @@ func _build_environment() -> void:
 	add_core("CoreRingUpper", Vector3(0, 8.5, 0), 3.8, 0.35, primary_material)
 	add_box("CyanRoute", Vector3(0, 0.04, 8.5), Vector3(3.5, 0.08, 0.22), primary_material, false)
 	add_box("VioletRoute", Vector3(0, 4.04, -10.5), Vector3(3.5, 0.08, 0.22), secondary_material, false)
+	# A stepped launch perch makes the intended upper route readable and gives
+	# the player a forgiving, repeatable takeoff without bridging the gap.
+	add_box("ExitLaunchStepA", Vector3(0, 0.3, -4.6), Vector3(4.0, 0.6, 1.0), structural_material)
+	add_box("ExitLaunchStepB", Vector3(0, 0.85, -5.6), Vector3(4.0, 1.7, 1.0), structural_material)
+	add_box("ExitLaunchStepC", Vector3(0, 1.4, -6.6), Vector3(4.0, 2.8, 1.0), structural_material)
+	add_box("ExitLaunchGlow", Vector3(0, 2.82, -6.6), Vector3(3.4, 0.08, 0.65), primary_material, false)
+	add_box("UpperLandingGlow", Vector3(0, 4.04, -10.65), Vector3(5.0, 0.08, 0.85), secondary_material, false)
 	place_scene(ANCHOR_SCENE, "EntryGrappleAnchor", Vector3(0, 7, 7))
-	place_scene(ANCHOR_SCENE, "ExitGrappleAnchor", Vector3(0, 9, -8))
+	place_scene(ANCHOR_SCENE, "ExitGrappleAnchor", Vector3(0, 8.5, -11.5))
 	place_scene(VECTOR_WALL_SCENE, "MaintenanceVectorWall", Vector3(9.5, 3.5, -5))
 	add_label("LevelTitle", Vector3(0, 3.3, 16), "INVERTED // GRAVITY REACTOR", Color("8cefff"))
-	add_label("ExitGuide", Vector3(0, 7.2, -13), "UPPER REACTOR EXIT", Color("c792ff"))
+	var exit_guide := add_label("ExitGuide", Vector3(0, 6.4, -15.2), "EXIT DECK", Color("c792ff"))
+	exit_guide.font_size = 20
+	add_box("ExitPortalLeft", Vector3(-2.35, 5.2, -15.7), Vector3(0.22, 2.4, 0.22), secondary_material, false)
+	add_box("ExitPortalRight", Vector3(2.35, 5.2, -15.7), Vector3(0.22, 2.4, 0.22), secondary_material, false)
+	add_box("ExitPortalTop", Vector3(0, 6.35, -15.7), Vector3(4.9, 0.22, 0.22), secondary_material, false)
 	add_directional(Color("b9d7e8"), 0.78)
 	add_omni(Vector3(0, 6, 2), Color("9b55ff"), 2.5, 18.0)
-	add_omni(Vector3(0, 7, -14), Color("55ddff"), 2.0, 12.0)
+	add_omni(Vector3(0, 6.5, -12.5), Color("55ddff"), 2.3, 13.0)
+	add_omni(Vector3(0, 3.8, -6.5), Color("55ddff"), 1.2, 7.0)
 
 
 func _spawn_puzzle() -> void:
@@ -77,5 +89,5 @@ func _report_progress() -> void:
 	if completed == 1:
 		message = "ONE STABILIZER ONLINE // LOCATE THE SECOND"
 	elif completed == 2:
-		message = "GRAVITY STABLE // TETHER TO UPPER EXIT"
+		message = "GRAVITY STABLE // FOLLOW VIOLET BEACONS // E TETHER"
 	report_objective(message, completed, 2)

@@ -16,13 +16,17 @@ signal grapple_detached(reason: StringName)
 @export_range(0.5, 3.0, 0.1) var anchor_arrival_cutoff := 1.25
 
 @export_category("Swing Feel")
-@export_range(0.0, 20.0, 0.25) var swing_acceleration := 8.0
-@export_range(0.0, 20.0, 0.25) var air_steering_strength := 5.0
-@export_range(0.0, 2.0, 0.01) var swing_damping := 0.06
+@export_range(0.0, 20.0, 0.25) var swing_acceleration := 7.0
+@export_range(0.0, 20.0, 0.25) var air_steering_strength := 3.5
+@export_range(0.0, 2.0, 0.01) var swing_damping := 0.02
 @export_range(5.0, 40.0, 0.5) var maximum_speed := 18.0
 @export_range(0.8, 1.3, 0.01) var release_momentum_multiplier := 1.0
-@export_range(1.0, 20.0, 0.5) var attachment_responsiveness := 8.0
-@export_range(0.0, 3.0, 0.05) var reel_in_speed := 0.2
+@export_range(1.0, 20.0, 0.5) var attachment_responsiveness := 7.0
+@export_range(0.0, 3.0, 0.05) var reel_in_speed := 0.0
+@export_range(0.0, 12.0, 0.25) var minimum_attach_tangent_speed := 4.5
+@export_range(0.0, 8.0, 0.25) var maximum_attach_assist := 3.0
+@export_range(0.0, 1.0, 0.05) var grounded_assist_multiplier := 0.55
+@export_range(0.0, 3.0, 0.1) var maximum_vertical_attach_assist := 0.8
 
 @export_category("Safety")
 @export_range(0.1, 2.0, 0.05) var rope_extension_tolerance := 0.65
@@ -42,6 +46,7 @@ var _anchor_position := Vector3.ZERO
 var _environment_release_remaining := 0.0
 var _obstruction_elapsed := 0.0
 var _last_distance := 0.0
+var last_release_speed := 0.0
 
 
 func _ready() -> void:
@@ -127,6 +132,7 @@ func try_attach_target(target: Node) -> bool:
 		active_target.call("on_grapple_attached", self)
 	if _target_pulls_player(active_target):
 		player.set_movement_override(self, true)
+		_apply_attachment_assist(point)
 	else:
 		_environment_release_remaining = 0.24
 	_update_tether_visual()
@@ -153,6 +159,7 @@ func _clear_grapple(emit_feedback: bool, reason: StringName) -> void:
 		_hover_target = null
 	if is_instance_valid(previous) and _target_pulls_player(previous) and player != null:
 		player.velocity *= release_momentum_multiplier
+		last_release_speed = player.velocity.length()
 	active_target = null
 	rope_length = 0.0
 	tether_beam.visible = false
@@ -171,6 +178,51 @@ func get_rope_length() -> float:
 	return rope_length
 
 
+func get_debug_snapshot() -> Dictionary:
+	var horizontal_speed := 0.0
+	var swing_speed := 0.0
+	if player != null:
+		horizontal_speed = Vector3(player.velocity.x, 0.0, player.velocity.z).length()
+		if is_grappling():
+			var radial := player.global_position - _anchor_position
+			if not radial.is_zero_approx():
+				radial = radial.normalized()
+				swing_speed = (player.velocity - radial * player.velocity.dot(radial)).length()
+	return {
+		"state": "ATTACHED" if is_grappling() else "IDLE",
+		"horizontal_speed": horizontal_speed,
+		"rope_length": rope_length,
+		"swing_speed": swing_speed,
+		"last_release_speed": last_release_speed,
+	}
+
+
+func _apply_attachment_assist(anchor_point: Vector3) -> void:
+	if player == null or minimum_attach_tangent_speed <= 0.0 or maximum_attach_assist <= 0.0:
+		return
+	var radial_out := player.global_position - anchor_point
+	if radial_out.length_squared() <= 0.001:
+		return
+	radial_out = radial_out.normalized()
+	var horizontal_velocity := Vector3(player.velocity.x, 0.0, player.velocity.z)
+	var preferred := horizontal_velocity.normalized()
+	if preferred.is_zero_approx():
+		preferred = -camera.global_basis.z
+		preferred.y = 0.0
+		preferred = preferred.normalized()
+	var tangent := preferred - radial_out * preferred.dot(radial_out)
+	if tangent.length_squared() <= 0.001:
+		return
+	tangent = tangent.normalized()
+	var current_speed := maxf(0.0, player.velocity.dot(tangent))
+	var assist_speed := minf(maximum_attach_assist, maxf(0.0, minimum_attach_tangent_speed - current_speed))
+	if player.is_on_floor():
+		assist_speed *= grounded_assist_multiplier
+	var assist_velocity := tangent * assist_speed
+	assist_velocity.y = clampf(assist_velocity.y, -maximum_vertical_attach_assist, maximum_vertical_attach_assist)
+	player.velocity += assist_velocity
+
+
 func _apply_tether_velocity(delta: float) -> void:
 	if not is_grappling():
 		return
@@ -187,7 +239,7 @@ func _apply_tether_velocity(delta: float) -> void:
 		rope_length = maxf(minimum_rope_length, rope_length - reel_in_speed * delta)
 
 	var radial_out := rope_offset / distance
-	_apply_swing_input(radial_out, delta)
+	var has_swing_input := _apply_swing_input(radial_out, delta)
 	var radial_speed := player.velocity.dot(radial_out)
 	var predicted_distance := (rope_offset + player.velocity * delta).length()
 	var taut := distance >= rope_length - 0.08 or predicted_distance > rope_length
@@ -204,30 +256,32 @@ func _apply_tether_velocity(delta: float) -> void:
 			maximum_speed * 0.55
 		)
 		player.velocity -= radial_out * correction_speed
-		player.velocity *= maxf(0.0, 1.0 - swing_damping * delta)
+		if not has_swing_input and swing_damping > 0.0:
+			var idle_tangent := player.velocity - radial_out * player.velocity.dot(radial_out)
+			player.velocity -= idle_tangent * minf(1.0, swing_damping * delta)
 	player.velocity = player.velocity.limit_length(maximum_speed)
 
 
-func _apply_swing_input(radial_out: Vector3, delta: float) -> void:
+func _apply_swing_input(radial_out: Vector3, delta: float) -> bool:
 	var input_vector := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
 	if input_vector.is_zero_approx():
-		return
+		return false
 	var desired := (
 		player.global_basis.x * input_vector.x
 		+ player.global_basis.z * input_vector.y
 	).normalized()
 	var tangent_input := desired - radial_out * desired.dot(radial_out)
 	if tangent_input.length_squared() <= 0.001:
-		return
+		return false
 	tangent_input = tangent_input.normalized()
-	player.velocity += tangent_input * swing_acceleration * delta
-	var horizontal := Vector3(player.velocity.x, 0.0, player.velocity.z)
-	var steered := horizontal.move_toward(
-		tangent_input * minf(maximum_speed, maxf(horizontal.length(), 1.0)),
-		air_steering_strength * delta
-	)
-	player.velocity.x = steered.x
-	player.velocity.z = steered.z
+	var tangent_velocity := player.velocity - radial_out * player.velocity.dot(radial_out)
+	var target_speed := minf(maximum_speed, maxf(tangent_velocity.length(), minimum_attach_tangent_speed))
+	var desired_tangent := tangent_input * target_speed
+	var steering_delta := (desired_tangent - tangent_velocity).limit_length(air_steering_strength * delta)
+	player.velocity += steering_delta
+	# A small tangential pump keeps WASD useful without instantly redirecting momentum.
+	player.velocity += tangent_input * swing_acceleration * delta * 0.35
+	return true
 
 
 func _after_player_move(delta: float) -> void:
