@@ -3,6 +3,11 @@ extends CharacterBody3D
 ## Reusable first-person controller for GlitchVerse.
 ## The body handles yaw while the Head node handles vertical camera pitch.
 
+## Optional action components can adjust velocity immediately before the
+## controller's single collision-safe move_and_slide() call.
+signal pre_move(delta: float)
+signal post_move(delta: float)
+
 @export_category("Movement")
 @export var walk_speed: float = 5.0
 @export var sprint_speed: float = 8.0
@@ -29,6 +34,7 @@ extends CharacterBody3D
 var _gravity: float = 9.8
 var _coyote_time_remaining := 0.0
 var _jump_buffer_remaining := 0.0
+var _movement_override_sources: Dictionary = {}
 
 
 func _ready() -> void:
@@ -103,6 +109,26 @@ func _physics_process(delta: float) -> void:
 	if not grounded and input_vector.is_zero_approx():
 		acceleration *= air_braking_multiplier
 
-	velocity.x = move_toward(velocity.x, target_velocity.x, acceleration * delta)
-	velocity.z = move_toward(velocity.z, target_velocity.z, acceleration * delta)
+	if _movement_override_sources.is_empty():
+		velocity.x = move_toward(velocity.x, target_velocity.x, acceleration * delta)
+		velocity.z = move_toward(velocity.z, target_velocity.z, acceleration * delta)
+	pre_move.emit(delta)
 	move_and_slide()
+	post_move.emit(delta)
+
+
+## Action movement components register while they own airborne horizontal
+## velocity. Gravity, jumping, collision and the single move_and_slide() call
+## remain authoritative here.
+func set_movement_override(source: Object, enabled: bool) -> void:
+	if source == null:
+		return
+	var source_id := source.get_instance_id()
+	if enabled:
+		_movement_override_sources[source_id] = true
+	else:
+		_movement_override_sources.erase(source_id)
+
+
+func has_movement_override() -> bool:
+	return not _movement_override_sources.is_empty()
