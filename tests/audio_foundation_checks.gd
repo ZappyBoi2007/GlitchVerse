@@ -33,7 +33,9 @@ func _run() -> void:
 	for event_name in [
 		&"phase_glitch", &"gravity_pulse", &"freeze_interrupt", &"invalid_target",
 		&"footstep", &"jump", &"land", &"puzzle_complete", &"victory",
-		&"fragment_pickup", &"fragment_requirement"
+		&"fragment_pickup", &"fragment_requirement", &"grapple_attach",
+		&"vector_run_start", &"vector_wall_jump",
+		&"sword_swing", &"sword_hit", &"construct_attack", &"bridge_deploy"
 	]:
 		check(bool(audio.call("has_event", event_name)), "%s event is registered" % event_name)
 

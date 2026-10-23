@@ -1,0 +1,47 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://levels/experiments/breach_lab/breach_lab_level.gd" id="1_level"]
+[ext_resource type="PackedScene" path="res://interactive/grapple_anchor.tscn" id="2_anchor"]
+[ext_resource type="PackedScene" path="res://interactive/tether_pull_handle.tscn" id="3_handle"]
+[ext_resource type="PackedScene" path="res://interactive/retractable_bridge.tscn" id="4_bridge"]
+[ext_resource type="PackedScene" path="res://enemies/security_construct.tscn" id="5_enemy"]
+[ext_resource type="PackedScene" path="res://interactive/puzzle_exit.tscn" id="6_exit"]
+[ext_resource type="PackedScene" path="res://interactive/fall_hazard.tscn" id="7_fall"]
+[ext_resource type="PackedScene" path="res://interactive/vector_run_surface.tscn" id="8_vector_wall"]
+
+[node name="BreachLabLevel" type="Node3D"]
+script = ExtResource("1_level")
+level_id = "breach_lab"
+level_display_name = "BREACH LAB // ACTION SYSTEMS"
+par_time_seconds = 120.0
+base_score = 1200
+
+[node name="PlayerSpawn" type="Marker3D" parent="."]
+position = Vector3(0, 0.05, 16)
+
+[node name="PrimaryGrappleAnchor" parent="." instance=ExtResource("2_anchor")]
+position = Vector3(3.25, 7, 7.25)
+
+[node name="CombatGrappleAnchor" parent="." instance=ExtResource("2_anchor")]
+position = Vector3(-6, 4, -3)
+
+[node name="VectorRunWall" parent="." instance=ExtResource("8_vector_wall")]
+position = Vector3(7, 2.5, 7.25)
+
+[node name="RetractableBridge" parent="." instance=ExtResource("4_bridge")]
+position = Vector3(0, -4.25, -9.5)
+deployed_offset = Vector3(0, 4.25, 0)
+
+[node name="TetherPullHandle" parent="." instance=ExtResource("3_handle")]
+position = Vector3(4.8, 1.35, -3.5)
+mechanism_path = NodePath("../RetractableBridge")
+
+[node name="SecurityConstruct" parent="." instance=ExtResource("5_enemy")]
+position = Vector3(0, 0.05, -2)
+
+[node name="PuzzleExit" parent="." instance=ExtResource("6_exit")]
+position = Vector3(0, 2.1, -19)
+
+[node name="FallHazard" parent="." instance=ExtResource("7_fall")]
+position = Vector3(0, -7, 0)
+failure_reason = "TETHER LOST // PLAYER FELL INTO STRUCTURAL VOID"
