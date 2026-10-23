@@ -1,22 +1,38 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://interactive/gravity_crate.gd" id="1_script"]
 
 [sub_resource type="StandardMaterial3D" id="Material_normal"]
-albedo_color = Color(0.22, 0.08, 0.2, 1)
+albedo_color = Color(0.26, 0.16, 0.045, 1)
 metallic = 0.65
 roughness = 0.3
 emission_enabled = true
-emission = Color(0.75, 0.08, 0.55, 1)
+emission = Color(0.964706, 0.721569, 0.341176, 1)
 emission_energy_multiplier = 1.25
 
 [sub_resource type="StandardMaterial3D" id="Material_inverted"]
-albedo_color = Color(0.04, 0.3, 0.38, 1)
+albedo_color = Color(0.34, 0.24, 0.055, 1)
 metallic = 0.55
 roughness = 0.22
 emission_enabled = true
-emission = Color(0.05, 0.95, 1, 1)
+emission = Color(1, 0.84, 0.3, 1)
 emission_energy_multiplier = 2.8
+
+[sub_resource type="StandardMaterial3D" id="Material_gravity_trim"]
+albedo_color = Color(0.3, 0.2, 0.04, 1)
+metallic = 0.45
+roughness = 0.24
+emission_enabled = true
+emission = Color(0.964706, 0.721569, 0.341176, 1)
+emission_energy_multiplier = 2.5
+
+[sub_resource type="StandardMaterial3D" id="Material_gravity_highlight"]
+transparency = 1
+albedo_color = Color(0.964706, 0.721569, 0.341176, 0.12)
+roughness = 0.2
+emission_enabled = true
+emission = Color(0.964706, 0.721569, 0.341176, 1)
+emission_energy_multiplier = 3.2
 
 [sub_resource type="BoxMesh" id="Mesh_crate"]
 material = SubResource("Material_normal")
@@ -24,6 +40,14 @@ size = Vector3(1.6, 1.6, 1.6)
 
 [sub_resource type="BoxShape3D" id="Shape_crate"]
 size = Vector3(1.6, 1.6, 1.6)
+
+[sub_resource type="BoxMesh" id="Mesh_gravity_band"]
+material = SubResource("Material_gravity_trim")
+size = Vector3(1.68, 0.1, 1.68)
+
+[sub_resource type="BoxMesh" id="Mesh_gravity_highlight"]
+material = SubResource("Material_gravity_highlight")
+size = Vector3(1.76, 1.76, 1.76)
 
 [node name="GravityCrate" type="RigidBody3D"]
 mass = 2.0
@@ -40,12 +64,28 @@ inverted_material = SubResource("Material_inverted")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("Mesh_crate")
 
+[node name="TargetHighlight" type="MeshInstance3D" parent="."]
+visible = false
+cast_shadow = 0
+mesh = SubResource("Mesh_gravity_highlight")
+
+[node name="IdentityBandTop" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.63, 0)
+cast_shadow = 0
+mesh = SubResource("Mesh_gravity_band")
+
+[node name="IdentityBandBottom" type="MeshInstance3D" parent="."]
+position = Vector3(0, -0.63, 0)
+cast_shadow = 0
+mesh = SubResource("Mesh_gravity_band")
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("Shape_crate")
 
 [node name="Label3D" type="Label3D" parent="."]
 position = Vector3(0, 1.15, 0)
-text = "[2] GRAVITY"
-font_size = 32
+billboard = 1
+text = "02 // GRAVITY\nINVERT UP"
+font_size = 28
 outline_size = 7
-modulate = Color(1, 0.55, 0.92, 1)
+modulate = Color(0.964706, 0.721569, 0.341176, 1)

@@ -11,6 +11,7 @@ signal state_changed(gravity_inverted: bool)
 @export var inverted_material: Material
 
 @onready var mesh: MeshInstance3D = $MeshInstance3D
+@onready var target_highlight: MeshInstance3D = $TargetHighlight
 
 var gravity_inverted := false
 var _spawn_position := Vector3.ZERO
@@ -38,6 +39,10 @@ func apply_ability(ability: StringName, _source: Node) -> String:
 	_update_state()
 	state_changed.emit(gravity_inverted)
 	return "GRAVITY CRATE // %s" % ("UPWARD" if gravity_inverted else "DOWNWARD")
+
+
+func set_debugger_highlight(enabled: bool, _ability_color: Color) -> void:
+	target_highlight.visible = enabled
 
 
 func _update_state() -> void:

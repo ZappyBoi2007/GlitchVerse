@@ -13,6 +13,7 @@ signal state_changed(is_frozen: bool)
 @export var frozen_material: Material
 
 @onready var mesh: MeshInstance3D = $MeshInstance3D
+@onready var target_highlight: MeshInstance3D = $TargetHighlight
 
 var is_frozen := false
 var _origin := Vector3.ZERO
@@ -48,6 +49,10 @@ func apply_ability(ability: StringName, _source: Node) -> String:
 	_update_state()
 	state_changed.emit(is_frozen)
 	return "MOVING HAZARD // %s" % ("FROZEN" if is_frozen else "ACTIVE")
+
+
+func set_debugger_highlight(enabled: bool, _ability_color: Color) -> void:
+	target_highlight.visible = enabled
 
 
 func _update_state() -> void:
