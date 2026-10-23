@@ -205,27 +205,68 @@ func _check_level_three() -> void:
 	await settle(12)
 	var level := flow.current_level as ClockFailureLevel
 	check(level != null and not level.cycle_hazard.is_disabled, "CLOCK FAILURE starts with live cyclic hazard")
+	check(level.environment.scene_file_path.ends_with("clock_failure_environment.tscn"), "CLOCK FAILURE instances Jefin's production environment")
+	check(level.get_node_or_null("EntryPlatform") == null, "CLOCK FAILURE does not overlap the retired procedural greybox")
+	check(level.get_player_spawn_transform().origin.is_equal_approx(Vector3(0.0, 0.4, 35.0)), "CLOCK FAILURE uses the production PlayerSpawn")
+	check(level.grapple_anchor_a != null and level.grapple_anchor_b != null, "CLOCK FAILURE binds both production TETHER markers")
+	var clock_tether_visuals := level.environment.get_node("Environment/TimingChamber/TetherVisuals")
+	check(not (clock_tether_visuals.get_node("AnchorMount_01") as CSGShape3D).use_collision, "CLOCK FAILURE decorative mount cannot intercept TETHER anchor A")
+	check(not (clock_tether_visuals.get_node("AnchorMount_02") as CSGShape3D).use_collision, "CLOCK FAILURE decorative mount cannot intercept TETHER anchor B")
+	var clock_physics := level.get_world_3d().direct_space_state
+	var clock_ray_a := PhysicsRayQueryParameters3D.create(Vector3(0, 1.6, 19), level.grapple_anchor_a.get_grapple_point())
+	var clock_ray_b := PhysicsRayQueryParameters3D.create(Vector3(-4, 3.1, 10), level.grapple_anchor_b.get_grapple_point())
+	check(clock_physics.intersect_ray(clock_ray_a).get("collider") == level.grapple_anchor_a, "CLOCK FAILURE launch A has direct physics line of sight to its real anchor")
+	check(clock_physics.intersect_ray(clock_ray_b).get("collider") == level.grapple_anchor_b, "CLOCK FAILURE launch B has direct physics line of sight to its real anchor")
+	check(level.cycle_hazards.size() == 2, "CLOCK FAILURE binds both documented timing hazards")
+	var clock_states := level.environment.get_node("Environment/PowerRoutingRoom/StateVisuals")
+	var clock_hazard_wall := clock_states.get_node("TimingHazard_Active") as CSGShape3D
+	var blocked_route := clock_states.get_node("BlockedRoute_Locked") as CSGShape3D
+	check(clock_hazard_wall.visible and clock_hazard_wall.use_collision, "CLOCK FAILURE timing machinery starts visibly and physically active")
+	check(blocked_route.visible and blocked_route.use_collision, "CLOCK FAILURE blocked route starts visibly and physically locked")
+	check(level.campaign_exit.global_position.z < ClockFailureLevel.EXIT_DOOR_PLANE_Z, "CLOCK FAILURE completion trigger is beyond the real exit door")
 	check(not level.sync_a.available, "Sync A starts gated")
+	level.campaign_exit._on_body_entered(flow.player)
+	check(
+		flow.flow_state == GameFlowManager.STATE_PLAYING,
+		"locked CLOCK FAILURE exit cannot complete progression (state=%s reason=%s)" % [flow.flow_state, flow.failure_reason]
+	)
 	level.cycle_hazard._on_body_entered(flow.player)
 	await settle(3)
 	check(flow.flow_state == GameFlowManager.STATE_FAILED, "live hazard produces recoverable failure")
 	flow.restart_current_level()
 	await settle(12)
 	level = flow.current_level as ClockFailureLevel
+	clock_states = level.environment.get_node("Environment/PowerRoutingRoom/StateVisuals")
+	clock_hazard_wall = clock_states.get_node("TimingHazard_Active") as CSGShape3D
+	blocked_route = clock_states.get_node("BlockedRoute_Locked") as CSGShape3D
 	for _hit in range(3):
 		level.security_construct.take_damage(1)
 	await settle(2)
 	check(not level.sync_a.available, "security defeat alone cannot bypass REWIRE")
 	check(bool(level.rewire_console.interact(flow.player).success), "CLOCK FAILURE REWIRE accepts interaction")
 	await settle(2)
-	check(level.cycle_hazard.is_disabled, "REWIRE physically disables cyclic hazard")
+	check(level.cycle_hazards.all(func(hazard: CycleHazard) -> bool: return hazard.is_disabled), "REWIRE physically disables both cyclic hazards")
+	check(not clock_hazard_wall.visible and not clock_hazard_wall.use_collision, "REWIRE removes production timing-hazard visuals and collision")
+	check(not blocked_route.visible and not blocked_route.use_collision, "REWIRE opens the production blocked route")
 	check(level.sync_a.available, "security plus REWIRE unlock Sync A")
 	check(bool(level.sync_a.interact(flow.player).success), "Sync A restores")
 	check(level.sync_b.available and bool(level.sync_b.interact(flow.player).success), "ordered Sync B restores")
 	check(level.is_puzzle_complete() and level.is_exit_unlocked(), "CLOCK FAILURE terminals unlock exit")
-	level.campaign_exit._on_body_entered(flow.player)
-	await settle(4)
-	check(flow.flow_state == GameFlowManager.STATE_VICTORY, "CLOCK FAILURE isolated preview completes")
+	var clock_exit_door := level.environment.get_node("Environment/ExitChamber/ExitDoorStates/Exit_Locked") as CSGShape3D
+	check(not clock_exit_door.visible and not clock_exit_door.use_collision, "CLOCK FAILURE real exit door opens visually and physically")
+	flow.player.global_position = (level.markers.get_node("ExitMarker") as Node3D).global_position
+	await settle_physics(3)
+	check(flow.flow_state == GameFlowManager.STATE_PLAYING, "CLOCK FAILURE approach-side marker cannot trigger completion")
+	flow.player.global_position = level.campaign_exit.global_position
+	await settle_physics(4)
+	check(
+		level.campaign_exit.overlaps_body(flow.player),
+		"CLOCK FAILURE player overlaps the post-door exit trigger (player=%s exit=%s)" % [flow.player.global_position, level.campaign_exit.global_position]
+	)
+	check(
+		flow.flow_state == GameFlowManager.STATE_VICTORY,
+		"CLOCK FAILURE isolated preview completes (state=%s reason=%s)" % [flow.flow_state, flow.failure_reason]
+	)
 	flow.queue_free()
 	await settle(3)
 
@@ -238,26 +279,58 @@ func _check_level_four() -> void:
 	await settle(12)
 	var level := flow.current_level as KernelPanicLevel
 	check(level != null and not level.shutdown_terminal.available, "KERNEL PANIC shutdown starts safeguarded")
-	check(level.polarity_component.toggle_polarity(flow.player), "kernel power component accepts POLARITY")
+	check(level.environment.scene_file_path.ends_with("kernel_panic_environment.tscn"), "KERNEL PANIC instances Jefin's production environment")
+	check(level.get_node_or_null("EntryDeck") == null, "KERNEL PANIC does not overlap the retired procedural greybox")
+	check(level.get_player_spawn_transform().origin.is_equal_approx(Vector3(0.0, 0.4, 39.0)), "KERNEL PANIC uses the production PlayerSpawn")
+	check(level.grapple_anchor_a != null and level.grapple_anchor_b != null, "KERNEL PANIC binds both production TETHER markers")
+	var kernel_tether_visuals := level.environment.get_node("Environment/GravityDistortion/TetherVisuals")
+	check(not (kernel_tether_visuals.get_node("AnchorMount_01") as CSGShape3D).use_collision, "KERNEL PANIC decorative mount cannot intercept TETHER anchor A")
+	check(not (kernel_tether_visuals.get_node("AnchorMount_02") as CSGShape3D).use_collision, "KERNEL PANIC decorative mount cannot intercept TETHER anchor B")
+	var kernel_physics := level.get_world_3d().direct_space_state
+	var kernel_ray_a := PhysicsRayQueryParameters3D.create(Vector3(0, 1.6, 25), level.grapple_anchor_a.get_grapple_point())
+	var kernel_ray_b := PhysicsRayQueryParameters3D.create(Vector3(-2, 7.0, 16), level.grapple_anchor_b.get_grapple_point())
+	check(kernel_physics.intersect_ray(kernel_ray_a).get("collider") == level.grapple_anchor_a, "KERNEL PANIC launch A has direct physics line of sight to its real anchor")
+	check(kernel_physics.intersect_ray(kernel_ray_b).get("collider") == level.grapple_anchor_b, "KERNEL PANIC landing has direct physics line of sight to anchor B")
+	check(level.campaign_exit.global_position.z < KernelPanicLevel.VICTORY_GATE_PLANE_Z, "KERNEL PANIC victory trigger is beyond the real gate")
+	level.campaign_exit._on_body_entered(flow.player)
+	check(flow.flow_state == GameFlowManager.STATE_PLAYING, "locked KERNEL PANIC gate cannot complete the campaign")
+	check(level.polarity_component.toggle_polarity(flow.player), "first production platform accepts POLARITY")
 	await wait_seconds(level.polarity_component.travel_duration + 0.12)
-	check(level.rewire_console.available, "POLARITY unlocks core REWIRE")
+	check(not level.rewire_console.available, "one POLARITY platform cannot bypass the gravity route")
+	var platforms := level.environment.get_node("Environment/GravityDistortion/Platforms")
+	var target_a := platforms.get_node("PolarityPlatformA_Target") as CSGShape3D
+	check(target_a.visible and target_a.use_collision, "first POLARITY action creates its production landing platform")
+	check(level.polarity_component_b.toggle_polarity(flow.player), "second production platform accepts POLARITY")
+	await wait_seconds(level.polarity_component_b.travel_duration + 0.12)
+	var target_b := platforms.get_node("PolarityPlatformB_Target") as CSGShape3D
+	check(target_b.visible and target_b.use_collision, "second POLARITY action creates its production landing platform")
+	check(level.rewire_console.available, "both POLARITY platforms unlock core REWIRE")
 	check(bool(level.rewire_console.interact(flow.player).success), "core REWIRE disables shield power")
 	await settle(2)
-	var shield_collision := level.core_shield.get_node_or_null("CollisionShape3D") as CollisionShape3D
-	check(shield_collision != null, "core shield exposes deterministic collision node")
-	check(
-		shield_collision != null and not level.core_shield.visible and shield_collision.disabled,
-		"core shield becomes visibly and physically nonblocking"
-	)
+	check(not level.core_shield.visible and not level.core_shield.use_collision, "production core shield becomes visibly and physically nonblocking")
+	var disabled_shield := level.environment.get_node("Environment/CorePowerNetwork/Machinery/CoreShield_Disabled") as CSGShape3D
+	check(disabled_shield.visible, "REWIRE exposes the production disabled-shield state")
 	for _hit in range(3):
 		level.security_construct.take_damage(1)
 	await settle(2)
 	check(level.shutdown_terminal.available, "POLARITY, REWIRE and combat unlock shutdown terminal")
 	check(bool(level.shutdown_terminal.interact(flow.player).success), "kernel shutdown interaction completes")
 	check(level.is_puzzle_complete() and level.is_exit_unlocked(), "shutdown unlocks final extraction")
-	level.campaign_exit._on_body_entered(flow.player)
-	await settle(4)
-	check(flow.flow_state == GameFlowManager.STATE_VICTORY, "KERNEL PANIC isolated preview reaches victory")
+	var victory_gate := level.environment.get_node("Environment/KernelShutdown/VictoryGateStates/VictoryGate_Locked") as CSGShape3D
+	check(not victory_gate.visible and not victory_gate.use_collision, "kernel shutdown opens the real victory gate")
+	flow.player.global_position = (level.markers.get_node("FinalVictoryMarker") as Node3D).global_position
+	await settle_physics(3)
+	check(flow.flow_state == GameFlowManager.STATE_PLAYING, "approach-side victory marker cannot end the campaign")
+	flow.player.global_position = level.campaign_exit.global_position
+	await settle_physics(4)
+	check(
+		level.campaign_exit.overlaps_body(flow.player),
+		"KERNEL PANIC player overlaps the post-gate victory trigger (player=%s exit=%s)" % [flow.player.global_position, level.campaign_exit.global_position]
+	)
+	check(
+		flow.flow_state == GameFlowManager.STATE_VICTORY,
+		"KERNEL PANIC isolated preview reaches victory (state=%s reason=%s)" % [flow.flow_state, flow.failure_reason]
+	)
 	flow.queue_free()
 	await settle(3)
 

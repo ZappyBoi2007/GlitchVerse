@@ -1,10 +1,12 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 [ext_resource type="Script" path="res://levels/kernel_panic/kernel_panic_level.gd" id="1"]
+[ext_resource type="PackedScene" path="res://levels/kernel_panic_environment.tscn" id="2_environment"]
 [node name="KernelPanicLevel" type="Node3D"]
 script = ExtResource("1")
 level_id = "kernel_panic"
 level_display_name = "LEVEL 4 // KERNEL PANIC"
 par_time_seconds = 240.0
 base_score = 2200
-[node name="PlayerSpawn" type="Marker3D" parent="."]
-position = Vector3(0, 0.05, 17)
+player_spawn_path = NodePath("KernelPanicEnvironment/InteractionMarkers/PlayerSpawn")
+
+[node name="KernelPanicEnvironment" parent="." instance=ExtResource("2_environment")]
