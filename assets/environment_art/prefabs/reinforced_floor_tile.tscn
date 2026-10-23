@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3]
+[ext_resource type="PackedScene" path="res://assets/environment_art/modular/template-floor-layer-raised.glb" id="1_mesh"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/industrial_edge.tres" id="2_edge"]
+[node name="ReinforcedFloorTile" type="Node3D"]
+[node name="ImportedRaisedTile" parent="." instance=ExtResource("1_mesh")]
+scale = Vector3(2, 0.6, 2)
+[node name="EdgeInlay" type="CSGBox3D" parent="."]
+position = Vector3(0, 0.055, 0)
+size = Vector3(3.8, 0.04, 0.08)
+material = ExtResource("2_edge")
