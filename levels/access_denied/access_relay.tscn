@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://levels/access_denied/access_relay.gd" id="1_script"]
+
+[sub_resource type="StandardMaterial3D" id="Material_relay"]
+albedo_color = Color(0.035, 0.22, 0.27, 1)
+metallic = 0.45
+roughness = 0.35
+emission_enabled = true
+emission = Color(0.16, 0.72, 0.85, 1)
+emission_energy_multiplier = 1.25
+
+[sub_resource type="BoxMesh" id="Mesh_relay"]
+material = SubResource("Material_relay")
+size = Vector3(0.18, 1.7, 1.15)
+
+[sub_resource type="BoxShape3D" id="Shape_trigger"]
+size = Vector3(3.6, 2.6, 3.6)
+
+[node name="AccessRelay" type="Area3D"]
+collision_layer = 0
+collision_mask = 1
+monitorable = false
+script = ExtResource("1_script")
+
+[node name="Terminal" type="MeshInstance3D" parent="."]
+position = Vector3(1.65, 0.05, 0)
+mesh = SubResource("Mesh_relay")
+cast_shadow = 0
+
+[node name="Label3D" type="Label3D" parent="."]
+position = Vector3(0, 1.55, 0)
+text = "ACCESS RELAY // CROSS TO VERIFY"
+font_size = 26
+outline_size = 8
+modulate = Color(0.42, 0.9, 1, 1)
+billboard = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("Shape_trigger")
