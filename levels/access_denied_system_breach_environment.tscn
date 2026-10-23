@@ -1,0 +1,897 @@
+[gd_scene format=3]
+
+[ext_resource type="Shader" path="res://levels/access_denied_assets/scifi/panel.gdshader" id="1_panel"]
+[ext_resource type="Shader" path="res://levels/access_denied_assets/scifi/energy.gdshader" id="2_energy"]
+[ext_resource type="Shader" path="res://levels/access_denied_assets/scifi/stars.gdshader" id="3_stars"]
+
+[sub_resource type="ShaderMaterial" id="MatFloor"]
+shader = ExtResource("1_panel")
+shader_parameter/base_color = Color(0.16, 0.21, 0.27, 1)
+shader_parameter/accent = Color(0.02, 0.75, 1, 1)
+shader_parameter/panel_scale = 1.0
+shader_parameter/metal = 0.65
+
+[sub_resource type="ShaderMaterial" id="MatWall"]
+shader = ExtResource("1_panel")
+shader_parameter/base_color = Color(0.57, 0.63, 0.68, 1)
+shader_parameter/accent = Color(0.04, 0.35, 0.52, 1)
+shader_parameter/panel_scale = 1.0
+shader_parameter/metal = 0.25
+
+[sub_resource type="ShaderMaterial" id="MatTrim"]
+shader = ExtResource("1_panel")
+shader_parameter/base_color = Color(0.23, 0.3, 0.37, 1)
+shader_parameter/accent = Color(0.02, 0.75, 1, 1)
+shader_parameter/panel_scale = 1.0
+shader_parameter/metal = 0.7
+
+[sub_resource type="ShaderMaterial" id="MatProp"]
+shader = ExtResource("1_panel")
+shader_parameter/base_color = Color(0.27, 0.33, 0.38, 1)
+shader_parameter/accent = Color(0.34, 0.45, 0.56, 1)
+shader_parameter/panel_scale = 1.0
+shader_parameter/metal = 0.55
+
+[sub_resource type="ShaderMaterial" id="MatCyanEnergy"]
+shader = ExtResource("2_energy")
+shader_parameter/tint = Color(0.02, 0.75, 1, 0.72)
+
+[sub_resource type="ShaderMaterial" id="MatRedEnergy"]
+shader = ExtResource("2_energy")
+shader_parameter/tint = Color(1, 0.035, 0.08, 0.72)
+
+[sub_resource type="ShaderMaterial" id="MatAmberEnergy"]
+shader = ExtResource("2_energy")
+shader_parameter/tint = Color(1, 0.48, 0.04, 0.76)
+
+[sub_resource type="StandardMaterial3D" id="NeonCyan"]
+shading_mode = 0
+albedo_color = Color(0.02, 0.8, 1, 1)
+emission_enabled = true
+emission = Color(0.02, 0.8, 1, 1)
+emission_energy_multiplier = 2.4
+
+[sub_resource type="StandardMaterial3D" id="NeonRed"]
+shading_mode = 0
+albedo_color = Color(1, 0.035, 0.08, 1)
+emission_enabled = true
+emission = Color(1, 0.035, 0.08, 1)
+emission_energy_multiplier = 2.8
+
+[sub_resource type="StandardMaterial3D" id="NeonAmber"]
+shading_mode = 0
+albedo_color = Color(1, 0.48, 0.04, 1)
+emission_enabled = true
+emission = Color(1, 0.48, 0.04, 1)
+emission_energy_multiplier = 2.4
+
+[sub_resource type="StandardMaterial3D" id="NeonGreen"]
+shading_mode = 0
+albedo_color = Color(0.16, 1, 0.46, 1)
+emission_enabled = true
+emission = Color(0.16, 1, 0.46, 1)
+emission_energy_multiplier = 2.1
+
+[sub_resource type="StandardMaterial3D" id="MatGlass"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.02, 0.62, 0.85, 0.2)
+emission_enabled = true
+emission = Color(0.01, 0.3, 0.48, 1)
+emission_energy_multiplier = 1.2
+
+[sub_resource type="ShaderMaterial" id="SkyMaterial"]
+shader = ExtResource("3_stars")
+
+[sub_resource type="Sky" id="LevelSky"]
+sky_material = SubResource("SkyMaterial")
+
+[sub_resource type="Environment" id="LevelEnvironment"]
+background_mode = 2
+sky = SubResource("LevelSky")
+ambient_light_source = 3
+ambient_light_color = Color(0.56, 0.68, 0.85, 1)
+ambient_light_energy = 0.55
+tonemap_mode = 2
+
+[sub_resource type="TorusMesh" id="AnchorRingMesh"]
+inner_radius = 0.72
+outer_radius = 1.18
+rings = 24
+ring_segments = 14
+material = SubResource("NeonCyan")
+
+[sub_resource type="CylinderMesh" id="CameraLensMesh"]
+top_radius = 0.26
+bottom_radius = 0.36
+height = 0.55
+radial_segments = 14
+material = SubResource("NeonRed")
+
+[node name="AccessDeniedSystemBreach" type="Node3D"]
+
+[node name="Environment" type="Node3D" parent="."]
+
+[node name="ArrivalChamber" type="Node3D" parent="Environment"]
+[node name="Floors" type="Node3D" parent="Environment/ArrivalChamber"]
+
+[node name="ArrivalFloor" type="CSGBox3D" parent="Environment/ArrivalChamber/Floors"]
+position = Vector3(0, 0, 30)
+use_collision = true
+size = Vector3(20, 0.5, 18)
+material = SubResource("MatFloor")
+
+[node name="WestThreshold" type="CSGBox3D" parent="Environment/ArrivalChamber/Floors"]
+position = Vector3(-11, 0, 30)
+use_collision = true
+size = Vector3(2, 0.5, 6)
+material = SubResource("MatFloor")
+
+[node name="Walls" type="Node3D" parent="Environment/ArrivalChamber"]
+
+[node name="NorthWall" type="CSGBox3D" parent="Environment/ArrivalChamber/Walls"]
+position = Vector3(0, 2.5, 21)
+use_collision = true
+size = Vector3(20.6, 5, 0.6)
+material = SubResource("MatWall")
+
+[node name="SouthWall" type="CSGBox3D" parent="Environment/ArrivalChamber/Walls"]
+position = Vector3(0, 2.5, 39)
+use_collision = true
+size = Vector3(20.6, 5, 0.6)
+material = SubResource("MatWall")
+
+[node name="WestWallNorth" type="CSGBox3D" parent="Environment/ArrivalChamber/Walls"]
+position = Vector3(-10, 2.5, 24)
+use_collision = true
+size = Vector3(0.6, 5, 6)
+material = SubResource("MatWall")
+
+[node name="WestWallSouth" type="CSGBox3D" parent="Environment/ArrivalChamber/Walls"]
+position = Vector3(-10, 2.5, 36)
+use_collision = true
+size = Vector3(0.6, 5, 6)
+material = SubResource("MatWall")
+
+[node name="EastWallNorth" type="CSGBox3D" parent="Environment/ArrivalChamber/Walls"]
+position = Vector3(10, 2.5, 23.5)
+use_collision = true
+size = Vector3(0.6, 5, 5)
+material = SubResource("MatWall")
+
+[node name="EastWallSouth" type="CSGBox3D" parent="Environment/ArrivalChamber/Walls"]
+position = Vector3(10, 2.5, 36.5)
+use_collision = true
+size = Vector3(0.6, 5, 5)
+material = SubResource("MatWall")
+
+[node name="ObservationFrameTop" type="CSGBox3D" parent="Environment/ArrivalChamber/Walls"]
+position = Vector3(10, 4.55, 30)
+use_collision = true
+size = Vector3(0.75, 0.9, 8)
+material = SubResource("MatTrim")
+
+[node name="ObservationFrameBottom" type="CSGBox3D" parent="Environment/ArrivalChamber/Walls"]
+position = Vector3(10, 0.55, 30)
+use_collision = true
+size = Vector3(0.75, 1.1, 8)
+material = SubResource("MatTrim")
+
+[node name="ObservationPane" type="CSGBox3D" parent="Environment/ArrivalChamber/Walls"]
+position = Vector3(10.05, 2.55, 30)
+use_collision = true
+size = Vector3(0.18, 3.2, 7)
+material = SubResource("MatGlass")
+
+[node name="Props" type="Node3D" parent="Environment/ArrivalChamber"]
+
+[node name="ObjectiveDisplayHousing" type="CSGBox3D" parent="Environment/ArrivalChamber/Props"]
+position = Vector3(0, 2.8, 21.45)
+use_collision = true
+size = Vector3(9, 2.5, 0.45)
+material = SubResource("MatTrim")
+
+[node name="ObjectiveDisplay" type="Label3D" parent="Environment/ArrivalChamber/Props"]
+position = Vector3(0, 2.9, 21.12)
+text = "0/2 CIRCUITS RESTORED"
+font_size = 42
+outline_size = 10
+modulate = Color(0.22, 0.94, 1, 1)
+
+[node name="ExitSightlineSign" type="Label3D" parent="Environment/ArrivalChamber/Props"]
+position = Vector3(9.55, 4.8, 30)
+rotation_degrees = Vector3(0, -90, 0)
+text = "CONTAINMENT EXIT // LOCKED"
+font_size = 26
+outline_size = 8
+modulate = Color(1, 0.2, 0.24, 1)
+
+[node name="EmergencyStrip01" type="CSGBox3D" parent="Environment/ArrivalChamber/Props"]
+position = Vector3(0, 4.85, 25.2)
+size = Vector3(7, 0.14, 0.3)
+material = SubResource("NeonRed")
+
+[node name="EmergencyStrip02" type="CSGBox3D" parent="Environment/ArrivalChamber/Props"]
+position = Vector3(0, 4.85, 34.8)
+size = Vector3(7, 0.14, 0.3)
+material = SubResource("NeonRed")
+
+[node name="PowerConduitWestA" type="CSGBox3D" parent="Environment/ArrivalChamber/Props"]
+position = Vector3(-5, 0.31, 32.5)
+size = Vector3(10, 0.12, 0.28)
+material = SubResource("NeonCyan")
+
+[node name="PowerConduitWestB" type="CSGBox3D" parent="Environment/ArrivalChamber/Props"]
+position = Vector3(-9, 0.31, 30)
+size = Vector3(0.28, 0.12, 5.2)
+material = SubResource("NeonCyan")
+
+[node name="BrokenCrossing" type="Node3D" parent="Environment"]
+[node name="Platforms" type="Node3D" parent="Environment/BrokenCrossing"]
+
+[node name="StartLedge" type="CSGBox3D" parent="Environment/BrokenCrossing/Platforms"]
+position = Vector3(-16, 0, 30)
+use_collision = true
+size = Vector3(10, 0.5, 10)
+material = SubResource("MatFloor")
+
+[node name="DestinationLedge" type="CSGBox3D" parent="Environment/BrokenCrossing/Platforms"]
+position = Vector3(-37, 0, 26)
+use_collision = true
+size = Vector3(10, 0.5, 12)
+material = SubResource("MatFloor")
+
+[node name="SecurityApproach" type="CSGBox3D" parent="Environment/BrokenCrossing/Platforms"]
+position = Vector3(-39, 0, 20)
+use_collision = true
+size = Vector3(4, 0.5, 5)
+material = SubResource("MatFloor")
+
+[node name="RetractableBridgeSection" type="CSGBox3D" parent="Environment/BrokenCrossing/Platforms"]
+position = Vector3(-26.5, -1.25, 29)
+use_collision = true
+size = Vector3(10.5, 0.6, 3.2)
+material = SubResource("MatTrim")
+
+[node name="SafetyBarriers" type="Node3D" parent="Environment/BrokenCrossing"]
+
+[node name="StartNorthRail" type="CSGBox3D" parent="Environment/BrokenCrossing/SafetyBarriers"]
+position = Vector3(-16, 1.05, 25)
+use_collision = true
+size = Vector3(10, 0.18, 0.22)
+material = SubResource("MatTrim")
+
+[node name="StartSouthRail" type="CSGBox3D" parent="Environment/BrokenCrossing/SafetyBarriers"]
+position = Vector3(-16, 1.05, 35)
+use_collision = true
+size = Vector3(10, 0.18, 0.22)
+material = SubResource("MatTrim")
+
+[node name="DestinationNorthRail" type="CSGBox3D" parent="Environment/BrokenCrossing/SafetyBarriers"]
+position = Vector3(-37, 1.05, 20)
+use_collision = true
+size = Vector3(10, 0.18, 0.22)
+material = SubResource("MatTrim")
+
+[node name="DestinationSouthRail" type="CSGBox3D" parent="Environment/BrokenCrossing/SafetyBarriers"]
+position = Vector3(-37, 1.05, 32)
+use_collision = true
+size = Vector3(10, 0.18, 0.22)
+material = SubResource("MatTrim")
+
+[node name="StartNorthPostA" type="CSGBox3D" parent="Environment/BrokenCrossing/SafetyBarriers"]
+position = Vector3(-20.5, 0.65, 25)
+use_collision = true
+size = Vector3(0.2, 1.3, 0.2)
+material = SubResource("MatTrim")
+
+[node name="StartNorthPostB" type="CSGBox3D" parent="Environment/BrokenCrossing/SafetyBarriers"]
+position = Vector3(-11.5, 0.65, 25)
+use_collision = true
+size = Vector3(0.2, 1.3, 0.2)
+material = SubResource("MatTrim")
+
+[node name="DestinationSouthPostA" type="CSGBox3D" parent="Environment/BrokenCrossing/SafetyBarriers"]
+position = Vector3(-41.5, 0.65, 32)
+use_collision = true
+size = Vector3(0.2, 1.3, 0.2)
+material = SubResource("MatTrim")
+
+[node name="DestinationSouthPostB" type="CSGBox3D" parent="Environment/BrokenCrossing/SafetyBarriers"]
+position = Vector3(-32.5, 0.65, 32)
+use_collision = true
+size = Vector3(0.2, 1.3, 0.2)
+material = SubResource("MatTrim")
+
+[node name="AnchorStructures" type="Node3D" parent="Environment/BrokenCrossing"]
+
+[node name="AnchorSupport_01" type="CSGBox3D" parent="Environment/BrokenCrossing/AnchorStructures"]
+position = Vector3(-24, 9.2, 30)
+use_collision = true
+size = Vector3(0.55, 4, 0.55)
+material = SubResource("MatTrim")
+
+[node name="AnchorRing_01" type="MeshInstance3D" parent="Environment/BrokenCrossing/AnchorStructures"]
+position = Vector3(-24, 7.2, 30)
+rotation_degrees = Vector3(90, 0, 0)
+mesh = SubResource("AnchorRingMesh")
+
+[node name="AnchorSupport_02" type="CSGBox3D" parent="Environment/BrokenCrossing/AnchorStructures"]
+position = Vector3(-30, 10.4, 27)
+use_collision = true
+size = Vector3(0.55, 4, 0.55)
+material = SubResource("MatTrim")
+
+[node name="AnchorRing_02" type="MeshInstance3D" parent="Environment/BrokenCrossing/AnchorStructures"]
+position = Vector3(-30, 8.4, 27)
+rotation_degrees = Vector3(90, 0, 0)
+mesh = SubResource("AnchorRingMesh")
+
+[node name="PullMechanismHousing" type="CSGBox3D" parent="Environment/BrokenCrossing/AnchorStructures"]
+position = Vector3(-40, 1.25, 26)
+use_collision = true
+size = Vector3(2.2, 2.5, 2.2)
+material = SubResource("MatProp")
+
+[node name="PullHandle" type="CSGCylinder3D" parent="Environment/BrokenCrossing/AnchorStructures"]
+position = Vector3(-39, 1.45, 26)
+rotation_degrees = Vector3(0, 0, 90)
+radius = 0.28
+height = 1.7
+sides = 16
+material = SubResource("NeonAmber")
+
+[node name="CrossingWarning" type="Label3D" parent="Environment/BrokenCrossing"]
+position = Vector3(-16, 3.7, 25.1)
+text = "WALKWAY FAILURE // TETHER ANCHORS ONLINE"
+font_size = 25
+outline_size = 8
+modulate = Color(1, 0.6, 0.14, 1)
+
+[node name="SecurityInterception" type="Node3D" parent="Environment"]
+[node name="Geometry" type="Node3D" parent="Environment/SecurityInterception"]
+
+[node name="CombatFloor" type="CSGBox3D" parent="Environment/SecurityInterception/Geometry"]
+position = Vector3(-49, 0, 8)
+use_collision = true
+size = Vector3(24, 0.5, 20)
+material = SubResource("MatFloor")
+
+[node name="WestWall" type="CSGBox3D" parent="Environment/SecurityInterception/Geometry"]
+position = Vector3(-61, 2.5, 8)
+use_collision = true
+size = Vector3(0.6, 5, 20.6)
+material = SubResource("MatWall")
+
+[node name="SouthWallWest" type="CSGBox3D" parent="Environment/SecurityInterception/Geometry"]
+position = Vector3(-56, 2.5, -2)
+use_collision = true
+size = Vector3(10, 5, 0.6)
+material = SubResource("MatWall")
+
+[node name="SouthWallEast" type="CSGBox3D" parent="Environment/SecurityInterception/Geometry"]
+position = Vector3(-40, 2.5, -2)
+use_collision = true
+size = Vector3(6, 5, 0.6)
+material = SubResource("MatWall")
+
+[node name="NorthWallWest" type="CSGBox3D" parent="Environment/SecurityInterception/Geometry"]
+position = Vector3(-51, 2.5, 18)
+use_collision = true
+size = Vector3(20, 5, 0.6)
+material = SubResource("MatWall")
+
+[node name="EastWall" type="CSGBox3D" parent="Environment/SecurityInterception/Geometry"]
+position = Vector3(-37, 2.5, 8)
+use_collision = true
+size = Vector3(0.6, 5, 16)
+material = SubResource("MatWall")
+
+[node name="Cover" type="Node3D" parent="Environment/SecurityInterception"]
+
+[node name="LowCoverWest" type="CSGBox3D" parent="Environment/SecurityInterception/Cover"]
+position = Vector3(-55, 0.65, 8)
+use_collision = true
+size = Vector3(4, 1.3, 1.4)
+material = SubResource("MatProp")
+
+[node name="LowCoverEast" type="CSGBox3D" parent="Environment/SecurityInterception/Cover"]
+position = Vector3(-43, 0.65, 11)
+rotation_degrees = Vector3(0, 28, 0)
+use_collision = true
+size = Vector3(4, 1.3, 1.4)
+material = SubResource("MatProp")
+
+[node name="MediumCover" type="CSGBox3D" parent="Environment/SecurityInterception/Cover"]
+position = Vector3(-49, 1.2, 3)
+use_collision = true
+size = Vector3(2.4, 2.4, 2.4)
+material = SubResource("MatProp")
+
+[node name="SecurityProps" type="Node3D" parent="Environment/SecurityInterception"]
+
+[node name="RelayATerminal" type="CSGBox3D" parent="Environment/SecurityInterception/SecurityProps"]
+position = Vector3(-57, 1.35, 1)
+use_collision = true
+size = Vector3(2.2, 2.7, 1.4)
+material = SubResource("MatTrim")
+
+[node name="RelayAScreen" type="CSGBox3D" parent="Environment/SecurityInterception/SecurityProps"]
+position = Vector3(-57, 1.8, 1.72)
+size = Vector3(1.5, 0.85, 0.08)
+material = SubResource("NeonCyan")
+
+[node name="DamagedShutterLeft" type="CSGBox3D" parent="Environment/SecurityInterception/SecurityProps"]
+position = Vector3(-60.5, 2.4, 13)
+rotation_degrees = Vector3(0, 0, -8)
+use_collision = true
+size = Vector3(1, 4.4, 5)
+material = SubResource("MatTrim")
+
+[node name="DamagedShutterRight" type="CSGBox3D" parent="Environment/SecurityInterception/SecurityProps"]
+position = Vector3(-60.5, 2.1, 5)
+rotation_degrees = Vector3(0, 0, 11)
+use_collision = true
+size = Vector3(1, 3.8, 4)
+material = SubResource("MatTrim")
+
+[node name="BrokenContainmentTank" type="CSGBox3D" parent="Environment/SecurityInterception/SecurityProps"]
+position = Vector3(-42, 1.7, 3)
+use_collision = true
+size = Vector3(2.8, 3.4, 2.8)
+material = SubResource("MatGlass")
+
+[node name="SecurityCamera" type="MeshInstance3D" parent="Environment/SecurityInterception/SecurityProps"]
+position = Vector3(-43, 4.2, 16.8)
+rotation_degrees = Vector3(90, 0, 0)
+mesh = SubResource("CameraLensMesh")
+
+[node name="PowerApproach" type="Node3D" parent="Environment/SecurityInterception"]
+
+[node name="ApproachFloor" type="CSGBox3D" parent="Environment/SecurityInterception/PowerApproach"]
+position = Vector3(-35.2, 0, -7.2)
+rotation_degrees = Vector3(0, -48, 0)
+use_collision = true
+size = Vector3(5, 0.45, 18)
+material = SubResource("MatFloor")
+
+[node name="ApproachLeftRail" type="CSGBox3D" parent="Environment/SecurityInterception/PowerApproach"]
+position = Vector3(-39.1, 1.1, -7.2)
+rotation_degrees = Vector3(0, -48, 0)
+use_collision = true
+size = Vector3(0.28, 2.2, 18)
+material = SubResource("MatTrim")
+
+[node name="ApproachRightRail" type="CSGBox3D" parent="Environment/SecurityInterception/PowerApproach"]
+position = Vector3(-31.3, 1.1, -7.2)
+rotation_degrees = Vector3(0, -48, 0)
+use_collision = true
+size = Vector3(0.28, 2.2, 18)
+material = SubResource("MatTrim")
+
+[node name="PowerDiversion" type="Node3D" parent="Environment"]
+[node name="Geometry" type="Node3D" parent="Environment/PowerDiversion"]
+
+[node name="PowerRoomFloor" type="CSGBox3D" parent="Environment/PowerDiversion/Geometry"]
+position = Vector3(-18, 0, -12)
+use_collision = true
+size = Vector3(24, 0.5, 20)
+material = SubResource("MatFloor")
+
+[node name="NorthWall" type="CSGBox3D" parent="Environment/PowerDiversion/Geometry"]
+position = Vector3(-18, 2.5, -22)
+use_collision = true
+size = Vector3(24.6, 5, 0.6)
+material = SubResource("MatWall")
+
+[node name="SouthWall" type="CSGBox3D" parent="Environment/PowerDiversion/Geometry"]
+position = Vector3(-18, 2.5, -2)
+use_collision = true
+size = Vector3(24.6, 5, 0.6)
+material = SubResource("MatWall")
+
+[node name="WestWallNorth" type="CSGBox3D" parent="Environment/PowerDiversion/Geometry"]
+position = Vector3(-30, 2.5, -18)
+use_collision = true
+size = Vector3(0.6, 5, 8)
+material = SubResource("MatWall")
+
+[node name="WestWallSouth" type="CSGBox3D" parent="Environment/PowerDiversion/Geometry"]
+position = Vector3(-30, 2.5, -5)
+use_collision = true
+size = Vector3(0.6, 5, 6)
+material = SubResource("MatWall")
+
+[node name="EastWallNorth" type="CSGBox3D" parent="Environment/PowerDiversion/Geometry"]
+position = Vector3(-6, 2.5, -18)
+use_collision = true
+size = Vector3(0.6, 5, 8)
+material = SubResource("MatWall")
+
+[node name="EastWallSouth" type="CSGBox3D" parent="Environment/PowerDiversion/Geometry"]
+position = Vector3(-6, 2.5, -5)
+use_collision = true
+size = Vector3(0.6, 5, 6)
+material = SubResource("MatWall")
+
+[node name="Machinery" type="Node3D" parent="Environment/PowerDiversion"]
+
+[node name="PowerConsole" type="CSGBox3D" parent="Environment/PowerDiversion/Machinery"]
+position = Vector3(-18, 1.25, -7)
+use_collision = true
+size = Vector3(3.4, 2.5, 1.8)
+material = SubResource("MatTrim")
+
+[node name="PowerConsoleDisplay" type="CSGBox3D" parent="Environment/PowerDiversion/Machinery"]
+position = Vector3(-18, 2, -6.05)
+size = Vector3(2.5, 0.8, 0.08)
+material = SubResource("NeonAmber")
+
+[node name="ChannelAConduit" type="CSGBox3D" parent="Environment/PowerDiversion/Machinery"]
+position = Vector3(-23, 0.32, -13)
+size = Vector3(0.65, 0.14, 14)
+material = SubResource("NeonCyan")
+
+[node name="ChannelBConduit" type="CSGBox3D" parent="Environment/PowerDiversion/Machinery"]
+position = Vector3(-13, 0.32, -13)
+size = Vector3(0.65, 0.14, 14)
+material = SubResource("NeonAmber")
+
+[node name="SecurityFieldFrameLeft" type="CSGBox3D" parent="Environment/PowerDiversion/Machinery"]
+position = Vector3(-25.1, 2, -19)
+use_collision = true
+size = Vector3(1, 4, 1)
+material = SubResource("MatTrim")
+
+[node name="SecurityFieldFrameRight" type="CSGBox3D" parent="Environment/PowerDiversion/Machinery"]
+position = Vector3(-20.9, 2, -19)
+use_collision = true
+size = Vector3(1, 4, 1)
+material = SubResource("MatTrim")
+
+[node name="SecurityFieldVisual" type="CSGBox3D" parent="Environment/PowerDiversion/Machinery"]
+position = Vector3(-23, 2, -19)
+size = Vector3(3.2, 3.4, 0.16)
+material = SubResource("MatCyanEnergy")
+
+[node name="DoorMechanismHousing" type="CSGBox3D" parent="Environment/PowerDiversion/Machinery"]
+position = Vector3(-13, 1.5, -19)
+use_collision = true
+size = Vector3(4, 3, 1.5)
+material = SubResource("MatProp")
+
+[node name="DoorMechanismRotor" type="CSGCylinder3D" parent="Environment/PowerDiversion/Machinery"]
+position = Vector3(-13, 1.7, -18.15)
+rotation_degrees = Vector3(90, 0, 0)
+radius = 1
+height = 0.35
+sides = 16
+material = SubResource("NeonAmber")
+
+[node name="RelayBTerminal" type="CSGBox3D" parent="Environment/PowerDiversion/Machinery"]
+position = Vector3(-18, 1.3, -17)
+use_collision = true
+size = Vector3(2.4, 2.6, 1.5)
+material = SubResource("MatTrim")
+
+[node name="RelayBScreen" type="CSGBox3D" parent="Environment/PowerDiversion/Machinery"]
+position = Vector3(-18, 1.8, -16.2)
+size = Vector3(1.7, 0.8, 0.08)
+material = SubResource("NeonGreen")
+
+[node name="OnwardRoute" type="Node3D" parent="Environment/PowerDiversion"]
+
+[node name="EastServiceFloor" type="CSGBox3D" parent="Environment/PowerDiversion/OnwardRoute"]
+position = Vector3(8.5, 0, -12)
+use_collision = true
+size = Vector3(29, 0.45, 5)
+material = SubResource("MatFloor")
+
+[node name="EastServiceNorthRail" type="CSGBox3D" parent="Environment/PowerDiversion/OnwardRoute"]
+position = Vector3(8.5, 1.1, -14.5)
+use_collision = true
+size = Vector3(29, 2.2, 0.28)
+material = SubResource("MatTrim")
+
+[node name="EastServiceSouthRail" type="CSGBox3D" parent="Environment/PowerDiversion/OnwardRoute"]
+position = Vector3(8.5, 1.1, -9.5)
+use_collision = true
+size = Vector3(29, 2.2, 0.28)
+material = SubResource("MatTrim")
+
+[node name="NorthServiceFloor" type="CSGBox3D" parent="Environment/PowerDiversion/OnwardRoute"]
+position = Vector3(23, 0, 4)
+use_collision = true
+size = Vector3(5, 0.45, 32)
+material = SubResource("MatFloor")
+
+[node name="NorthServiceWestRail" type="CSGBox3D" parent="Environment/PowerDiversion/OnwardRoute"]
+position = Vector3(20.5, 1.1, 4)
+use_collision = true
+size = Vector3(0.28, 2.2, 32)
+material = SubResource("MatTrim")
+
+[node name="NorthServiceEastRail" type="CSGBox3D" parent="Environment/PowerDiversion/OnwardRoute"]
+position = Vector3(25.5, 1.1, 4)
+use_collision = true
+size = Vector3(0.28, 2.2, 32)
+material = SubResource("MatTrim")
+
+[node name="FinalContainmentExit" type="Node3D" parent="Environment"]
+[node name="Geometry" type="Node3D" parent="Environment/FinalContainmentExit"]
+
+[node name="FinalFloor" type="CSGBox3D" parent="Environment/FinalContainmentExit/Geometry"]
+position = Vector3(23, 0, 30)
+use_collision = true
+size = Vector3(20, 0.5, 20)
+material = SubResource("MatFloor")
+
+[node name="NorthWallLeft" type="CSGBox3D" parent="Environment/FinalContainmentExit/Geometry"]
+position = Vector3(17, 2.75, 20)
+use_collision = true
+size = Vector3(8, 5.5, 0.7)
+material = SubResource("MatWall")
+
+[node name="NorthWallRight" type="CSGBox3D" parent="Environment/FinalContainmentExit/Geometry"]
+position = Vector3(29, 2.75, 20)
+use_collision = true
+size = Vector3(8, 5.5, 0.7)
+material = SubResource("MatWall")
+
+[node name="SouthWall" type="CSGBox3D" parent="Environment/FinalContainmentExit/Geometry"]
+position = Vector3(23, 2.75, 40)
+use_collision = true
+size = Vector3(20.7, 5.5, 0.7)
+material = SubResource("MatWall")
+
+[node name="WestWallNorth" type="CSGBox3D" parent="Environment/FinalContainmentExit/Geometry"]
+position = Vector3(13, 2.75, 23.5)
+use_collision = true
+size = Vector3(0.7, 5.5, 7)
+material = SubResource("MatWall")
+
+[node name="WestWallSouth" type="CSGBox3D" parent="Environment/FinalContainmentExit/Geometry"]
+position = Vector3(13, 2.75, 36.5)
+use_collision = true
+size = Vector3(0.7, 5.5, 7)
+material = SubResource("MatWall")
+
+[node name="WestObservationPane" type="CSGBox3D" parent="Environment/FinalContainmentExit/Geometry"]
+position = Vector3(12.95, 2.55, 30)
+use_collision = true
+size = Vector3(0.18, 3.2, 7)
+material = SubResource("MatGlass")
+
+[node name="ContainmentDoor" type="Node3D" parent="Environment/FinalContainmentExit"]
+
+[node name="DoorFrameNorth" type="CSGBox3D" parent="Environment/FinalContainmentExit/ContainmentDoor"]
+position = Vector3(33, 5.15, 30)
+use_collision = true
+size = Vector3(0.8, 0.7, 9)
+material = SubResource("MatTrim")
+
+[node name="DoorFrameSouth" type="CSGBox3D" parent="Environment/FinalContainmentExit/ContainmentDoor"]
+position = Vector3(33, 0.55, 30)
+use_collision = true
+size = Vector3(0.8, 1.1, 9)
+material = SubResource("MatTrim")
+
+[node name="DoorFrameLeft" type="CSGBox3D" parent="Environment/FinalContainmentExit/ContainmentDoor"]
+position = Vector3(33, 2.85, 25.5)
+use_collision = true
+size = Vector3(0.8, 5.3, 0.8)
+material = SubResource("MatTrim")
+
+[node name="DoorFrameRight" type="CSGBox3D" parent="Environment/FinalContainmentExit/ContainmentDoor"]
+position = Vector3(33, 2.85, 34.5)
+use_collision = true
+size = Vector3(0.8, 5.3, 0.8)
+material = SubResource("MatTrim")
+
+[node name="LockedDoorPanel" type="CSGBox3D" parent="Environment/FinalContainmentExit/ContainmentDoor"]
+position = Vector3(33, 2.85, 30)
+use_collision = true
+size = Vector3(0.65, 4.5, 7.8)
+material = SubResource("MatProp")
+
+[node name="LockedDoorSeam" type="CSGBox3D" parent="Environment/FinalContainmentExit/ContainmentDoor"]
+position = Vector3(32.62, 2.85, 30)
+size = Vector3(0.08, 4.1, 0.18)
+material = SubResource("NeonRed")
+
+[node name="UnlockingDoorLeft" type="CSGBox3D" parent="Environment/FinalContainmentExit/ContainmentDoor"]
+position = Vector3(33, 2.85, 27.9)
+visible = false
+size = Vector3(0.7, 4.5, 3.6)
+material = SubResource("MatProp")
+
+[node name="UnlockingDoorRight" type="CSGBox3D" parent="Environment/FinalContainmentExit/ContainmentDoor"]
+position = Vector3(33, 2.85, 32.1)
+visible = false
+size = Vector3(0.7, 4.5, 3.6)
+material = SubResource("MatProp")
+
+[node name="OpenDoorPocket" type="CSGBox3D" parent="Environment/FinalContainmentExit/ContainmentDoor"]
+position = Vector3(33, 5.65, 30)
+visible = false
+size = Vector3(0.8, 0.3, 8)
+material = SubResource("NeonCyan")
+
+[node name="LockingBolt01" type="CSGCylinder3D" parent="Environment/FinalContainmentExit/ContainmentDoor"]
+position = Vector3(32.55, 2.8, 27.2)
+rotation_degrees = Vector3(0, 0, 90)
+radius = 0.5
+height = 0.4
+sides = 16
+material = SubResource("NeonRed")
+
+[node name="RelayStatusIndicator01" type="CSGBox3D" parent="Environment/FinalContainmentExit/ContainmentDoor"]
+position = Vector3(32.5, 4.25, 27.2)
+size = Vector3(0.12, 0.7, 1.1)
+material = SubResource("NeonCyan")
+
+[node name="LockingBolt02" type="CSGCylinder3D" parent="Environment/FinalContainmentExit/ContainmentDoor"]
+position = Vector3(32.55, 2.8, 32.8)
+rotation_degrees = Vector3(0, 0, 90)
+radius = 0.5
+height = 0.4
+sides = 16
+material = SubResource("NeonRed")
+
+[node name="RelayStatusIndicator02" type="CSGBox3D" parent="Environment/FinalContainmentExit/ContainmentDoor"]
+position = Vector3(32.5, 4.25, 32.8)
+size = Vector3(0.12, 0.7, 1.1)
+material = SubResource("NeonCyan")
+
+[node name="EncounterProps" type="Node3D" parent="Environment/FinalContainmentExit"]
+
+[node name="FinalCoverLeft" type="CSGBox3D" parent="Environment/FinalContainmentExit/EncounterProps"]
+position = Vector3(18, 0.8, 33)
+use_collision = true
+size = Vector3(3.5, 1.6, 1.4)
+material = SubResource("MatProp")
+
+[node name="FinalCoverRight" type="CSGBox3D" parent="Environment/FinalContainmentExit/EncounterProps"]
+position = Vector3(27, 0.8, 26)
+rotation_degrees = Vector3(0, -25, 0)
+use_collision = true
+size = Vector3(3.5, 1.6, 1.4)
+material = SubResource("MatProp")
+
+[node name="ContainmentCore" type="CSGBox3D" parent="Environment/FinalContainmentExit/EncounterProps"]
+position = Vector3(23, 1.5, 34)
+use_collision = true
+size = Vector3(3, 3, 3)
+material = SubResource("MatGlass")
+
+[node name="InteractionMarkers" type="Node3D" parent="."]
+
+[node name="PlayerSpawn" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-2, 0.4, 35)
+rotation_degrees = Vector3(0, -90, 0)
+
+[node name="GrappleAnchor_01" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-24, 7.2, 30)
+
+[node name="GrappleAnchor_02" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-30, 8.4, 27)
+
+[node name="TetherPullHandle_01" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-39, 1.45, 26)
+rotation_degrees = Vector3(0, 90, 0)
+
+[node name="EnemySpawn_01" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-54, 0.4, 9)
+rotation_degrees = Vector3(0, 35, 0)
+
+[node name="EnemySpawn_02" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-44, 0.4, 8)
+rotation_degrees = Vector3(0, -40, 0)
+
+[node name="RelayA_Marker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-57, 0.4, 2)
+rotation_degrees = Vector3(0, 180, 0)
+
+[node name="PowerConsole_Marker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-18, 0.4, -6)
+rotation_degrees = Vector3(0, 180, 0)
+
+[node name="RelayB_Marker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-18, 0.4, -16)
+
+[node name="FinalEnemySpawn" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(23, 0.4, 30)
+rotation_degrees = Vector3(0, -90, 0)
+
+[node name="ExitMarker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(31.5, 0.4, 30)
+rotation_degrees = Vector3(0, -90, 0)
+
+[node name="FallRecoveryMarker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-16, 0.4, 30)
+rotation_degrees = Vector3(0, -90, 0)
+
+[node name="FallZoneMarker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-26.5, -5, 29)
+
+[node name="SecurityField_Marker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-23, 1.7, -18.8)
+
+[node name="PoweredDoorMechanism_Marker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-13, 1.4, -18.2)
+
+[node name="FinalRelayStatusLeft_Marker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(31.8, 4.2, 27.2)
+
+[node name="FinalRelayStatusRight_Marker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(31.8, 4.2, 32.8)
+
+[node name="Lighting" type="Node3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Lighting"]
+environment = SubResource("LevelEnvironment")
+
+[node name="FacilityKey" type="DirectionalLight3D" parent="Lighting"]
+rotation_degrees = Vector3(-57, -35, 0)
+light_color = Color(0.56, 0.72, 0.94, 1)
+light_energy = 0.72
+shadow_enabled = true
+directional_shadow_max_distance = 150.0
+
+[node name="ArrivalEmergencyA" type="OmniLight3D" parent="Lighting"]
+position = Vector3(-5, 4.4, 26)
+light_color = Color(1, 0.08, 0.1, 1)
+light_energy = 3
+omni_range = 9
+shadow_enabled = true
+
+[node name="ArrivalEmergencyB" type="OmniLight3D" parent="Lighting"]
+position = Vector3(6, 4.4, 34)
+light_color = Color(0.05, 0.65, 1, 1)
+light_energy = 3
+omni_range = 9
+shadow_enabled = true
+
+[node name="CrossingAnchorLight" type="OmniLight3D" parent="Lighting"]
+position = Vector3(-27, 7.5, 28)
+light_color = Color(0.02, 0.8, 1, 1)
+light_energy = 4
+omni_range = 15
+shadow_enabled = true
+
+[node name="SecurityWarningLight" type="OmniLight3D" parent="Lighting"]
+position = Vector3(-49, 4.3, 8)
+light_color = Color(1, 0.08, 0.1, 1)
+light_energy = 4
+omni_range = 14
+shadow_enabled = true
+
+[node name="PowerChannelLight" type="OmniLight3D" parent="Lighting"]
+position = Vector3(-18, 4, -12)
+light_color = Color(1, 0.45, 0.05, 1)
+light_energy = 4
+omni_range = 15
+shadow_enabled = true
+
+[node name="FinalContainmentLight" type="OmniLight3D" parent="Lighting"]
+position = Vector3(25, 5, 30)
+light_color = Color(0.04, 0.65, 1, 1)
+light_energy = 5
+omni_range = 18
+shadow_enabled = true
+
+[node name="FinalDoorWarningLight" type="OmniLight3D" parent="Lighting"]
+position = Vector3(31, 4, 30)
+light_color = Color(1, 0.04, 0.08, 1)
+light_energy = 4
+omni_range = 10
+shadow_enabled = true
+
+[node name="PreviewCamera" type="Camera3D" parent="."]
+position = Vector3(-13, 92, 58)
+rotation_degrees = Vector3(-66, 0, 0)
+current = false
+projection = 1
+size = 112.0
+near = 0.5
+far = 220.0
