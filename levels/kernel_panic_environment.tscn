@@ -1,0 +1,689 @@
+[gd_scene load_steps=11 format=3]
+
+[sub_resource type="StandardMaterial3D" id="Floor"]
+albedo_color = Color(0.075, 0.08, 0.13, 1)
+metallic = 0.72
+roughness = 0.38
+
+[sub_resource type="StandardMaterial3D" id="Wall"]
+albedo_color = Color(0.105, 0.09, 0.16, 1)
+metallic = 0.82
+roughness = 0.32
+
+[sub_resource type="StandardMaterial3D" id="Structure"]
+albedo_color = Color(0.2, 0.17, 0.27, 1)
+metallic = 0.9
+roughness = 0.24
+
+[sub_resource type="StandardMaterial3D" id="Primary"]
+albedo_color = Color(0.62, 0.01, 0.48, 1)
+emission_enabled = true
+emission = Color(1, 0.01, 0.65, 1)
+emission_energy_multiplier = 5.0
+
+[sub_resource type="StandardMaterial3D" id="Secondary"]
+albedo_color = Color(0.01, 0.52, 0.72, 1)
+emission_enabled = true
+emission = Color(0.01, 0.9, 1, 1)
+emission_energy_multiplier = 4.5
+
+[sub_resource type="StandardMaterial3D" id="Warning"]
+albedo_color = Color(0.65, 0.025, 0.04, 1)
+emission_enabled = true
+emission = Color(1, 0.02, 0.04, 1)
+emission_energy_multiplier = 5.5
+
+[sub_resource type="StandardMaterial3D" id="Inactive"]
+albedo_color = Color(0.055, 0.065, 0.08, 1)
+metallic = 0.8
+roughness = 0.42
+
+[sub_resource type="StandardMaterial3D" id="Green"]
+albedo_color = Color(0.02, 0.45, 0.18, 1)
+emission_enabled = true
+emission = Color(0.05, 1, 0.35, 1)
+emission_energy_multiplier = 4.0
+
+[sub_resource type="Environment" id="World"]
+background_mode = 1
+background_color = Color(0.009, 0.006, 0.025, 1)
+ambient_light_source = 3
+ambient_light_color = Color(0.68, 0.32, 0.78, 1)
+ambient_light_energy = 0.55
+tonemap_mode = 2
+
+[node name="KernelPanicEnvironment" type="Node3D"]
+
+[node name="Environment" type="Node3D" parent="."]
+
+[node name="KernelApproach" type="Node3D" parent="Environment"]
+
+[node name="Architecture" type="Node3D" parent="Environment/KernelApproach"]
+
+[node name="Floor" type="CSGBox3D" parent="Environment/KernelApproach/Architecture"]
+position = Vector3(0, -0.5, 34)
+size = Vector3(16, 1, 12)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="WestWall" type="CSGBox3D" parent="Environment/KernelApproach/Architecture"]
+position = Vector3(-8.0, 2.5, 34)
+size = Vector3(0.6, 6, 12)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="EastWall" type="CSGBox3D" parent="Environment/KernelApproach/Architecture"]
+position = Vector3(8.0, 2.5, 34)
+size = Vector3(0.6, 6, 12)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="NorthWallLeft" type="CSGBox3D" parent="Environment/KernelApproach/Architecture"]
+position = Vector3(-5.333333333333333, 2.5, 28.0)
+size = Vector3(5.333333333333333, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="NorthWallRight" type="CSGBox3D" parent="Environment/KernelApproach/Architecture"]
+position = Vector3(5.333333333333333, 2.5, 28.0)
+size = Vector3(5.333333333333333, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="SouthWall" type="CSGBox3D" parent="Environment/KernelApproach/Architecture"]
+position = Vector3(0, 2.5, 40.0)
+size = Vector3(16, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="MissionProps" type="Node3D" parent="Environment/KernelApproach"]
+
+[node name="MissionDisplay" type="CSGBox3D" parent="Environment/KernelApproach/MissionProps"]
+position = Vector3(0, 2, 35.5)
+size = Vector3(7, 2.4, 0.7)
+material = SubResource("Structure")
+use_collision = true
+
+[node name="MissionDisplayGlow" type="CSGBox3D" parent="Environment/KernelApproach/MissionProps"]
+position = Vector3(0, 2, 35.9)
+size = Vector3(6, 1.4, 0.08)
+material = SubResource("Primary")
+
+[node name="MissionLabel" type="Label3D" parent="Environment/KernelApproach/MissionProps"]
+position = Vector3(0, 3.8, 36.0)
+text = "REACH THE KERNEL // EXECUTE SHUTDOWN"
+font_size = 34
+outline_size = 10
+modulate = Color(1.000000, 0.270588, 0.784314, 1)
+billboard = 1
+
+[node name="ApproachConduit_-5" type="CSGBox3D" parent="Environment/KernelApproach/MissionProps"]
+position = Vector3(-5, 0.15, 30)
+size = Vector3(0.25, 0.15, 8)
+material = SubResource("Secondary")
+
+[node name="ApproachConduit_5" type="CSGBox3D" parent="Environment/KernelApproach/MissionProps"]
+position = Vector3(5, 0.15, 30)
+size = Vector3(0.25, 0.15, 8)
+material = SubResource("Secondary")
+
+[node name="GravityDistortion" type="Node3D" parent="Environment"]
+
+[node name="Platforms" type="Node3D" parent="Environment/GravityDistortion"]
+
+[node name="ApproachDeck" type="CSGBox3D" parent="Environment/GravityDistortion/Platforms"]
+position = Vector3(0, -0.5, 26)
+size = Vector3(12, 1, 6)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="PolarityPlatformA_Start" type="CSGBox3D" parent="Environment/GravityDistortion/Platforms"]
+position = Vector3(-6, 1.5, 20)
+size = Vector3(5, 0.8, 5)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="PolarityPlatformA_Target" type="CSGBox3D" parent="Environment/GravityDistortion/Platforms"]
+position = Vector3(-2, 5, 16)
+size = Vector3(5, 0.8, 5)
+material = SubResource("Secondary")
+visible = false
+
+[node name="PolarityPlatformB_Start" type="CSGBox3D" parent="Environment/GravityDistortion/Platforms"]
+position = Vector3(6, 3, 15)
+size = Vector3(5, 0.8, 5)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="PolarityPlatformB_Target" type="CSGBox3D" parent="Environment/GravityDistortion/Platforms"]
+position = Vector3(2, 6.5, 11)
+size = Vector3(5, 0.8, 5)
+material = SubResource("Primary")
+visible = false
+
+[node name="CoreLanding" type="CSGBox3D" parent="Environment/GravityDistortion/Platforms"]
+position = Vector3(0, -0.5, 9)
+size = Vector3(12, 1, 5)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="ApproachGravityConnector" type="CSGBox3D" parent="Environment/GravityDistortion/Platforms"]
+position = Vector3(0, -0.5, 29)
+size = Vector3(6, 1, 2)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="FragmentArchitecture" type="Node3D" parent="Environment/GravityDistortion"]
+
+[node name="SuspendedFragment_1" type="CSGBox3D" parent="Environment/GravityDistortion/FragmentArchitecture"]
+position = Vector3(-9, 5, 20)
+size = Vector3(4, 0.7, 2)
+material = SubResource("Structure")
+rotation_degrees = Vector3(0, 0, 18)
+
+[node name="SuspendedFragment_2" type="CSGBox3D" parent="Environment/GravityDistortion/FragmentArchitecture"]
+position = Vector3(9, 7, 17)
+size = Vector3(4, 0.7, 2)
+material = SubResource("Structure")
+rotation_degrees = Vector3(0, 0, -22)
+
+[node name="SuspendedFragment_3" type="CSGBox3D" parent="Environment/GravityDistortion/FragmentArchitecture"]
+position = Vector3(-8, 8, 12)
+size = Vector3(4, 0.7, 2)
+material = SubResource("Structure")
+rotation_degrees = Vector3(0, 0, 35)
+
+[node name="SuspendedFragment_4" type="CSGBox3D" parent="Environment/GravityDistortion/FragmentArchitecture"]
+position = Vector3(8, 10, 9)
+size = Vector3(4, 0.7, 2)
+material = SubResource("Structure")
+rotation_degrees = Vector3(0, 0, -30)
+
+[node name="TetherVisuals" type="Node3D" parent="Environment/GravityDistortion"]
+
+[node name="AnchorMount_01" type="CSGCylinder3D" parent="Environment/GravityDistortion/TetherVisuals"]
+position = Vector3(-4, 9, 21)
+radius = 0.5
+height = 3
+sides = 24
+material = SubResource("Structure")
+rotation_degrees = Vector3(90, 0, 0)
+use_collision = true
+
+[node name="AnchorBeacon_01" type="CSGCylinder3D" parent="Environment/GravityDistortion/TetherVisuals"]
+position = Vector3(-4, 9, 21)
+radius = 0.9
+height = 0.25
+sides = 24
+material = SubResource("Secondary")
+rotation_degrees = Vector3(90, 0, 0)
+
+[node name="AnchorMount_02" type="CSGCylinder3D" parent="Environment/GravityDistortion/TetherVisuals"]
+position = Vector3(4, 11, 12)
+radius = 0.5
+height = 3
+sides = 24
+material = SubResource("Structure")
+rotation_degrees = Vector3(90, 0, 0)
+use_collision = true
+
+[node name="AnchorBeacon_02" type="CSGCylinder3D" parent="Environment/GravityDistortion/TetherVisuals"]
+position = Vector3(4, 11, 12)
+radius = 0.9
+height = 0.25
+sides = 24
+material = SubResource("Primary")
+rotation_degrees = Vector3(90, 0, 0)
+
+[node name="CorePowerNetwork" type="Node3D" parent="Environment"]
+
+[node name="Architecture" type="Node3D" parent="Environment/CorePowerNetwork"]
+
+[node name="CoreDeck" type="CSGBox3D" parent="Environment/CorePowerNetwork/Architecture"]
+position = Vector3(0, -0.5, 2)
+size = Vector3(24, 1, 14)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="CoreWall_-12" type="CSGBox3D" parent="Environment/CorePowerNetwork/Architecture"]
+position = Vector3(-12, 4, 2)
+size = Vector3(0.7, 9, 14)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="CoreWall_12" type="CSGBox3D" parent="Environment/CorePowerNetwork/Architecture"]
+position = Vector3(12, 4, 2)
+size = Vector3(0.7, 9, 14)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="KernelLandmark" type="Node3D" parent="Environment/CorePowerNetwork"]
+
+[node name="KernelCore_Active" type="CSGCylinder3D" parent="Environment/CorePowerNetwork/KernelLandmark"]
+position = Vector3(0, 6, 2)
+radius = 3
+height = 11
+sides = 24
+material = SubResource("Primary")
+
+[node name="KernelCore_Destabilized" type="CSGCylinder3D" parent="Environment/CorePowerNetwork/KernelLandmark"]
+position = Vector3(0, 6, 2)
+radius = 3.3
+height = 11
+sides = 24
+material = SubResource("Warning")
+visible = false
+
+[node name="KernelCore_Disabled" type="CSGCylinder3D" parent="Environment/CorePowerNetwork/KernelLandmark"]
+position = Vector3(0, 6, 2)
+radius = 2.7
+height = 11
+sides = 24
+material = SubResource("Inactive")
+visible = false
+
+[node name="ContainmentRing_1.2" type="CSGCylinder3D" parent="Environment/CorePowerNetwork/KernelLandmark"]
+position = Vector3(0, 1.2, 2)
+radius = 5
+height = 0.35
+sides = 24
+material = SubResource("Secondary")
+rotation_degrees = Vector3(0, 0, 90)
+
+[node name="ContainmentRing_6" type="CSGCylinder3D" parent="Environment/CorePowerNetwork/KernelLandmark"]
+position = Vector3(0, 6, 2)
+radius = 5
+height = 0.35
+sides = 24
+material = SubResource("Primary")
+rotation_degrees = Vector3(0, 0, 90)
+
+[node name="ContainmentRing_10.8" type="CSGCylinder3D" parent="Environment/CorePowerNetwork/KernelLandmark"]
+position = Vector3(0, 10.8, 2)
+radius = 5
+height = 0.35
+sides = 24
+material = SubResource("Warning")
+rotation_degrees = Vector3(0, 0, 90)
+
+[node name="Machinery" type="Node3D" parent="Environment/CorePowerNetwork"]
+
+[node name="RewireConsoleBase" type="CSGBox3D" parent="Environment/CorePowerNetwork/Machinery"]
+position = Vector3(8, 0.8, 4)
+size = Vector3(3, 1.6, 2.6)
+material = SubResource("Structure")
+use_collision = true
+
+[node name="RewireConsoleDisplay" type="CSGBox3D" parent="Environment/CorePowerNetwork/Machinery"]
+position = Vector3(7.95, 1.5, 2.65)
+size = Vector3(2.2, 0.8, 0.08)
+material = SubResource("Secondary")
+
+[node name="CyanChannel_Base" type="CSGBox3D" parent="Environment/CorePowerNetwork/Machinery"]
+position = Vector3(6, 0.1, 0)
+size = Vector3(0.7, 0.12, 10)
+material = SubResource("Inactive")
+
+[node name="CyanChannel_Active" type="CSGBox3D" parent="Environment/CorePowerNetwork/Machinery"]
+position = Vector3(6, 0.18, 0)
+size = Vector3(0.3, 0.13, 10)
+material = SubResource("Secondary")
+
+[node name="CyanChannel_Inactive" type="CSGBox3D" parent="Environment/CorePowerNetwork/Machinery"]
+position = Vector3(6, 0.18, 0)
+size = Vector3(0.3, 0.13, 10)
+material = SubResource("Inactive")
+visible = false
+
+[node name="MagentaChannel_Base" type="CSGBox3D" parent="Environment/CorePowerNetwork/Machinery"]
+position = Vector3(-6, 0.1, 0)
+size = Vector3(0.7, 0.12, 10)
+material = SubResource("Inactive")
+
+[node name="MagentaChannel_Active" type="CSGBox3D" parent="Environment/CorePowerNetwork/Machinery"]
+position = Vector3(-6, 0.18, 0)
+size = Vector3(0.3, 0.13, 10)
+material = SubResource("Primary")
+
+[node name="MagentaChannel_Inactive" type="CSGBox3D" parent="Environment/CorePowerNetwork/Machinery"]
+position = Vector3(-6, 0.18, 0)
+size = Vector3(0.3, 0.13, 10)
+material = SubResource("Inactive")
+visible = false
+
+[node name="CoreShield_Active" type="CSGBox3D" parent="Environment/CorePowerNetwork/Machinery"]
+position = Vector3(0, 2, -5)
+size = Vector3(9, 4, 0.3)
+material = SubResource("Primary")
+use_collision = true
+
+[node name="CoreShield_Disabled" type="CSGBox3D" parent="Environment/CorePowerNetwork/Machinery"]
+position = Vector3(0, 0.45, -5)
+size = Vector3(9, 0.18, 0.3)
+material = SubResource("Green")
+visible = false
+
+[node name="CoreWarning" type="Label3D" parent="Environment/CorePowerNetwork"]
+position = Vector3(0, 12, 2)
+text = "KERNEL INTEGRITY CRITICAL"
+font_size = 42
+outline_size = 10
+modulate = Color(1.000000, 0.207843, 0.741176, 1)
+billboard = 1
+
+[node name="FinalSecurityChamber" type="Node3D" parent="Environment"]
+
+[node name="Architecture" type="Node3D" parent="Environment/FinalSecurityChamber"]
+
+[node name="Floor" type="CSGBox3D" parent="Environment/FinalSecurityChamber/Architecture"]
+position = Vector3(0, -0.5, -13)
+size = Vector3(18, 1, 11)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="WestWall" type="CSGBox3D" parent="Environment/FinalSecurityChamber/Architecture"]
+position = Vector3(-9.0, 2.5, -13)
+size = Vector3(0.6, 6, 11)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="EastWall" type="CSGBox3D" parent="Environment/FinalSecurityChamber/Architecture"]
+position = Vector3(9.0, 2.5, -13)
+size = Vector3(0.6, 6, 11)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="NorthWallLeft" type="CSGBox3D" parent="Environment/FinalSecurityChamber/Architecture"]
+position = Vector3(-6.0, 2.5, -18.5)
+size = Vector3(6.0, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="NorthWallRight" type="CSGBox3D" parent="Environment/FinalSecurityChamber/Architecture"]
+position = Vector3(6.0, 2.5, -18.5)
+size = Vector3(6.0, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="SouthWallLeft" type="CSGBox3D" parent="Environment/FinalSecurityChamber/Architecture"]
+position = Vector3(-6.0, 2.5, -7.5)
+size = Vector3(6.0, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="SouthWallRight" type="CSGBox3D" parent="Environment/FinalSecurityChamber/Architecture"]
+position = Vector3(6.0, 2.5, -7.5)
+size = Vector3(6.0, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="CombatProps" type="Node3D" parent="Environment/FinalSecurityChamber"]
+
+[node name="CoverLeft" type="CSGBox3D" parent="Environment/FinalSecurityChamber/CombatProps"]
+position = Vector3(-5, 0.7, -13)
+size = Vector3(3, 1.4, 1.2)
+material = SubResource("Structure")
+use_collision = true
+
+[node name="CoverRight" type="CSGBox3D" parent="Environment/FinalSecurityChamber/CombatProps"]
+position = Vector3(5, 0.7, -10)
+size = Vector3(3, 1.4, 1.2)
+material = SubResource("Structure")
+use_collision = true
+
+[node name="ArenaGuideLeft" type="CSGBox3D" parent="Environment/FinalSecurityChamber/CombatProps"]
+position = Vector3(-7, 0.12, -13)
+size = Vector3(0.16, 0.12, 6)
+material = SubResource("Secondary")
+
+[node name="ArenaGuideRight" type="CSGBox3D" parent="Environment/FinalSecurityChamber/CombatProps"]
+position = Vector3(7, 0.12, -13)
+size = Vector3(0.16, 0.12, 6)
+material = SubResource("Primary")
+
+[node name="CoreSecurityConnector" type="CSGBox3D" parent="Environment/FinalSecurityChamber/Architecture"]
+position = Vector3(0, -0.5, -6.25)
+size = Vector3(6, 1, 3)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="KernelShutdown" type="Node3D" parent="Environment"]
+
+[node name="Architecture" type="Node3D" parent="Environment/KernelShutdown"]
+
+[node name="Floor" type="CSGBox3D" parent="Environment/KernelShutdown/Architecture"]
+position = Vector3(0, -0.5, -28)
+size = Vector3(16, 1, 13)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="WestWall" type="CSGBox3D" parent="Environment/KernelShutdown/Architecture"]
+position = Vector3(-8.0, 2.5, -28)
+size = Vector3(0.6, 6, 13)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="EastWall" type="CSGBox3D" parent="Environment/KernelShutdown/Architecture"]
+position = Vector3(8.0, 2.5, -28)
+size = Vector3(0.6, 6, 13)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="NorthWallLeft" type="CSGBox3D" parent="Environment/KernelShutdown/Architecture"]
+position = Vector3(-5.333333333333333, 2.5, -34.5)
+size = Vector3(5.333333333333333, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="NorthWallRight" type="CSGBox3D" parent="Environment/KernelShutdown/Architecture"]
+position = Vector3(5.333333333333333, 2.5, -34.5)
+size = Vector3(5.333333333333333, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="SouthWall" type="CSGBox3D" parent="Environment/KernelShutdown/Architecture"]
+position = Vector3(0, 2.5, -21.5)
+size = Vector3(16, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="ShutdownMachinery" type="Node3D" parent="Environment/KernelShutdown"]
+
+[node name="ShutdownConsoleBase" type="CSGBox3D" parent="Environment/KernelShutdown/ShutdownMachinery"]
+position = Vector3(0, 1, -29)
+size = Vector3(5, 2, 3)
+material = SubResource("Structure")
+use_collision = true
+
+[node name="ShutdownConsole_Active" type="CSGBox3D" parent="Environment/KernelShutdown/ShutdownMachinery"]
+position = Vector3(0, 1.8, -27.45)
+size = Vector3(4, 0.9, 0.08)
+material = SubResource("Primary")
+
+[node name="ShutdownConsole_Destabilized" type="CSGBox3D" parent="Environment/KernelShutdown/ShutdownMachinery"]
+position = Vector3(0, 1.8, -27.45)
+size = Vector3(4, 0.9, 0.08)
+material = SubResource("Warning")
+visible = false
+
+[node name="ShutdownConsole_Disabled" type="CSGBox3D" parent="Environment/KernelShutdown/ShutdownMachinery"]
+position = Vector3(0, 1.8, -27.45)
+size = Vector3(4, 0.9, 0.08)
+material = SubResource("Green")
+visible = false
+
+[node name="ShutdownLabel" type="Label3D" parent="Environment/KernelShutdown/ShutdownMachinery"]
+position = Vector3(0, 3.3, -29)
+text = "KERNEL SHUTDOWN"
+font_size = 38
+outline_size = 10
+modulate = Color(1.000000, 0.258824, 0.776471, 1)
+billboard = 1
+
+[node name="VictoryGateStates" type="Node3D" parent="Environment/KernelShutdown"]
+
+[node name="VictoryFrameTop" type="CSGBox3D" parent="Environment/KernelShutdown/VictoryGateStates"]
+position = Vector3(0, 5, -34)
+size = Vector3(8, 0.8, 0.8)
+material = SubResource("Structure")
+use_collision = true
+
+[node name="VictoryFrameLeft" type="CSGBox3D" parent="Environment/KernelShutdown/VictoryGateStates"]
+position = Vector3(-4, 2.5, -34)
+size = Vector3(0.8, 5, 0.8)
+material = SubResource("Structure")
+use_collision = true
+
+[node name="VictoryFrameRight" type="CSGBox3D" parent="Environment/KernelShutdown/VictoryGateStates"]
+position = Vector3(4, 2.5, -34)
+size = Vector3(0.8, 5, 0.8)
+material = SubResource("Structure")
+use_collision = true
+
+[node name="VictoryGate_Locked" type="CSGBox3D" parent="Environment/KernelShutdown/VictoryGateStates"]
+position = Vector3(0, 2.4, -34)
+size = Vector3(7.2, 4.2, 0.4)
+material = SubResource("Primary")
+use_collision = true
+
+[node name="VictoryGate_OpenLeft" type="CSGBox3D" parent="Environment/KernelShutdown/VictoryGateStates"]
+position = Vector3(-4.8, 2.4, -34)
+size = Vector3(1.4, 4.2, 0.4)
+material = SubResource("Structure")
+visible = false
+
+[node name="VictoryGate_OpenRight" type="CSGBox3D" parent="Environment/KernelShutdown/VictoryGateStates"]
+position = Vector3(4.8, 2.4, -34)
+size = Vector3(1.4, 4.2, 0.4)
+material = SubResource("Structure")
+visible = false
+
+[node name="VictoryGate_OpenGlow" type="CSGBox3D" parent="Environment/KernelShutdown/VictoryGateStates"]
+position = Vector3(0, 0.3, -33.8)
+size = Vector3(7.2, 0.1, 0.12)
+material = SubResource("Green")
+visible = false
+
+[node name="SecurityShutdownConnector" type="CSGBox3D" parent="Environment/KernelShutdown/Architecture"]
+position = Vector3(0, -0.5, -20)
+size = Vector3(6, 1, 4)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="InteractionMarkers" type="Node3D" parent="."]
+
+[node name="PlayerSpawn" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(0, 0.4, 39)
+rotation_degrees = Vector3(0, 0, 0)
+
+[node name="KernelObjectiveMarker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(0, 5, 8)
+
+[node name="PolarityTarget_01" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-6, 2.2, 20)
+
+[node name="PolarityTarget_01_End" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-2, 5.7, 16)
+
+[node name="PolarityTarget_02" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(6, 3.7, 15)
+
+[node name="PolarityTarget_02_End" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(2, 7.2, 11)
+
+[node name="TetherLaunch_01" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(0, 0.4, 25)
+rotation_degrees = Vector3(0, 180, 0)
+
+[node name="TetherAnchor_01" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-4, 9, 21)
+
+[node name="TetherIntermediateLanding" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-2, 5.8, 16)
+
+[node name="TetherAnchor_02" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(4, 11, 12)
+
+[node name="TetherLanding_02" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(0, 0.4, 9)
+
+[node name="FallRecoveryMarker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(0, 0.4, 26)
+
+[node name="RewireConsole_Marker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(8, 0.4, 2.3)
+rotation_degrees = Vector3(0, 180, 0)
+
+[node name="CoreShield_Marker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(0, 2, -5)
+
+[node name="SecurityConstructSpawn" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(0, 0.4, -12)
+rotation_degrees = Vector3(0, 180, 0)
+
+[node name="KernelShutdownConsole_Marker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(0, 0.4, -26.5)
+rotation_degrees = Vector3(0, 180, 0)
+
+[node name="FinalVictoryMarker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(0, 0.4, -33)
+rotation_degrees = Vector3(0, 0, 0)
+
+[node name="Lighting" type="Node3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Lighting"]
+environment = SubResource("World")
+
+[node name="KernelKey" type="DirectionalLight3D" parent="Lighting"]
+rotation_degrees = Vector3(-55, 20, 0)
+light_color = Color(0.913725, 0.784314, 1.000000, 1)
+light_energy = 0.95
+shadow_enabled = true
+
+[node name="ApproachMagenta" type="OmniLight3D" parent="Lighting"]
+position = Vector3(0, 4, 34)
+light_color = Color(1.000000, 0.203922, 0.764706, 1)
+light_energy = 2.1
+omni_range = 13
+shadow_enabled = true
+
+[node name="GravityCyan" type="OmniLight3D" parent="Lighting"]
+position = Vector3(-3, 8, 18)
+light_color = Color(0.113725, 0.913725, 1.000000, 1)
+light_energy = 2.4
+omni_range = 17
+shadow_enabled = true
+
+[node name="CoreMagenta" type="OmniLight3D" parent="Lighting"]
+position = Vector3(0, 8, 2)
+light_color = Color(1.000000, 0.094118, 0.717647, 1)
+light_energy = 3.3
+omni_range = 22
+shadow_enabled = true
+
+[node name="CoreCyan" type="OmniLight3D" parent="Lighting"]
+position = Vector3(6, 4, 1)
+light_color = Color(0.098039, 0.862745, 1.000000, 1)
+light_energy = 2.4
+omni_range = 14
+shadow_enabled = true
+
+[node name="SecurityRed" type="OmniLight3D" parent="Lighting"]
+position = Vector3(0, 4, -13)
+light_color = Color(1.000000, 0.160784, 0.298039, 1)
+light_energy = 2.2
+omni_range = 13
+shadow_enabled = true
+
+[node name="ShutdownMagenta" type="OmniLight3D" parent="Lighting"]
+position = Vector3(0, 4, -28)
+light_color = Color(0.811765, 0.207843, 1.000000, 1)
+light_energy = 2.4
+omni_range = 13
+shadow_enabled = true
+
+[node name="PreviewCamera" type="Camera3D" parent="."]
+position = Vector3(0, 70, 1)
+rotation_degrees = Vector3(-90, 0, 0)
+current = false
+fov = 60.0
