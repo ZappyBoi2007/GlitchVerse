@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://player/player_controller.gd" id="1_player"]
 [ext_resource type="Script" path="res://systems/reality_debugger.gd" id="2_debugger"]
+[ext_resource type="Script" path="res://audio/player_audio_controller.gd" id="3_audio"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape_player"]
 radius = 0.35
@@ -36,3 +37,6 @@ environment = SubResource("Environment_camera")
 target_position = Vector3(0, 0, -12)
 collide_with_areas = true
 script = ExtResource("2_debugger")
+
+[node name="PlayerAudioController" type="Node" parent="."]
+script = ExtResource("3_audio")
