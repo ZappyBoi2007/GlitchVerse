@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/machinery_housing.tscn" id="ArtMachinery"]
 [ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/safety_railing.tscn" id="ArtRail"]
 [ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/recessed_wall_panel.tscn" id="ArtWallPanel"]
-[ext_resource type="Script" uid="uid://d1vlyynug22q" path="res://systems/random_enemy_encounter.gd" id="EnemyEncounterScript"]
+[ext_resource type="Script" path="res://systems/random_enemy_encounter.gd" id="EnemyEncounterScript"]
 [ext_resource type="PackedScene" path="res://enemies/security_construct.tscn" id="EnemyScene"]
 [ext_resource type="Script" uid="uid://bsedbfwebh3mu" path="res://levels/access_denied/access_denied_system_breach_level.gd" id="GameplayScript"]
 
