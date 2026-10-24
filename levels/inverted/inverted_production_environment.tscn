@@ -579,3 +579,63 @@ position = Vector3(0, 1.7, 16)
 rotation_degrees = Vector3(-8.4, 0, 0)
 current = false
 fov = 76.0
+
+[editable path="Environment/WalkwayVisuals/ArrivalRailLeft"]
+
+[editable path="Environment/WalkwayVisuals/ArrivalRailRight"]
+
+[editable path="Environment/WalkwayVisuals/UpperRailLeft"]
+
+[editable path="Environment/WalkwayVisuals/UpperRailRight"]
+
+[editable path="Environment/ReactorComplex/GravityReactor"]
+
+[editable path="Environment/StabilizerSystems/StabilizerA_Housing"]
+
+[editable path="Environment/StabilizerSystems/StabilizerB_Housing"]
+
+[editable path="Environment/TetherMounts/EntryTetherFixture"]
+
+[editable path="Environment/TetherMounts/ExitTetherFixture"]
+
+[editable path="Environment/ServiceInfrastructure/WestObservationWindow"]
+
+[editable path="Environment/ServiceInfrastructure/EastObservationWindow"]
+
+[editable path="Environment/ServiceInfrastructure/WestMachineryA"]
+
+[editable path="Environment/ServiceInfrastructure/EastMachineryA"]
+
+[editable path="Environment/ServiceInfrastructure/WestMachineryB"]
+
+[editable path="Environment/ServiceInfrastructure/EastMachineryB"]
+
+[editable path="Environment/ServiceInfrastructure/WestMonitoringConsole"]
+
+[editable path="Environment/ServiceInfrastructure/EastMonitoringConsole"]
+
+[editable path="Environment/ServiceInfrastructure/ArrivalCableTrayWest"]
+
+[editable path="Environment/ServiceInfrastructure/ArrivalCableTrayEast"]
+
+[editable path="Environment/ServiceInfrastructure/CoreCableTrayWest"]
+
+[editable path="Environment/ServiceInfrastructure/CoreCableTrayEast"]
+
+[editable path="Environment/ServiceInfrastructure/WestWallPanel"]
+
+[editable path="Environment/ServiceInfrastructure/EastWallPanel"]
+
+[editable path="Environment/ServiceInfrastructure/ArrivalLightWest"]
+
+[editable path="Environment/ServiceInfrastructure/ArrivalLightEast"]
+
+[editable path="Environment/ServiceInfrastructure/CoreLightWest"]
+
+[editable path="Environment/ServiceInfrastructure/CoreLightEast"]
+
+[editable path="Environment/ExitAssembly/UpperExitFrame"]
+
+[editable path="Environment/ExitAssembly/ExitServiceCabinetLeft"]
+
+[editable path="Environment/ExitAssembly/ExitServiceCabinetRight"]

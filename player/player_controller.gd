@@ -28,8 +28,12 @@ signal post_move(delta: float)
 @export_category("Camera")
 @export_range(0.0005, 0.01, 0.0001) var mouse_sensitivity: float = 0.0022
 @export_range(45.0, 89.0, 1.0) var vertical_look_limit: float = 85.0
+@export_range(50.0, 100.0, 1.0) var base_fov: float = 78.0
+@export_range(50.0, 110.0, 1.0) var sprint_fov: float = 88.0
+@export_range(1.0, 24.0, 0.5) var fov_change_speed: float = 9.0
 
 @onready var head: Node3D = $Head
+@onready var camera: Camera3D = $Head/Camera3D
 
 var _gravity: float = 9.8
 var _coyote_time_remaining := 0.0
@@ -39,7 +43,24 @@ var _movement_override_sources: Dictionary = {}
 
 func _ready() -> void:
 	_gravity = float(ProjectSettings.get_setting("physics/3d/default_gravity", 9.8))
+	camera.fov = base_fov
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+
+func _process(delta: float) -> void:
+	var horizontal_speed := Vector2(velocity.x, velocity.z).length()
+	var sprinting := (
+		Input.is_action_pressed("sprint")
+		and horizontal_speed > walk_speed * 0.65
+	)
+	var speed_blend := clampf(
+		(horizontal_speed - walk_speed * 0.65) / maxf(sprint_speed - walk_speed * 0.65, 0.01),
+		0.0,
+		1.0
+	) if sprinting else 0.0
+	var target_fov := lerpf(base_fov, sprint_fov, speed_blend)
+	var blend_weight := 1.0 - exp(-fov_change_speed * delta)
+	camera.fov = lerpf(camera.fov, target_fov, blend_weight)
 
 
 func _input(event: InputEvent) -> void:

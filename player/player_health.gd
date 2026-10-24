@@ -5,10 +5,10 @@ signal health_changed(current_health: int, maximum_health: int)
 signal damaged(amount: int)
 signal player_defeated
 
-@export_range(1, 10, 1) var maximum_health := 3
+@export_range(1, 1000, 1) var maximum_health := 100
 @export_range(0.0, 3.0, 0.05) var invulnerability_seconds := 0.65
 
-var current_health := 3
+var current_health := 100
 var _invulnerability_remaining := 0.0
 var _defeated := false
 

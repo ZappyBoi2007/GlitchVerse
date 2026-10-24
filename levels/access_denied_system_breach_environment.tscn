@@ -1514,3 +1514,57 @@ scale = Vector3(1.2, 1.2, 1.2)
 [node name="FinalCeilingLight" parent="Environment/FinalContainmentExit/ProductionArtPass" instance=ExtResource("ArtLight")]
 position = Vector3(23, 5.15, 30)
 scale = Vector3(1.5, 1.5, 1.5)
+
+[editable path="Environment/ArrivalChamber/ProductionArtPass/LobbyWallPanelLeft"]
+
+[editable path="Environment/ArrivalChamber/ProductionArtPass/LobbyWallPanelRight"]
+
+[editable path="Environment/ArrivalChamber/ProductionArtPass/LobbySecurityFrame"]
+
+[editable path="Environment/ArrivalChamber/ProductionArtPass/LobbyScannerLeft"]
+
+[editable path="Environment/ArrivalChamber/ProductionArtPass/LobbyScannerRight"]
+
+[editable path="Environment/ArrivalChamber/ProductionArtPass/LobbyCeilingLightA"]
+
+[editable path="Environment/ArrivalChamber/ProductionArtPass/LobbyCeilingLightB"]
+
+[editable path="Environment/ArrivalChamber/ProductionArtPass/LobbyFloorInlayA"]
+
+[editable path="Environment/ArrivalChamber/ProductionArtPass/LobbyFloorInlayB"]
+
+[editable path="Environment/BrokenCrossing/ProductionArtPass/CrossingCableTrayStart"]
+
+[editable path="Environment/BrokenCrossing/ProductionArtPass/CrossingCableTrayEnd"]
+
+[editable path="Environment/BrokenCrossing/ProductionArtPass/CrossingRailingStart"]
+
+[editable path="Environment/BrokenCrossing/ProductionArtPass/CrossingRailingEnd"]
+
+[editable path="Environment/BrokenCrossing/ProductionArtPass/CrossingServiceCabinet"]
+
+[editable path="Environment/SecurityInterception/ProductionArtPass/SecurityWallPanel"]
+
+[editable path="Environment/SecurityInterception/ProductionArtPass/SecurityHatch"]
+
+[editable path="Environment/SecurityInterception/ProductionArtPass/SecurityEquipmentBay"]
+
+[editable path="Environment/SecurityInterception/ProductionArtPass/SecurityCeilingLight"]
+
+[editable path="Environment/PowerDiversion/ProductionArtPass/PowerCabinetA"]
+
+[editable path="Environment/PowerDiversion/ProductionArtPass/PowerCabinetB"]
+
+[editable path="Environment/PowerDiversion/ProductionArtPass/PowerCableTrayA"]
+
+[editable path="Environment/PowerDiversion/ProductionArtPass/PowerCableTrayB"]
+
+[editable path="Environment/PowerDiversion/ProductionArtPass/PowerConsoleShell"]
+
+[editable path="Environment/FinalContainmentExit/ProductionArtPass/FinalDoorArchitecture"]
+
+[editable path="Environment/FinalContainmentExit/ProductionArtPass/FinalWallPanelNorth"]
+
+[editable path="Environment/FinalContainmentExit/ProductionArtPass/FinalWallPanelSouth"]
+
+[editable path="Environment/FinalContainmentExit/ProductionArtPass/FinalCeilingLight"]

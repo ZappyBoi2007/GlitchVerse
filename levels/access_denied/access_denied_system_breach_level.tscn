@@ -1,14 +1,1819 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://dg8jw051ghnrn"]
 
-[ext_resource type="Script" path="res://levels/access_denied/access_denied_system_breach_level.gd" id="1"]
-[ext_resource type="PackedScene" path="res://levels/access_denied_system_breach_environment.tscn" id="2"]
+[ext_resource type="Shader" uid="uid://dtrb1pfn2mpma" path="res://levels/access_denied_assets/scifi/panel.gdshader" id="1_panel"]
+[ext_resource type="Shader" uid="uid://na3hwu0b5ve5" path="res://levels/access_denied_assets/scifi/energy.gdshader" id="2_energy"]
+[ext_resource type="Shader" uid="uid://judjg5yc3rhj" path="res://levels/access_denied_assets/scifi/stars.gdshader" id="3_stars"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/cable_tray.tscn" id="ArtCableTray"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/relay_console.tscn" id="ArtConsole"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/door_frame.tscn" id="ArtDoorFrame"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/reinforced_floor_tile.tscn" id="ArtFloorTile"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/maintenance_hatch.tscn" id="ArtHatch"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/industrial_light.tscn" id="ArtLight"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/machinery_housing.tscn" id="ArtMachinery"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/safety_railing.tscn" id="ArtRail"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/recessed_wall_panel.tscn" id="ArtWallPanel"]
+[ext_resource type="Script" uid="uid://d1vlyynug22q" path="res://systems/random_enemy_encounter.gd" id="EnemyEncounterScript"]
+[ext_resource type="PackedScene" path="res://enemies/security_construct.tscn" id="EnemyScene"]
+[ext_resource type="Script" uid="uid://bsedbfwebh3mu" path="res://levels/access_denied/access_denied_system_breach_level.gd" id="GameplayScript"]
 
-[node name="AccessDeniedSystemBreachLevel" type="Node3D"]
-script = ExtResource("1")
+[sub_resource type="ShaderMaterial" id="MatFloor"]
+render_priority = 0
+shader = ExtResource("1_panel")
+shader_parameter/base_color = Color(0.16, 0.21, 0.27, 1)
+shader_parameter/accent = Color(0.02, 0.75, 1, 1)
+shader_parameter/panel_scale = 1.0
+shader_parameter/metal = 0.65
+
+[sub_resource type="ShaderMaterial" id="MatWall"]
+render_priority = 0
+shader = ExtResource("1_panel")
+shader_parameter/base_color = Color(0.57, 0.63, 0.68, 1)
+shader_parameter/accent = Color(0.04, 0.35, 0.52, 1)
+shader_parameter/panel_scale = 1.0
+shader_parameter/metal = 0.25
+
+[sub_resource type="ShaderMaterial" id="MatTrim"]
+render_priority = 0
+shader = ExtResource("1_panel")
+shader_parameter/base_color = Color(0.23, 0.3, 0.37, 1)
+shader_parameter/accent = Color(0.02, 0.75, 1, 1)
+shader_parameter/panel_scale = 1.0
+shader_parameter/metal = 0.7
+
+[sub_resource type="StandardMaterial3D" id="MatGlass"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.02, 0.62, 0.85, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="NeonCyan"]
+shading_mode = 0
+albedo_color = Color(0.02, 0.8, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="NeonRed"]
+shading_mode = 0
+albedo_color = Color(1, 0.035, 0.08, 1)
+
+[sub_resource type="StandardMaterial3D" id="NeonAmber"]
+shading_mode = 0
+albedo_color = Color(1, 0.48, 0.04, 1)
+
+[sub_resource type="TorusMesh" id="AnchorRingMesh"]
+material = SubResource("NeonCyan")
+inner_radius = 0.72
+outer_radius = 1.18
+rings = 24
+ring_segments = 14
+
+[sub_resource type="TorusMesh" id="AnchorRingDeliberateMesh"]
+material = SubResource("NeonAmber")
+inner_radius = 0.62
+outer_radius = 1.08
+rings = 24
+ring_segments = 14
+
+[sub_resource type="ShaderMaterial" id="MatProp"]
+render_priority = 0
+shader = ExtResource("1_panel")
+shader_parameter/base_color = Color(0.27, 0.33, 0.38, 1)
+shader_parameter/accent = Color(0.34, 0.45, 0.56, 1)
+shader_parameter/panel_scale = 1.0
+shader_parameter/metal = 0.55
+
+[sub_resource type="CylinderMesh" id="CameraLensMesh"]
+material = SubResource("NeonRed")
+top_radius = 0.26
+bottom_radius = 0.36
+height = 0.55
+radial_segments = 14
+
+[sub_resource type="StandardMaterial3D" id="MatInactive"]
+albedo_color = Color(0.09, 0.1, 0.12, 1)
+metallic = 0.75
+roughness = 0.42
+
+[sub_resource type="ShaderMaterial" id="MatCyanEnergy"]
+render_priority = 0
+shader = ExtResource("2_energy")
+shader_parameter/tint = Color(0.02, 0.75, 1, 0.72)
+
+[sub_resource type="StandardMaterial3D" id="NeonGreen"]
+shading_mode = 0
+albedo_color = Color(0.16, 1, 0.46, 1)
+
+[sub_resource type="BoxShape3D" id="Shape_FinalImportedGate"]
+size = Vector3(0.65, 4.5, 7.8)
+
+[sub_resource type="ShaderMaterial" id="SkyMaterial"]
+shader = ExtResource("3_stars")
+
+[sub_resource type="Sky" id="LevelSky"]
+sky_material = SubResource("SkyMaterial")
+
+[sub_resource type="Environment" id="LevelEnvironment"]
+background_mode = 2
+sky = SubResource("LevelSky")
+ambient_light_source = 3
+ambient_light_color = Color(0.56, 0.68, 0.85, 1)
+ambient_light_energy = 0.55
+tonemap_mode = 2
+
+[node name="AccessDeniedSystemBreachLevel" type="Node3D" unique_id=669449472]
+script = ExtResource("GameplayScript")
 level_id = "access_denied"
 level_display_name = "LEVEL 1 // ACCESS DENIED"
 par_time_seconds = 240.0
 base_score = 1800
 player_spawn_path = NodePath("Environment/InteractionMarkers/PlayerSpawn")
 
-[node name="Environment" parent="." instance=ExtResource("2")]
+[node name="Environment" type="Node3D" parent="." unique_id=1817417623]
+
+[node name="Environment" type="Node3D" parent="Environment" unique_id=1750296408]
+
+[node name="ArrivalChamber" type="Node3D" parent="Environment/Environment" unique_id=1395706040]
+
+[node name="Floors" type="Node3D" parent="Environment/Environment/ArrivalChamber" unique_id=590610914]
+
+[node name="ArrivalFloor" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Floors" unique_id=1209803095]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 30)
+use_collision = true
+size = Vector3(20, 0.5, 18)
+material = SubResource("MatFloor")
+
+[node name="WestThreshold" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Floors" unique_id=1013160549]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11, 0, 30)
+use_collision = true
+size = Vector3(2, 0.5, 6)
+material = SubResource("MatFloor")
+
+[node name="Walls" type="Node3D" parent="Environment/Environment/ArrivalChamber" unique_id=1645350986]
+
+[node name="NorthWall" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Walls" unique_id=900301598]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.7525024, 21)
+use_collision = true
+size = Vector3(20.6, 13.505005, 0.6)
+material = SubResource("MatWall")
+
+[node name="SouthWall" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Walls" unique_id=526511754]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.512207, 39)
+use_collision = true
+size = Vector3(20.6, 13.024414, 0.6)
+material = SubResource("MatWall")
+
+[node name="WestWallNorth" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Walls" unique_id=2146766663]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 6.7540894, 24)
+use_collision = true
+size = Vector3(0.6, 13.508179, 6)
+material = SubResource("MatWall")
+
+[node name="WestWallSouth" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Walls" unique_id=1282278500]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 6.476288, 36)
+use_collision = true
+size = Vector3(0.6, 12.952576, 6)
+material = SubResource("MatWall")
+
+[node name="EastWallNorth" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Walls" unique_id=393880173]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2.5, 23.5)
+use_collision = true
+size = Vector3(0.6, 5, 5)
+material = SubResource("MatWall")
+
+[node name="EastWallSouth" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Walls" unique_id=716670301]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2.5, 36.5)
+use_collision = true
+size = Vector3(0.6, 5, 5)
+material = SubResource("MatWall")
+
+[node name="ObservationFrameTop" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Walls" unique_id=1239073001]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 4.55, 30)
+use_collision = true
+size = Vector3(0.75, 0.9, 8)
+material = SubResource("MatTrim")
+
+[node name="ObservationFrameBottom" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Walls" unique_id=1691739409]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.55, 30)
+use_collision = true
+size = Vector3(0.75, 1.1, 8)
+material = SubResource("MatTrim")
+
+[node name="ObservationPane" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Walls" unique_id=151571590]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.05, 2.55, 30)
+use_collision = true
+size = Vector3(0.18, 3.2, 7)
+material = SubResource("MatGlass")
+
+[node name="Props" type="Node3D" parent="Environment/Environment/ArrivalChamber" unique_id=755150433]
+
+[node name="ObjectiveDisplayHousing" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=2043057136]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, 21.45)
+use_collision = true
+size = Vector3(9, 2.5, 0.45)
+material = SubResource("MatTrim")
+
+[node name="ObjectiveDisplay" type="Label3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=809366934]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.9, 21.72)
+pixel_size = 0.008
+modulate = Color(0.22, 0.94, 1, 1)
+text = "0/2 CIRCUITS RESTORED"
+font_size = 64
+outline_size = 14
+
+[node name="ExitSightlineSign" type="Label3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=497911051]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 9.55, 4.8, 30)
+pixel_size = 0.008
+modulate = Color(1, 0.2, 0.24, 1)
+text = "CONTAINMENT EXIT // LOCKED"
+font_size = 42
+
+[node name="ObjectiveFrameTop" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=1437502169]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.08, 21.72)
+size = Vector3(9, 0.12, 0.12)
+material = SubResource("NeonCyan")
+
+[node name="ObjectiveFrameBottom" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=2068878084]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, 21.72)
+size = Vector3(9, 0.12, 0.12)
+material = SubResource("NeonCyan")
+
+[node name="ObjectiveFrameLeft" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=1186729700]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.44, 2.82, 21.72)
+size = Vector3(0.12, 2.5, 0.12)
+material = SubResource("NeonCyan")
+
+[node name="ObjectiveFrameRight" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=288655297]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.44, 2.82, 21.72)
+size = Vector3(0.12, 2.5, 0.12)
+material = SubResource("NeonCyan")
+
+[node name="ContainmentLandmarkHeader" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=440347555]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.55, 5.15, 30)
+size = Vector3(0.85, 0.55, 9.2)
+material = SubResource("NeonRed")
+
+[node name="RelayStatusA_Housing" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=779545856]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 2.3, 25.2)
+use_collision = true
+size = Vector3(1, 2.4, 2.4)
+material = SubResource("MatTrim")
+
+[node name="RelayStatusA_Indicator" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=1504002744]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.96, 2.65, 25.2)
+size = Vector3(0.08, 0.65, 1.15)
+material = SubResource("NeonRed")
+
+[node name="RelayStatusA_IdentityStrip" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=1936384385]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.94, 3.45, 25.2)
+size = Vector3(0.08, 0.18, 1.5)
+material = SubResource("NeonCyan")
+
+[node name="RelayStatusB_Housing" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=864648938]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.5, 2.3, 34.8)
+use_collision = true
+size = Vector3(1, 2.4, 2.4)
+material = SubResource("MatTrim")
+
+[node name="RelayStatusB_Indicator" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=343523078]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.96, 2.65, 34.8)
+size = Vector3(0.08, 0.65, 1.15)
+material = SubResource("NeonRed")
+
+[node name="RelayStatusB_IdentityStrip" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=1322611581]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.94, 3.45, 34.8)
+size = Vector3(0.08, 0.18, 1.5)
+material = SubResource("NeonAmber")
+
+[node name="RelayStatusA_Label" type="Label3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=67564276]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 8.9, 1.65, 25.2)
+modulate = Color(0.12, 0.86, 1, 1)
+text = "RELAY A"
+font_size = 28
+outline_size = 8
+
+[node name="RelayStatusB_Label" type="Label3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=354780972]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 8.9, 1.65, 34.8)
+modulate = Color(1, 0.58, 0.12, 1)
+text = "RELAY B"
+font_size = 28
+outline_size = 8
+
+[node name="EmergencyStrip01" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=1893997486]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.85, 25.2)
+size = Vector3(7, 0.14, 0.3)
+material = SubResource("NeonRed")
+
+[node name="EmergencyStrip02" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=2073750031]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.85, 34.8)
+size = Vector3(7, 0.14, 0.3)
+material = SubResource("NeonRed")
+
+[node name="PowerConduitWestA" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=1943830613]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.31, 32.5)
+size = Vector3(10, 0.12, 0.28)
+material = SubResource("NeonCyan")
+
+[node name="PowerConduitWestB" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=1680258875]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0.31, 30)
+size = Vector3(0.28, 0.12, 5.2)
+material = SubResource("NeonCyan")
+
+[node name="CrossingGuideChevron01" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=634560498]
+transform = Transform3D(0.90630776, 0, -0.42261827, 0, 1, 0, 0.42261827, 0, 0.90630776, -3.5, 0.33, 30)
+size = Vector3(1.25, 0.1, 0.5)
+material = SubResource("NeonCyan")
+
+[node name="CrossingGuideChevron02" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=930230661]
+transform = Transform3D(0.90630776, 0, -0.42261827, 0, 1, 0, 0.42261827, 0, 0.90630776, -6.2, 0.33, 30)
+size = Vector3(1.25, 0.1, 0.5)
+material = SubResource("NeonCyan")
+
+[node name="CrossingGuideChevron03" type="CSGBox3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=290934496]
+transform = Transform3D(0.90630776, 0, -0.42261827, 0, 1, 0, 0.42261827, 0, 0.90630776, -8.8, 0.33, 30)
+size = Vector3(1.25, 0.1, 0.5)
+material = SubResource("NeonCyan")
+
+[node name="CrossingDirectionSign" type="Label3D" parent="Environment/Environment/ArrivalChamber/Props" unique_id=187578405]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -9.55, 3.45, 30)
+modulate = Color(0.18, 0.9, 1, 1)
+text = "BROKEN CROSSING  >>"
+font_size = 34
+outline_size = 10
+
+[node name="ProductionArtPass" type="Node3D" parent="Environment/Environment/ArrivalChamber" unique_id=730512267]
+
+[node name="LobbyWallPanelLeft" parent="Environment/Environment/ArrivalChamber/ProductionArtPass" unique_id=592971359 instance=ExtResource("ArtWallPanel")]
+transform = Transform3D(1.15, 0, 0, 0, 1.15, 0, 0, 0, 1.15, -7.5, 0.2, 39.65)
+
+[node name="ImportedPanel" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyWallPanelLeft" index="0"]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, 0, 0)
+
+[node name="Backing" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyWallPanelLeft" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0.12)
+
+[node name="FrameTop" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyWallPanelLeft" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+
+[node name="StatusStrip" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyWallPanelLeft" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.72, -0.11)
+
+[node name="LobbyWallPanelRight" parent="Environment/Environment/ArrivalChamber/ProductionArtPass" unique_id=2124071480 instance=ExtResource("ArtWallPanel")]
+transform = Transform3D(1.15, 0, 0, 0, 1.15, 0, 0, 0, 1.15, 7.5, 0.2, 39.65)
+
+[node name="ImportedPanel" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyWallPanelRight" index="0"]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, 0, 0)
+
+[node name="Backing" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyWallPanelRight" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0.12)
+
+[node name="FrameTop" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyWallPanelRight" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+
+[node name="StatusStrip" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyWallPanelRight" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.72, -0.11)
+
+[node name="LobbySecurityFrame" parent="Environment/Environment/ArrivalChamber/ProductionArtPass" unique_id=956829466 instance=ExtResource("ArtDoorFrame")]
+transform = Transform3D(-1.15, 0, -1.0053619e-07, 0, 1.15, 0, 1.0053619e-07, 0, -1.15, 0, 0, 22.15)
+
+[node name="ImportedGate" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbySecurityFrame" index="0"]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0)
+
+[node name="Header" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbySecurityFrame" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 0)
+
+[node name="LockLightLeft" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbySecurityFrame" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 4.2, -0.36)
+
+[node name="LockLightRight" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbySecurityFrame" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 4.2, -0.36)
+
+[node name="LobbyScannerLeft" parent="Environment/Environment/ArrivalChamber/ProductionArtPass" unique_id=1180280771 instance=ExtResource("ArtMachinery")]
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, -6.8, 0, 24.2)
+
+[node name="MainCabinet" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyScannerLeft" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+
+[node name="ServiceDoor" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyScannerLeft" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -1.04)
+
+[node name="WarningStrip" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyScannerLeft" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.18, -1.1)
+
+[node name="CouplerLeft" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyScannerLeft" index="3"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -1.1, 0.55, -1.15)
+
+[node name="CouplerRight" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyScannerLeft" index="4"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.1, 0.55, -1.15)
+
+[node name="LobbyScannerRight" parent="Environment/Environment/ArrivalChamber/ProductionArtPass" unique_id=613725366 instance=ExtResource("ArtMachinery")]
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 6.8, 0, 24.2)
+
+[node name="MainCabinet" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyScannerRight" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+
+[node name="ServiceDoor" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyScannerRight" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -1.04)
+
+[node name="WarningStrip" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyScannerRight" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.18, -1.1)
+
+[node name="CouplerLeft" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyScannerRight" index="3"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -1.1, 0.55, -1.15)
+
+[node name="CouplerRight" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyScannerRight" index="4"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.1, 0.55, -1.15)
+
+[node name="LobbyCeilingLightA" parent="Environment/Environment/ArrivalChamber/ProductionArtPass" unique_id=1231096611 instance=ExtResource("ArtLight")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, -6, 5.15, 31)
+
+[node name="Emitter" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyCeilingLightA" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+
+[node name="NavigationLight" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyCeilingLightA" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="LobbyCeilingLightB" parent="Environment/Environment/ArrivalChamber/ProductionArtPass" unique_id=1754856591 instance=ExtResource("ArtLight")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 6, 5.15, 31)
+
+[node name="Emitter" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyCeilingLightB" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+
+[node name="NavigationLight" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyCeilingLightB" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="LobbyFloorInlayA" parent="Environment/Environment/ArrivalChamber/ProductionArtPass" unique_id=777103876 instance=ExtResource("ArtFloorTile")]
+transform = Transform3D(1.3, 0, 0, 0, 1, 0, 0, 0, 1.3, -5, 0.28, 31)
+
+[node name="ImportedRaisedTile" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyFloorInlayA" index="0"]
+transform = Transform3D(2, 0, 0, 0, 0.6, 0, 0, 0, 2, 0, 0, 0)
+
+[node name="EdgeInlay" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyFloorInlayA" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.055, 0)
+
+[node name="LobbyFloorInlayB" parent="Environment/Environment/ArrivalChamber/ProductionArtPass" unique_id=1269397319 instance=ExtResource("ArtFloorTile")]
+transform = Transform3D(1.3, 0, 0, 0, 1, 0, 0, 0, 1.3, 5, 0.28, 31)
+
+[node name="ImportedRaisedTile" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyFloorInlayB" index="0"]
+transform = Transform3D(2, 0, 0, 0, 0.6, 0, 0, 0, 2, 0, 0, 0)
+
+[node name="EdgeInlay" parent="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyFloorInlayB" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.055, 0)
+
+[node name="BrokenCrossing" type="Node3D" parent="Environment/Environment" unique_id=808847387]
+
+[node name="Platforms" type="Node3D" parent="Environment/Environment/BrokenCrossing" unique_id=49988427]
+
+[node name="StartLedge" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/Platforms" unique_id=731127329]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 0, 30)
+use_collision = true
+size = Vector3(10, 0.5, 10)
+material = SubResource("MatFloor")
+
+[node name="DestinationLedge" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/Platforms" unique_id=48685448]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37, 0, 26)
+use_collision = true
+size = Vector3(10, 0.5, 12)
+material = SubResource("MatFloor")
+
+[node name="SecurityApproach" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/Platforms" unique_id=304537797]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39, 0, 20)
+use_collision = true
+size = Vector3(4, 0.5, 5)
+material = SubResource("MatFloor")
+
+[node name="RetractableBridgeSection" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/Platforms" unique_id=283175437]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.5, -1.25, 29)
+size = Vector3(10.5, 0.6, 3.2)
+material = SubResource("MatTrim")
+
+[node name="IntermediateTetherLanding" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/Platforms" unique_id=1822159697]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.5, 4, 29)
+use_collision = true
+size = Vector3(3.2, 0.45, 3.2)
+material = SubResource("MatFloor")
+
+[node name="IntermediateLandingBeacon" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/Platforms" unique_id=219057612]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.5, 4.28, 29)
+size = Vector3(1.2, 0.1, 1.2)
+material = SubResource("NeonAmber")
+
+[node name="ExtendedBridgeTarget" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/Platforms" unique_id=1188819966]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.5, 0, 29)
+visible = false
+size = Vector3(10.5, 0.5, 3.2)
+material = SubResource("MatTrim")
+
+[node name="SafetyBarriers" type="Node3D" parent="Environment/Environment/BrokenCrossing" unique_id=1614982665]
+
+[node name="StartNorthRail" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/SafetyBarriers" unique_id=408844969]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 1.05, 25)
+use_collision = true
+size = Vector3(10, 0.18, 0.22)
+material = SubResource("MatTrim")
+
+[node name="StartSouthRail" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/SafetyBarriers" unique_id=2034958111]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 1.05, 35)
+use_collision = true
+size = Vector3(10, 0.18, 0.22)
+material = SubResource("MatTrim")
+
+[node name="DestinationSouthRail" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/SafetyBarriers" unique_id=1992939760]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37, 1.05, 32)
+use_collision = true
+size = Vector3(10, 0.18, 0.22)
+material = SubResource("MatTrim")
+
+[node name="StartNorthPostA" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/SafetyBarriers" unique_id=832972119]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.5, 0.65, 25)
+use_collision = true
+size = Vector3(0.2, 1.3, 0.2)
+material = SubResource("MatTrim")
+
+[node name="StartNorthPostB" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/SafetyBarriers" unique_id=1447243405]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.5, 0.65, 25)
+use_collision = true
+size = Vector3(0.2, 1.3, 0.2)
+material = SubResource("MatTrim")
+
+[node name="DestinationSouthPostA" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/SafetyBarriers" unique_id=2067672227]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41.5, 0.65, 32)
+use_collision = true
+size = Vector3(0.2, 1.3, 0.2)
+material = SubResource("MatTrim")
+
+[node name="DestinationSouthPostB" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/SafetyBarriers" unique_id=316944729]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32.5, 0.65, 32)
+use_collision = true
+size = Vector3(0.2, 1.3, 0.2)
+material = SubResource("MatTrim")
+
+[node name="AnchorStructures" type="Node3D" parent="Environment/Environment/BrokenCrossing" unique_id=2046013720]
+
+[node name="AnchorSupport_01" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/AnchorStructures" unique_id=1798509201]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 9.2, 30)
+use_collision = true
+size = Vector3(0.55, 4, 0.55)
+material = SubResource("MatTrim")
+
+[node name="AnchorCrossbeam_01" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/AnchorStructures" unique_id=1806276613]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 11.2, 30)
+use_collision = true
+size = Vector3(4.2, 0.5, 0.7)
+material = SubResource("MatTrim")
+
+[node name="AnchorBrace_01" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/AnchorStructures" unique_id=1908734406]
+transform = Transform3D(0.81915206, -0.57357645, 0, 0.57357645, 0.81915206, 0, 0, 0, 1, -22.9, 10, 30)
+use_collision = true
+size = Vector3(0.35, 3.2, 0.35)
+material = SubResource("MatTrim")
+
+[node name="AnchorRing_01" type="MeshInstance3D" parent="Environment/Environment/BrokenCrossing/AnchorStructures" unique_id=1959220599]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -24, 7.2, 30)
+mesh = SubResource("AnchorRingMesh")
+
+[node name="AnchorLabel_01" type="Label3D" parent="Environment/Environment/BrokenCrossing/AnchorStructures" unique_id=790255473]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 8.9, 30)
+billboard = 1
+modulate = Color(0.1, 0.9, 1, 1)
+text = "TETHER 01"
+font_size = 30
+outline_size = 9
+
+[node name="AnchorSupport_02" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/AnchorStructures" unique_id=1425611179]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 10.4, 27)
+use_collision = true
+size = Vector3(0.55, 4, 0.55)
+material = SubResource("MatTrim")
+
+[node name="AnchorCrossbeam_02" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/AnchorStructures" unique_id=1315781775]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 12.4, 27)
+use_collision = true
+size = Vector3(4.2, 0.5, 0.7)
+material = SubResource("MatTrim")
+
+[node name="AnchorBrace_02" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/AnchorStructures" unique_id=413597267]
+transform = Transform3D(0.81915206, 0.57357645, 0, -0.57357645, 0.81915206, 0, 0, 0, 1, -31.1, 11.2, 27)
+use_collision = true
+size = Vector3(0.35, 3.2, 0.35)
+material = SubResource("MatTrim")
+
+[node name="AnchorRing_02" type="MeshInstance3D" parent="Environment/Environment/BrokenCrossing/AnchorStructures" unique_id=209397078]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -30, 8.4, 27)
+mesh = SubResource("AnchorRingDeliberateMesh")
+
+[node name="AnchorLabel_02" type="Label3D" parent="Environment/Environment/BrokenCrossing/AnchorStructures" unique_id=167636133]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 10.1, 27)
+billboard = 1
+modulate = Color(1, 0.58, 0.12, 1)
+text = "TETHER 02"
+font_size = 30
+outline_size = 9
+
+[node name="PullMechanismBase" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/AnchorStructures" unique_id=444063796]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 0.45, 26)
+use_collision = true
+size = Vector3(3.2, 0.9, 3.2)
+material = SubResource("MatTrim")
+
+[node name="PullMechanismHousing" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/AnchorStructures" unique_id=1226252457]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 1.65, 26)
+use_collision = true
+size = Vector3(2.2, 2.4, 2.2)
+material = SubResource("MatProp")
+
+[node name="PullHandle" type="CSGCylinder3D" parent="Environment/Environment/BrokenCrossing/AnchorStructures" unique_id=42289535]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -39, 1.45, 26)
+radius = 0.28
+height = 1.7
+sides = 16
+material = SubResource("NeonAmber")
+
+[node name="BridgeCableSpool" type="CSGCylinder3D" parent="Environment/Environment/BrokenCrossing/AnchorStructures" unique_id=1805890165]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -40, 2.15, 26)
+use_collision = true
+radius = 0.72
+height = 0.6
+sides = 16
+material = SubResource("MatTrim")
+
+[node name="BridgeLatchJawLeft" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/AnchorStructures" unique_id=720398235]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.3, 0.9, 24.9)
+size = Vector3(0.55, 1.5, 0.55)
+material = SubResource("NeonAmber")
+
+[node name="BridgeLatchJawRight" type="CSGBox3D" parent="Environment/Environment/BrokenCrossing/AnchorStructures" unique_id=1218163120]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39.3, 0.9, 27.1)
+size = Vector3(0.55, 1.5, 0.55)
+material = SubResource("NeonAmber")
+
+[node name="BridgeLatchLabel" type="Label3D" parent="Environment/Environment/BrokenCrossing/AnchorStructures" unique_id=933254181]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -38.84, 2.85, 26)
+modulate = Color(1, 0.62, 0.15, 1)
+text = "BRIDGE LATCH"
+font_size = 28
+outline_size = 8
+
+[node name="CrossingWarning" type="Label3D" parent="Environment/Environment/BrokenCrossing" unique_id=472991853]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16, 3.7, 25.1)
+modulate = Color(1, 0.6, 0.14, 1)
+text = "WALKWAY FAILURE // TETHER ANCHORS ONLINE"
+font_size = 25
+outline_size = 8
+
+[node name="ProductionArtPass" type="Node3D" parent="Environment/Environment/BrokenCrossing" unique_id=123655674]
+
+[node name="CrossingCableTrayStart" parent="Environment/Environment/BrokenCrossing/ProductionArtPass" unique_id=1974041381 instance=ExtResource("ArtCableTray")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, -19, 5.2, 25.4)
+
+[node name="ImportedCables" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingCableTrayStart" index="0"]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
+
+[node name="Tray" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingCableTrayStart" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.18, 0)
+
+[node name="ServiceStrip" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingCableTrayStart" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.27, 0.48)
+
+[node name="CrossingCableTrayEnd" parent="Environment/Environment/BrokenCrossing/ProductionArtPass" unique_id=1391135034 instance=ExtResource("ArtCableTray")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, -35, 5.1, 31.6)
+
+[node name="ImportedCables" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingCableTrayEnd" index="0"]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
+
+[node name="Tray" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingCableTrayEnd" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.18, 0)
+
+[node name="ServiceStrip" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingCableTrayEnd" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.27, 0.48)
+
+[node name="CrossingRailingStart" parent="Environment/Environment/BrokenCrossing/ProductionArtPass" unique_id=878103343 instance=ExtResource("ArtRail")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, -18, 0.25, 25.2)
+
+[node name="TopRail" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingRailingStart" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0)
+
+[node name="PostLeft" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingRailingStart" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 0.55, 0)
+
+[node name="PostRight" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingRailingStart" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 0.55, 0)
+
+[node name="WarningMarker" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingRailingStart" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, -0.1)
+
+[node name="CrossingRailingEnd" parent="Environment/Environment/BrokenCrossing/ProductionArtPass" unique_id=1930646222 instance=ExtResource("ArtRail")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, -37, 0.25, 31.8)
+
+[node name="TopRail" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingRailingEnd" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 0)
+
+[node name="PostLeft" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingRailingEnd" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 0.55, 0)
+
+[node name="PostRight" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingRailingEnd" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 0.55, 0)
+
+[node name="WarningMarker" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingRailingEnd" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, -0.1)
+
+[node name="CrossingServiceCabinet" parent="Environment/Environment/BrokenCrossing/ProductionArtPass" unique_id=654959947 instance=ExtResource("ArtMachinery")]
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, -41, 0, 29.5)
+
+[node name="MainCabinet" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingServiceCabinet" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+
+[node name="ServiceDoor" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingServiceCabinet" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -1.04)
+
+[node name="WarningStrip" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingServiceCabinet" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.18, -1.1)
+
+[node name="CouplerLeft" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingServiceCabinet" index="3"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -1.1, 0.55, -1.15)
+
+[node name="CouplerRight" parent="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingServiceCabinet" index="4"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.1, 0.55, -1.15)
+
+[node name="SecurityInterception" type="Node3D" parent="Environment/Environment" unique_id=1561510357]
+
+[node name="Geometry" type="Node3D" parent="Environment/Environment/SecurityInterception" unique_id=418484893]
+
+[node name="CombatFloor" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/Geometry" unique_id=2073978695]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49, 0, 8)
+use_collision = true
+size = Vector3(24, 0.5, 20)
+material = SubResource("MatFloor")
+
+[node name="WestWall" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/Geometry" unique_id=805944722]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -61, 2.5, 8)
+use_collision = true
+size = Vector3(0.6, 5, 20.6)
+material = SubResource("MatWall")
+
+[node name="SouthWallWest" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/Geometry" unique_id=1910460287]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -53.006683, 2.5, -2)
+use_collision = true
+size = Vector3(15.986633, 5, 0.6)
+material = SubResource("MatWall")
+
+[node name="NorthWallWest" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/Geometry" unique_id=2126696496]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -51, 2.5, 18)
+use_collision = true
+size = Vector3(20, 5, 0.6)
+material = SubResource("MatWall")
+
+[node name="EastWall" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/Geometry" unique_id=1453783653]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -37, 2.5, 7.203125)
+use_collision = true
+size = Vector3(0.6, 5, 17.59375)
+material = SubResource("MatWall")
+
+[node name="Cover" type="Node3D" parent="Environment/Environment/SecurityInterception" unique_id=2014296768]
+
+[node name="LowCoverWest" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/Cover" unique_id=1024863727]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55, 0.65, 8)
+use_collision = true
+size = Vector3(4, 1.3, 1.4)
+material = SubResource("MatProp")
+
+[node name="LowCoverEast" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/Cover" unique_id=597036623]
+transform = Transform3D(0.88294756, 0, 0.46947157, 0, 1, 0, -0.46947157, 0, 0.88294756, -43, 0.65, 11)
+use_collision = true
+size = Vector3(4, 1.3, 1.4)
+material = SubResource("MatProp")
+
+[node name="MediumCover" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/Cover" unique_id=396373889]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49, 1.2, 3)
+use_collision = true
+size = Vector3(2.4, 2.4, 2.4)
+material = SubResource("MatProp")
+
+[node name="SecurityProps" type="Node3D" parent="Environment/Environment/SecurityInterception" unique_id=1765326183]
+
+[node name="RelayATerminal" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/SecurityProps" unique_id=236748639]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -57, 1.35, 1)
+use_collision = true
+size = Vector3(2.2, 2.7, 1.4)
+material = SubResource("MatTrim")
+
+[node name="RelayAScreen" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/SecurityProps" unique_id=2127827892]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -57, 1.8, 1.72)
+size = Vector3(1.5, 0.85, 0.08)
+material = SubResource("NeonCyan")
+
+[node name="RelayABeacon" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/SecurityProps" unique_id=708528180]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -57, 3.8, 1)
+size = Vector3(0.35, 2.2, 0.35)
+material = SubResource("NeonCyan")
+
+[node name="RelayALabel" type="Label3D" parent="Environment/Environment/SecurityInterception/SecurityProps" unique_id=1720415056]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -57, 3.05, 1.76)
+modulate = Color(0.18, 0.9, 1, 1)
+text = "RELAY A // SECURITY"
+outline_size = 10
+
+[node name="DamagedShutterLeft" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/SecurityProps" unique_id=1864584457]
+transform = Transform3D(0.99026805, 0.1391731, 0, -0.1391731, 0.99026805, 0, 0, 0, 1, -60.5, 2.4, 13)
+use_collision = true
+size = Vector3(1, 4.4, 5)
+material = SubResource("MatTrim")
+
+[node name="DamagedShutterRight" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/SecurityProps" unique_id=730267896]
+transform = Transform3D(0.98162717, -0.190809, 0, 0.190809, 0.98162717, 0, 0, 0, 1, -60.5, 2.1, 5)
+use_collision = true
+size = Vector3(1, 3.8, 4)
+material = SubResource("MatTrim")
+
+[node name="BrokenContainmentTank" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/SecurityProps" unique_id=810990812]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42, 1.7, 3)
+use_collision = true
+size = Vector3(2.8, 3.4, 2.8)
+material = SubResource("MatGlass")
+
+[node name="SecurityCamera" type="MeshInstance3D" parent="Environment/Environment/SecurityInterception/SecurityProps" unique_id=1553380517]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -43, 4.2, 16.8)
+mesh = SubResource("CameraLensMesh")
+
+[node name="OnwardThresholdLeft" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/SecurityProps" unique_id=134630959]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45, 0.35, -1.6)
+size = Vector3(1.8, 0.16, 0.8)
+material = SubResource("NeonAmber")
+
+[node name="OnwardThresholdRight" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/SecurityProps" unique_id=1175419950]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -39, 0.35, -1.6)
+size = Vector3(1.8, 0.16, 0.8)
+material = SubResource("NeonAmber")
+
+[node name="PowerRouteSign" type="Label3D" parent="Environment/Environment/SecurityInterception/SecurityProps" unique_id=1887299272]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -42, 3.8, -1.65)
+modulate = Color(1, 0.62, 0.15, 1)
+text = "POWER DIVERSION"
+font_size = 30
+outline_size = 9
+
+[node name="PowerApproach" type="Node3D" parent="Environment/Environment/SecurityInterception" unique_id=804048058]
+
+[node name="ApproachFloor" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/PowerApproach" unique_id=1753448481]
+transform = Transform3D(0.66913056, 0, -0.74314487, 0, 1, 0, 0.74314487, 0, 0.66913056, -35.76566, 0, -6.690678)
+use_collision = true
+size = Vector3(5, 0.45, 19.522339)
+material = SubResource("MatFloor")
+
+[node name="ApproachLeftRail" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/PowerApproach" unique_id=1219669295]
+transform = Transform3D(0.66913056, 0, -0.74314487, 0, 1, 0, 0.74314487, 0, 0.66913056, -37.67163, 1.1, -8.486108)
+use_collision = true
+size = Vector3(0.28, 2.2, 20.059204)
+material = SubResource("MatTrim")
+
+[node name="ApproachRightRail" type="CSGBox3D" parent="Environment/Environment/SecurityInterception/PowerApproach" unique_id=84533557]
+transform = Transform3D(0.66913056, 0, -0.74314487, 0, 1, 0, 0.74314487, 0, 0.66913056, -33.804596, 1.1, -4.9448495)
+use_collision = true
+size = Vector3(0.28, 2.2, 9.714294)
+material = SubResource("MatTrim")
+
+[node name="ProductionArtPass" type="Node3D" parent="Environment/Environment/SecurityInterception" unique_id=1910887694]
+
+[node name="SecurityWallPanel" parent="Environment/Environment/SecurityInterception/ProductionArtPass" unique_id=1010414832 instance=ExtResource("ArtWallPanel")]
+transform = Transform3D(-5.4639237e-08, 0, 1.25, 0, 1.25, 0, -1.25, 0, -5.4639237e-08, -60.6, 0.2, 8)
+
+[node name="ImportedPanel" parent="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityWallPanel" index="0"]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, 0, 0)
+
+[node name="Backing" parent="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityWallPanel" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0.12)
+
+[node name="FrameTop" parent="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityWallPanel" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+
+[node name="StatusStrip" parent="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityWallPanel" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.72, -0.11)
+
+[node name="SecurityHatch" parent="Environment/Environment/SecurityInterception/ProductionArtPass" unique_id=384433200 instance=ExtResource("ArtHatch")]
+transform = Transform3D(1.25, 0, 0, 0, 1.25, 0, 0, 0, 1.25, -49, 2.5, -1.65)
+
+[node name="Hatch" parent="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityHatch" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.58940506, 0, 0)
+size = Vector3(4.3788085, 2.8, 0.18)
+
+[node name="Inset" parent="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityHatch" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.12)
+
+[node name="Latch" parent="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityHatch" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.2)
+
+[node name="SecurityEquipmentBay" parent="Environment/Environment/SecurityInterception/ProductionArtPass" unique_id=535858480 instance=ExtResource("ArtMachinery")]
+transform = Transform3D(-3.4969112e-08, 0, 0.8, 0, 0.8, 0, -0.8, 0, -3.4969112e-08, -58.5, 0, 14.8)
+
+[node name="MainCabinet" parent="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityEquipmentBay" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+
+[node name="ServiceDoor" parent="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityEquipmentBay" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -1.04)
+
+[node name="WarningStrip" parent="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityEquipmentBay" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.18, -1.1)
+
+[node name="CouplerLeft" parent="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityEquipmentBay" index="3"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -1.1, 0.55, -1.15)
+
+[node name="CouplerRight" parent="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityEquipmentBay" index="4"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.1, 0.55, -1.15)
+
+[node name="SecurityCeilingLight" parent="Environment/Environment/SecurityInterception/ProductionArtPass" unique_id=1732352527 instance=ExtResource("ArtLight")]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, -49, 5.1, 8)
+
+[node name="Emitter" parent="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityCeilingLight" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+
+[node name="NavigationLight" parent="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityCeilingLight" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="PowerDiversion" type="Node3D" parent="Environment/Environment" unique_id=894927916]
+
+[node name="Geometry" type="Node3D" parent="Environment/Environment/PowerDiversion" unique_id=1657459908]
+
+[node name="PowerRoomFloor" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Geometry" unique_id=328413676]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, -12)
+use_collision = true
+size = Vector3(24, 0.5, 20)
+material = SubResource("MatFloor")
+
+[node name="NorthWall" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Geometry" unique_id=1752750025]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 6.121887, -22)
+use_collision = true
+size = Vector3(24.6, 12.243774, 0.6)
+material = SubResource("MatWall")
+
+[node name="SouthWall" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Geometry" unique_id=1991262675]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 6.3236084, -2)
+use_collision = true
+size = Vector3(24.6, 12.647217, 0.6)
+material = SubResource("MatWall")
+
+[node name="WestWallNorth" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Geometry" unique_id=1908378171]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 6.17157, -18)
+use_collision = true
+size = Vector3(0.6, 12.34314, 8)
+material = SubResource("MatWall")
+
+[node name="WestWallSouth" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Geometry" unique_id=810582092]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 6.2946777, -5.1589355)
+use_collision = true
+size = Vector3(0.6, 12.589355, 6.317871)
+material = SubResource("MatWall")
+
+[node name="EastWallNorth" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Geometry" unique_id=899766350]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 6.1620483, -18)
+use_collision = true
+size = Vector3(0.6, 12.324097, 8)
+material = SubResource("MatWall")
+
+[node name="EastWallSouth" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Geometry" unique_id=563559178]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 6.302429, -5.7668457)
+use_collision = true
+size = Vector3(0.6, 12.604858, 7.5336914)
+material = SubResource("MatWall")
+
+[node name="Machinery" type="Node3D" parent="Environment/Environment/PowerDiversion" unique_id=838503652]
+
+[node name="PowerConsoleBase" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=1135452174]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0.45, -10.5)
+use_collision = true
+size = Vector3(5, 0.9, 4.5)
+material = SubResource("MatTrim")
+
+[node name="PowerConsole" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=234548238]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 1.55, -10.5)
+use_collision = true
+size = Vector3(3.8, 2.2, 2.2)
+material = SubResource("MatTrim")
+
+[node name="PowerConsoleDisplay" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=964523469]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 2.15, -9.35)
+size = Vector3(2.8, 0.9, 0.08)
+material = SubResource("NeonAmber")
+
+[node name="PowerConsoleLabel" type="Label3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=1895311340]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 3.15, -10.5)
+billboard = 1
+modulate = Color(1, 0.62, 0.15, 1)
+text = "REWIRE // SELECT POWER ROUTE"
+font_size = 34
+outline_size = 10
+
+[node name="ChannelA_MainConduit" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=621247364]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 0.32, -14.5)
+size = Vector3(0.7, 0.14, 9)
+material = SubResource("MatInactive")
+
+[node name="ChannelA_FieldBranch" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=2057095315]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0.32, -19)
+size = Vector3(2.6, 0.14, 0.7)
+material = SubResource("MatInactive")
+
+[node name="ChannelA_ActiveIndicator" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=1159850939]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -22, 0.4, -14.5)
+size = Vector3(0.32, 0.16, 9)
+material = SubResource("NeonCyan")
+
+[node name="ChannelA_ActiveBranchIndicator" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=1210295661]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 0.4, -19)
+size = Vector3(2.6, 0.16, 0.32)
+material = SubResource("NeonCyan")
+
+[node name="ChannelB_MainConduit" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=592244497]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 0.32, -12)
+size = Vector3(0.7, 0.14, 3.5)
+material = SubResource("MatInactive")
+
+[node name="ChannelB_DoorBranch" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=1698347065]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.5, 0.32, -12)
+size = Vector3(7, 0.14, 0.7)
+material = SubResource("MatInactive")
+
+[node name="ChannelB_ActiveIndicator" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=945772952]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 0.4, -12)
+visible = false
+size = Vector3(0.32, 0.16, 3.5)
+material = SubResource("NeonAmber")
+
+[node name="ChannelB_ActiveBranchIndicator" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=1130079788]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.5, 0.4, -12)
+visible = false
+size = Vector3(7, 0.16, 0.32)
+material = SubResource("NeonAmber")
+
+[node name="SecurityFieldFrameLeft" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=662354570]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25.8, 2, -18.8)
+use_collision = true
+size = Vector3(1, 4, 1)
+material = SubResource("MatTrim")
+
+[node name="SecurityFieldFrameRight" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=1663778200]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.2, 2, -18.8)
+use_collision = true
+size = Vector3(1, 4, 1)
+material = SubResource("MatTrim")
+
+[node name="RelayBEnclosureLeft" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=559088318]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.05, 2, -20.4)
+use_collision = true
+size = Vector3(0.5, 4, 3.2)
+material = SubResource("MatWall")
+
+[node name="RelayBEnclosureRight" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=1945230892]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20.95, 2, -20.4)
+use_collision = true
+size = Vector3(0.5, 4, 3.2)
+material = SubResource("MatWall")
+
+[node name="SecurityField_Energized" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=799822899]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.5, 2, -18.8)
+use_collision = true
+size = Vector3(3.6, 3.4, 0.18)
+material = SubResource("MatCyanEnergy")
+
+[node name="SecurityField_Disabled" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=817836715]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.5, 0.55, -18.8)
+visible = false
+size = Vector3(3.6, 0.22, 0.22)
+material = SubResource("NeonGreen")
+
+[node name="RelayBTerminal" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=1211493405]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.5, 1.3, -20.5)
+use_collision = true
+size = Vector3(2.4, 2.6, 1.5)
+material = SubResource("MatTrim")
+
+[node name="RelayBScreen" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=689065824]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.5, 1.8, -19.7)
+size = Vector3(1.7, 0.8, 0.08)
+material = SubResource("NeonGreen")
+
+[node name="RelayBLabel" type="Label3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=1624740064]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.5, 3.05, -20.4)
+billboard = 1
+modulate = Color(0.2, 1, 0.5, 1)
+text = "RELAY B"
+font_size = 30
+outline_size = 9
+
+[node name="DoorMechanismPostNorth" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=1220720761]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 2, -14.6)
+use_collision = true
+size = Vector3(1, 4, 1)
+material = SubResource("MatTrim")
+
+[node name="DoorMechanismPostSouth" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=1537203020]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 2, -9.4)
+use_collision = true
+size = Vector3(1, 4, 1)
+material = SubResource("MatTrim")
+
+[node name="DoorMechanismRotor" type="CSGCylinder3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=1657534864]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -6.55, 3.7, -12)
+radius = 1.0
+height = 0.35
+sides = 16
+material = SubResource("NeonAmber")
+
+[node name="PoweredDoor_Locked" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=1795923595]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 2.15, -12)
+use_collision = true
+size = Vector3(0.5, 4.3, 4.2)
+material = SubResource("MatProp")
+
+[node name="PoweredDoor_LockedIndicator" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=376080655]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.3, 2.2, -12)
+size = Vector3(0.08, 3.4, 0.2)
+material = SubResource("NeonRed")
+
+[node name="PoweredDoor_Open" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=2114931660]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 4.55, -12)
+visible = false
+size = Vector3(0.5, 0.35, 4.2)
+material = SubResource("NeonGreen")
+
+[node name="ChannelALabel" type="Label3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=1711422042]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -23.2, 0.75, -12)
+modulate = Color(0.12, 0.88, 1, 1)
+text = "A // FIELD"
+font_size = 26
+outline_size = 8
+
+[node name="ChannelBLabel" type="Label3D" parent="Environment/Environment/PowerDiversion/Machinery" unique_id=1856795783]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -12.5, 0.75, -9.9)
+modulate = Color(1, 0.62, 0.15, 1)
+text = "B // DOOR"
+font_size = 26
+outline_size = 8
+
+[node name="OnwardRoute" type="Node3D" parent="Environment/Environment/PowerDiversion" unique_id=400606458]
+
+[node name="EastServiceFloor" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/OnwardRoute" unique_id=1064268659]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.958069, 0, -12)
+use_collision = true
+size = Vector3(31.916138, 0.45, 5)
+material = SubResource("MatFloor")
+
+[node name="EastServiceNorthRail" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/OnwardRoute" unique_id=1533046698]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.17981, 6.1960206, -14.5)
+use_collision = true
+size = Vector3(32.35962, 12.392041, 0.28)
+material = SubResource("MatTrim")
+
+[node name="EastServiceSouthRail" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/OnwardRoute" unique_id=1023744022]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.3395996, 6.3274045, -9.5)
+use_collision = true
+size = Vector3(26.6792, 12.65481, 0.28)
+material = SubResource("MatTrim")
+
+[node name="NorthServiceFloor" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/OnwardRoute" unique_id=167745368]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0, 4)
+use_collision = true
+size = Vector3(5, 0.45, 32)
+material = SubResource("MatFloor")
+
+[node name="NorthServiceWestRail" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/OnwardRoute" unique_id=1821083939]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5, 6.4939938, 5.208008)
+use_collision = true
+size = Vector3(0.28, 12.987988, 29.583984)
+material = SubResource("MatTrim")
+
+[node name="NorthServiceEastRail" type="CSGBox3D" parent="Environment/Environment/PowerDiversion/OnwardRoute" unique_id=1810532121]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.5, 6.568945, 1.6386719)
+use_collision = true
+size = Vector3(0.28, 13.137891, 36.722656)
+material = SubResource("MatTrim")
+
+[node name="ProductionArtPass" type="Node3D" parent="Environment/Environment/PowerDiversion" unique_id=1938190708]
+
+[node name="PowerCabinetA" parent="Environment/Environment/PowerDiversion/ProductionArtPass" unique_id=1793159186 instance=ExtResource("ArtMachinery")]
+transform = Transform3D(-3.715468e-08, 0, 0.85, 0, 0.85, 0, -0.85, 0, -3.715468e-08, -27.8, 0, -17)
+
+[node name="MainCabinet" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCabinetA" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+
+[node name="ServiceDoor" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCabinetA" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -1.04)
+
+[node name="WarningStrip" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCabinetA" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.18, -1.1)
+
+[node name="CouplerLeft" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCabinetA" index="3"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -1.1, 0.55, -1.15)
+
+[node name="CouplerRight" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCabinetA" index="4"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.1, 0.55, -1.15)
+
+[node name="PowerCabinetB" parent="Environment/Environment/PowerDiversion/ProductionArtPass" unique_id=1347419259 instance=ExtResource("ArtMachinery")]
+transform = Transform3D(-3.715468e-08, 0, -0.85, 0, 0.85, 0, 0.85, 0, -3.715468e-08, -8.2, 0, -5)
+
+[node name="MainCabinet" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCabinetB" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+
+[node name="ServiceDoor" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCabinetB" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -1.04)
+
+[node name="WarningStrip" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCabinetB" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.18, -1.1)
+
+[node name="CouplerLeft" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCabinetB" index="3"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -1.1, 0.55, -1.15)
+
+[node name="CouplerRight" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCabinetB" index="4"]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.1, 0.55, -1.15)
+
+[node name="PowerCableTrayA" parent="Environment/Environment/PowerDiversion/ProductionArtPass" unique_id=499384452 instance=ExtResource("ArtCableTray")]
+transform = Transform3D(-6.556708e-08, 0, 1.5, 0, 1.5, 0, -1.5, 0, -6.556708e-08, -22, 4.8, -12)
+
+[node name="ImportedCables" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCableTrayA" index="0"]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
+
+[node name="Tray" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCableTrayA" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.18, 0)
+
+[node name="ServiceStrip" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCableTrayA" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.27, 0.48)
+
+[node name="PowerCableTrayB" parent="Environment/Environment/PowerDiversion/ProductionArtPass" unique_id=1022618116 instance=ExtResource("ArtCableTray")]
+transform = Transform3D(-6.556708e-08, 0, 1.5, 0, 1.5, 0, -1.5, 0, -6.556708e-08, -13, 4.8, -12)
+
+[node name="ImportedCables" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCableTrayB" index="0"]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
+
+[node name="Tray" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCableTrayB" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.18, 0)
+
+[node name="ServiceStrip" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCableTrayB" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.27, 0.48)
+
+[node name="PowerConsoleShell" parent="Environment/Environment/PowerDiversion/ProductionArtPass" unique_id=1336850088 instance=ExtResource("ArtConsole")]
+transform = Transform3D(-0.85, 0, -7.430936e-08, 0, 0.85, 0, 7.430936e-08, 0, -0.85, -18, 0.2, -7.4)
+
+[node name="Pedestal" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerConsoleShell" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+
+[node name="Shoulder" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerConsoleShell" index="1"]
+transform = Transform3D(1, 0, 0, 0, 0.9781476, 0.2079117, 0, -0.2079117, 0.9781476, 0, 1.65, -0.15)
+
+[node name="Display" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerConsoleShell" index="2"]
+transform = Transform3D(1, 0, 0, 0, 0.9781476, 0.2079117, 0, -0.2079117, 0.9781476, 0, 1.88, -0.82)
+
+[node name="Status" parent="Environment/Environment/PowerDiversion/ProductionArtPass/PowerConsoleShell" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.32, -0.8)
+
+[node name="FinalContainmentExit" type="Node3D" parent="Environment/Environment" unique_id=711614881]
+
+[node name="Geometry" type="Node3D" parent="Environment/Environment/FinalContainmentExit" unique_id=241459278]
+
+[node name="FinalFloor" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/Geometry" unique_id=1060111555]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 0, 30)
+use_collision = true
+size = Vector3(20, 0.5, 20)
+material = SubResource("MatFloor")
+
+[node name="NorthWallLeft" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/Geometry" unique_id=238835640]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17, 6.6416016, 20)
+use_collision = true
+size = Vector3(8, 13.283203, 0.7)
+material = SubResource("MatWall")
+
+[node name="NorthWallRight" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/Geometry" unique_id=1231422802]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29, 6.6443176, 20)
+use_collision = true
+size = Vector3(8, 13.288635, 0.7)
+material = SubResource("MatWall")
+
+[node name="SouthWall" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/Geometry" unique_id=2093979502]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 6.104553, 40)
+use_collision = true
+size = Vector3(20.7, 12.209106, 0.7)
+material = SubResource("MatWall")
+
+[node name="WestWallNorth" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/Geometry" unique_id=716429950]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 6.659912, 23.5)
+use_collision = true
+size = Vector3(0.7, 13.319824, 7)
+material = SubResource("MatWall")
+
+[node name="WestWallSouth" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/Geometry" unique_id=298901569]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 6.126953, 36.5)
+use_collision = true
+size = Vector3(0.7, 12.253906, 7)
+material = SubResource("MatWall")
+
+[node name="WestObservationPane" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/Geometry" unique_id=1907543431]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.95, 2.55, 30)
+use_collision = true
+size = Vector3(0.18, 3.2, 7)
+material = SubResource("MatGlass")
+
+[node name="ContainmentDoor" type="Node3D" parent="Environment/Environment/FinalContainmentExit" unique_id=587914889]
+
+[node name="ImportedGateCollision" type="StaticBody3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=243474850]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 2.85, 30)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor/ImportedGateCollision" unique_id=1616178652]
+shape = SubResource("Shape_FinalImportedGate")
+
+[node name="DoorFrameNorth" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=552528037]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 5.15, 30)
+use_collision = true
+size = Vector3(0.8, 0.7, 9)
+material = SubResource("MatTrim")
+
+[node name="DoorFrameSouth" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=1772327485]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 0.55, 30)
+size = Vector3(0.8, 1.1, 9)
+material = SubResource("MatTrim")
+
+[node name="DoorFrameLeft" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=1211366254]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 6.7158566, 22.797169)
+use_collision = true
+size = Vector3(0.8, 13.0317135, 6.205664)
+material = SubResource("MatTrim")
+
+[node name="DoorFrameLeft2" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=988046554]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.749615, 6.5881405, 37.28533)
+use_collision = true
+size = Vector3(0.8, 13.0317135, 6.205664)
+material = SubResource("MatTrim")
+
+[node name="DoorFrameLeft3" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=1657569241]
+transform = Transform3D(1, 0, 0, 0, -4.3711385e-08, -0.99999994, 0, 0.99999994, -4.3711385e-08, 32.749615, 10.086255, 30.52755)
+use_collision = true
+size = Vector3(0.8, 13.0317135, 6.0509887)
+material = SubResource("MatTrim")
+
+[node name="DoorFrameRight" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=2075274359]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 2.85, 34.5)
+use_collision = true
+size = Vector3(0.8, 5.3, 0.8)
+material = SubResource("MatTrim")
+
+[node name="LockedDoorPanel" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=498448721]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 2.85, 30)
+size = Vector3(0.65, 4.5, 7.8)
+material = SubResource("MatProp")
+
+[node name="LockedDoorSeam" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=1611044885]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.62, 2.85, 30)
+size = Vector3(0.08, 4.1, 0.18)
+material = SubResource("NeonRed")
+
+[node name="UnlockingDoorLeft" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=270901497]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 2.85, 27.9)
+visible = false
+size = Vector3(0.7, 4.5, 3.6)
+material = SubResource("MatProp")
+
+[node name="UnlockingDoorRight" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=1572762884]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 2.85, 32.1)
+visible = false
+size = Vector3(0.7, 4.5, 3.6)
+material = SubResource("MatProp")
+
+[node name="OpenDoorPocket" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=438729972]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 5.65, 30)
+visible = false
+size = Vector3(0.8, 0.3, 8)
+material = SubResource("NeonCyan")
+
+[node name="OpenDoorLeftParked" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=1946120809]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 2.85, 24.6)
+visible = false
+size = Vector3(0.7, 4.5, 2.2)
+material = SubResource("MatProp")
+
+[node name="OpenDoorRightParked" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=1988977226]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 2.85, 35.4)
+visible = false
+size = Vector3(0.7, 4.5, 2.2)
+material = SubResource("MatProp")
+
+[node name="OpenDoorClearanceGlow" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=1216332745]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.6, 0.34, 30)
+visible = false
+size = Vector3(0.08, 0.1, 7.2)
+material = SubResource("NeonGreen")
+
+[node name="LockingBolt01" type="CSGCylinder3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=580983182]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 32.55, 2.8, 27.2)
+height = 0.4
+sides = 16
+material = SubResource("NeonRed")
+
+[node name="RelayStatusIndicator01" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=1000867395]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.5, 4.25, 27.2)
+size = Vector3(0.12, 0.7, 1.1)
+material = SubResource("NeonCyan")
+
+[node name="LockingBolt02" type="CSGCylinder3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=1723141807]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 32.55, 2.8, 32.8)
+height = 0.4
+sides = 16
+material = SubResource("NeonRed")
+
+[node name="RelayStatusIndicator02" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=1917544740]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.5, 4.25, 32.8)
+size = Vector3(0.12, 0.7, 1.1)
+material = SubResource("NeonAmber")
+
+[node name="ContainmentExitLabel" type="Label3D" parent="Environment/Environment/FinalContainmentExit/ContainmentDoor" unique_id=1248673650]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 32.5, 5.85, 30)
+modulate = Color(1, 0.16, 0.2, 1)
+text = "CONTAINMENT EXIT"
+font_size = 42
+
+[node name="EncounterProps" type="Node3D" parent="Environment/Environment/FinalContainmentExit" unique_id=847276414]
+
+[node name="FinalCoverLeft" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/EncounterProps" unique_id=540578619]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0.8, 33)
+use_collision = true
+size = Vector3(3.5, 1.6, 1.4)
+material = SubResource("MatProp")
+
+[node name="FinalCoverRight" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/EncounterProps" unique_id=1390862572]
+transform = Transform3D(0.90630776, 0, -0.42261827, 0, 1, 0, 0.42261827, 0, 0.90630776, 27, 0.8, 26)
+use_collision = true
+size = Vector3(3.5, 1.6, 1.4)
+material = SubResource("MatProp")
+
+[node name="ContainmentCore" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/EncounterProps" unique_id=1661322914]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 1.5, 34)
+use_collision = true
+size = Vector3(3, 3, 3)
+material = SubResource("MatGlass")
+
+[node name="ExitApproachStrip01" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/EncounterProps" unique_id=1182506464]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 0.32, 30)
+size = Vector3(2.2, 0.1, 0.34)
+material = SubResource("NeonRed")
+
+[node name="ExitApproachStrip02" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/EncounterProps" unique_id=1853225873]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0.32, 30)
+size = Vector3(2.2, 0.1, 0.34)
+material = SubResource("NeonRed")
+
+[node name="ExitApproachStrip03" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/EncounterProps" unique_id=1189337629]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 0.32, 30)
+size = Vector3(2.2, 0.1, 0.34)
+material = SubResource("NeonRed")
+
+[node name="ExitApproachStrip04" type="CSGBox3D" parent="Environment/Environment/FinalContainmentExit/EncounterProps" unique_id=1527229543]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 30, 0.32, 30)
+size = Vector3(2.2, 0.1, 0.34)
+material = SubResource("NeonCyan")
+
+[node name="ProductionArtPass" type="Node3D" parent="Environment/Environment/FinalContainmentExit" unique_id=1923040024]
+
+[node name="FinalDoorArchitecture" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass" unique_id=585482308 instance=ExtResource("ArtDoorFrame")]
+transform = Transform3D(-6.556708e-08, 0, 1.5, 0, 1.25, 0, -1.5, 0, -6.556708e-08, 32.3, 0, 30)
+
+[node name="ImportedGate" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalDoorArchitecture" index="0"]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 0, 0)
+
+[node name="Header" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalDoorArchitecture" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 0)
+
+[node name="LockLightLeft" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalDoorArchitecture" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.25, 4.2, -0.36)
+
+[node name="LockLightRight" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalDoorArchitecture" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.25, 4.2, -0.36)
+
+[node name="FinalWallPanelNorth" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass" unique_id=1183235952 instance=ExtResource("ArtWallPanel")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 20, 0.2, 39.6)
+
+[node name="ImportedPanel" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalWallPanelNorth" index="0"]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, 0, 0)
+
+[node name="Backing" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalWallPanelNorth" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0.12)
+
+[node name="FrameTop" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalWallPanelNorth" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+
+[node name="StatusStrip" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalWallPanelNorth" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.72, -0.11)
+
+[node name="FinalWallPanelSouth" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass" unique_id=259913469 instance=ExtResource("ArtWallPanel")]
+transform = Transform3D(-1.2, 0, -1.04907336e-07, 0, 1.2, 0, 1.04907336e-07, 0, -1.2, 20, 0.2, 20.4)
+
+[node name="ImportedPanel" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalWallPanelSouth" index="0"]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0, 0, 0)
+
+[node name="template-wall-detail-a" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalWallPanelSouth/ImportedPanel" index="0" unique_id=815312728]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.291136, 0.116600804, 0)
+
+[node name="Backing" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalWallPanelSouth" index="1"]
+transform = Transform3D(0.99999976, 0, -2.5579538e-13, 0, 0.99999976, 0, 2.5579538e-13, 0, 0.99999976, 1.8334713, 1.4999999, 0.11999893)
+
+[node name="FrameTop" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalWallPanelSouth" index="2"]
+transform = Transform3D(0.99999994, 0, -7.1054274e-15, 0, 0.99999994, 0, 7.1054274e-15, 0, 0.99999994, 1.8334713, 2.9999998, 0)
+
+[node name="FrameBottom" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalWallPanelSouth" index="3"]
+transform = Transform3D(0.99999994, 0, -7.1054274e-15, 0, 0.99999994, 0, 7.1054274e-15, 0, 0.99999994, 1.8334713, 0, 0)
+
+[node name="StatusStrip" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalWallPanelSouth" index="4"]
+transform = Transform3D(0.99999994, 0, -7.1054274e-15, 0, 0.99999994, 0, 7.1054274e-15, 0, 0.99999994, 1.8334713, 2.7199998, -0.11000061)
+
+[node name="FinalCeilingLight" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass" unique_id=1505393914 instance=ExtResource("ArtLight")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 23, 5.15, 30)
+
+[node name="Emitter" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalCeilingLight" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+
+[node name="NavigationLight" parent="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalCeilingLight" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="InteractionMarkers" type="Node3D" parent="Environment" unique_id=1147517120]
+
+[node name="PlayerSpawn" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=763923239]
+transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, -2, 0.4, 35)
+
+[node name="GrappleAnchor_01" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=705337180]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 7.2, 30)
+
+[node name="GrappleAnchor_02" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=2122833248]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -30, 8.4, 27)
+
+[node name="TetherPullHandle_01" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=1953969606]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -39, 1.45, 26)
+
+[node name="TetherLaunch_01" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=1569258650]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -20.5, 0.4, 30)
+
+[node name="TetherIntermediateLanding" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=1676186217]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -26.5, 4.4, 29)
+
+[node name="TetherLaunch_02" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=1327336020]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -28, 4.4, 28)
+
+[node name="TetherLanding_02" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=1151545982]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -33, 0.4, 27)
+
+[node name="BridgeExtendedTarget" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=1685502578]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -26.5, 0.3, 29)
+
+[node name="EnemySpawn_BrokenCrossing" type="Marker3D" parent="Environment/InteractionMarkers"]
+position = Vector3(-37, 0.4, 30.5)
+
+[node name="EnemySpawn_BrokenApproach" type="Marker3D" parent="Environment/InteractionMarkers"]
+position = Vector3(-39.5, 0.4, 21)
+
+[node name="EnemySpawn_01" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=1536775203]
+transform = Transform3D(0.81915206, 0, 0.57357645, 0, 1, 0, -0.57357645, 0, 0.81915206, -55, 0.4, 12)
+
+[node name="EnemySpawn_02" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=884190623]
+transform = Transform3D(0.76604444, 0, -0.6427876, 0, 1, 0, 0.6427876, 0, 0.76604444, -44, 0.4, 6.5)
+
+[node name="RelayA_Marker" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=413362908]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -57, 0.4, 2.5)
+
+[node name="CombatSafeEntry" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=1409614194]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -40, 0.4, 16)
+
+[node name="CombatStrafeLeft" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=1291676965]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -54, 0.4, 13)
+
+[node name="CombatStrafeRight" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=1430629805]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -44, 0.4, 13)
+
+[node name="RelayAApproach" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=817602399]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -55, 0.4, 3)
+
+[node name="PowerConsole_Marker" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=1785100145]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -18, 0.4, -7.5)
+
+[node name="RelayB_Marker" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=871563164]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.5, 0.4, -19.3)
+
+[node name="EnemySpawn_PowerNorth" type="Marker3D" parent="Environment/InteractionMarkers"]
+position = Vector3(-26, 0.4, -7)
+
+[node name="EnemySpawn_PowerEast" type="Marker3D" parent="Environment/InteractionMarkers"]
+position = Vector3(-10, 0.4, -16)
+
+[node name="FinalEnemySpawn" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=569547974]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 23, 0.4, 30)
+
+[node name="EnemySpawn_FinalNorth" type="Marker3D" parent="Environment/InteractionMarkers"]
+position = Vector3(17, 0.4, 25)
+
+[node name="EnemySpawn_FinalSouth" type="Marker3D" parent="Environment/InteractionMarkers"]
+position = Vector3(17, 0.4, 35)
+
+[node name="ExitMarker" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=218246052]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 31.5, 0.4, 30)
+
+[node name="FallRecoveryMarker" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=1680185493]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -16, 0.4, 30)
+
+[node name="FallZoneMarker" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=1327298209]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.5, -5, 29)
+
+[node name="SecurityField_Marker" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=1115664983]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.5, 1.7, -18.8)
+
+[node name="PoweredDoorMechanism_Marker" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=1356117388]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 1.4, -12)
+
+[node name="FinalRelayStatusLeft_Marker" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=161919972]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.8, 4.2, 27.2)
+
+[node name="FinalRelayStatusRight_Marker" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=388304790]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.8, 4.2, 32.8)
+
+[node name="ExitDoorClearanceMarker" type="Marker3D" parent="Environment/InteractionMarkers" unique_id=782811939]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 32, 0.4, 30)
+
+[node name="Lighting" type="Node3D" parent="Environment" unique_id=1583318686]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Environment/Lighting" unique_id=1135232431]
+environment = SubResource("LevelEnvironment")
+
+[node name="FacilityKey" type="DirectionalLight3D" parent="Environment/Lighting" unique_id=1951268970]
+transform = Transform3D(0.81915206, 0.48104167, -0.31239215, 0, 0.54463905, 0.83867055, 0.57357645, -0.6869987, 0.4461422, 0, 0, 0)
+light_color = Color(0.56, 0.72, 0.94, 1)
+light_energy = 0.72
+shadow_enabled = true
+directional_shadow_max_distance = 150.0
+
+[node name="ArrivalEmergencyA" type="OmniLight3D" parent="Environment/Lighting" unique_id=1245187848]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 4.4, 26)
+light_color = Color(1, 0.08, 0.1, 1)
+light_energy = 3.0
+shadow_enabled = true
+omni_range = 9.0
+
+[node name="ArrivalEmergencyB" type="OmniLight3D" parent="Environment/Lighting" unique_id=831559183]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 4.4, 34)
+light_color = Color(0.05, 0.65, 1, 1)
+light_energy = 3.0
+shadow_enabled = true
+omni_range = 9.0
+
+[node name="CrossingAnchorLight" type="OmniLight3D" parent="Environment/Lighting" unique_id=961822669]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27, 7.5, 28)
+light_color = Color(0.02, 0.8, 1, 1)
+light_energy = 4.0
+shadow_enabled = true
+omni_range = 15.0
+
+[node name="SecurityWarningLight" type="OmniLight3D" parent="Environment/Lighting" unique_id=2132931479]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49, 4.3, 8)
+light_color = Color(1, 0.08, 0.1, 1)
+light_energy = 4.0
+shadow_enabled = true
+omni_range = 14.0
+
+[node name="EnemySpawnLight01" type="OmniLight3D" parent="Environment/Lighting" unique_id=1900153722]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -55, 3.1, 12)
+light_color = Color(1, 0.06, 0.09, 1)
+light_energy = 2.4
+shadow_enabled = true
+omni_range = 7.0
+
+[node name="EnemySpawnLight02" type="OmniLight3D" parent="Environment/Lighting" unique_id=1850998274]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44, 3.1, 6.5)
+light_color = Color(1, 0.06, 0.09, 1)
+light_energy = 2.4
+shadow_enabled = true
+omni_range = 7.0
+
+[node name="RelayAObjectiveLight" type="OmniLight3D" parent="Environment/Lighting" unique_id=1786815560]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -57, 3.2, 2)
+light_color = Color(0.02, 0.8, 1, 1)
+light_energy = 3.2
+shadow_enabled = true
+omni_range = 8.0
+
+[node name="SecurityOnwardLight" type="OmniLight3D" parent="Environment/Lighting" unique_id=1686012715]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42, 3.4, -1)
+light_color = Color(1, 0.48, 0.04, 1)
+light_energy = 2.8
+shadow_enabled = true
+omni_range = 8.0
+
+[node name="PowerChannelLight" type="OmniLight3D" parent="Environment/Lighting" unique_id=501470020]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 4, -12)
+light_color = Color(1, 0.45, 0.05, 1)
+light_energy = 4.0
+shadow_enabled = true
+omni_range = 15.0
+
+[node name="RelayBObjectiveLight" type="OmniLight3D" parent="Environment/Lighting" unique_id=1021643101]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.5, 3.3, -20)
+light_color = Color(0.16, 1, 0.46, 1)
+light_energy = 2.8
+shadow_enabled = true
+omni_range = 7.0
+
+[node name="PoweredDoorLight" type="OmniLight3D" parent="Environment/Lighting" unique_id=1895240772]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, 3.3, -12)
+light_color = Color(1, 0.48, 0.04, 1)
+light_energy = 2.8
+shadow_enabled = true
+omni_range = 8.0
+
+[node name="FinalContainmentLight" type="OmniLight3D" parent="Environment/Lighting" unique_id=812603338]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 5, 30)
+light_color = Color(0.04, 0.65, 1, 1)
+light_energy = 5.0
+shadow_enabled = true
+omni_range = 18.0
+
+[node name="FinalDoorWarningLight" type="OmniLight3D" parent="Environment/Lighting" unique_id=737857837]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31, 4, 30)
+light_color = Color(1, 0.04, 0.08, 1)
+light_energy = 4.0
+shadow_enabled = true
+omni_range = 10.0
+
+[node name="PreviewCamera" type="Camera3D" parent="Environment" unique_id=318714519]
+transform = Transform3D(1, 0, 0, 0, 0.4067366, 0.9135455, 0, -0.9135455, 0.4067366, -13, 92, 58)
+projection = 1
+size = 112.0
+near = 0.5
+far = 220.0
+
+[node name="EnemyEncounter" type="Node" parent="." unique_id=1829851446]
+script = ExtResource("EnemyEncounterScript")
+stop_when_objective_complete = false
+enemy_scene = ExtResource("EnemyScene")
+initial_enemy_path = NodePath("../SecurityConstruct_01")
+activation_marker_path = NodePath("../Environment/InteractionMarkers/CombatSafeEntry")
+spawn_marker_paths = Array[NodePath]([NodePath("../Environment/InteractionMarkers/EnemySpawn_BrokenCrossing"), NodePath("../Environment/InteractionMarkers/EnemySpawn_BrokenApproach"), NodePath("../Environment/InteractionMarkers/EnemySpawn_01"), NodePath("../Environment/InteractionMarkers/EnemySpawn_02"), NodePath("../Environment/InteractionMarkers/CombatStrafeLeft"), NodePath("../Environment/InteractionMarkers/CombatStrafeRight"), NodePath("../Environment/InteractionMarkers/EnemySpawn_PowerNorth"), NodePath("../Environment/InteractionMarkers/EnemySpawn_PowerEast"), NodePath("../Environment/InteractionMarkers/FinalEnemySpawn"), NodePath("../Environment/InteractionMarkers/EnemySpawn_FinalNorth"), NodePath("../Environment/InteractionMarkers/EnemySpawn_FinalSouth")])
+spawn_marker_room_ids = PackedStringArray("broken_crossing", "broken_crossing", "security_interception", "security_interception", "security_interception", "security_interception", "power_diversion", "power_diversion", "final_containment", "final_containment", "final_containment")
+initially_accessible_rooms = PackedStringArray("security_interception")
+
+[node name="SecurityConstruct_01" parent="." unique_id=529466028 instance=ExtResource("EnemyScene")]
+transform = Transform3D(0.81915206, 0, 0.57357645, 0, 1, 0, -0.57357645, 0, 0.81915206, -55, 0.4, 12)
+
+[node name="CollisionShape3D" parent="SecurityConstruct_01" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
+
+[node name="Torso" parent="SecurityConstruct_01/BodyVisual" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.12, 0)
+
+[node name="Head" parent="SecurityConstruct_01/BodyVisual" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.92, 0)
+
+[node name="TelegraphLight" parent="SecurityConstruct_01/BodyVisual/Head" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.3)
+
+[node name="LeftArm" parent="SecurityConstruct_01/BodyVisual" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.57, 1.1, 0)
+
+[node name="RightArm" parent="SecurityConstruct_01/BodyVisual" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.57, 1.1, 0)
+
+[node name="LeftLeg" parent="SecurityConstruct_01/BodyVisual" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.24, 0.45, 0)
+
+[node name="RightLeg" parent="SecurityConstruct_01/BodyVisual" index="5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24, 0.45, 0)
+
+[node name="StateLabel" parent="SecurityConstruct_01" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0)
+
+[editable path="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyWallPanelLeft"]
+[editable path="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyWallPanelLeft/ImportedPanel"]
+[editable path="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyWallPanelRight"]
+[editable path="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyWallPanelRight/ImportedPanel"]
+[editable path="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbySecurityFrame"]
+[editable path="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbySecurityFrame/ImportedGate"]
+[editable path="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyScannerLeft"]
+[editable path="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyScannerRight"]
+[editable path="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyCeilingLightA"]
+[editable path="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyCeilingLightB"]
+[editable path="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyFloorInlayA"]
+[editable path="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyFloorInlayA/ImportedRaisedTile"]
+[editable path="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyFloorInlayB"]
+[editable path="Environment/Environment/ArrivalChamber/ProductionArtPass/LobbyFloorInlayB/ImportedRaisedTile"]
+[editable path="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingCableTrayStart"]
+[editable path="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingCableTrayStart/ImportedCables"]
+[editable path="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingCableTrayEnd"]
+[editable path="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingCableTrayEnd/ImportedCables"]
+[editable path="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingRailingStart"]
+[editable path="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingRailingEnd"]
+[editable path="Environment/Environment/BrokenCrossing/ProductionArtPass/CrossingServiceCabinet"]
+[editable path="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityWallPanel"]
+[editable path="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityWallPanel/ImportedPanel"]
+[editable path="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityHatch"]
+[editable path="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityEquipmentBay"]
+[editable path="Environment/Environment/SecurityInterception/ProductionArtPass/SecurityCeilingLight"]
+[editable path="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCabinetA"]
+[editable path="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCabinetB"]
+[editable path="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCableTrayA"]
+[editable path="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCableTrayA/ImportedCables"]
+[editable path="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCableTrayB"]
+[editable path="Environment/Environment/PowerDiversion/ProductionArtPass/PowerCableTrayB/ImportedCables"]
+[editable path="Environment/Environment/PowerDiversion/ProductionArtPass/PowerConsoleShell"]
+[editable path="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalDoorArchitecture"]
+[editable path="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalDoorArchitecture/ImportedGate"]
+[editable path="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalWallPanelNorth"]
+[editable path="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalWallPanelNorth/ImportedPanel"]
+[editable path="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalWallPanelSouth"]
+[editable path="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalWallPanelSouth/ImportedPanel"]
+[editable path="Environment/Environment/FinalContainmentExit/ProductionArtPass/FinalCeilingLight"]
+[editable path="SecurityConstruct_01"]
