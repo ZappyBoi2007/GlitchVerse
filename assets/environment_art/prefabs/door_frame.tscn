@@ -18,3 +18,5 @@ material = ExtResource("3_red")
 position = Vector3(2.25, 4.2, -0.36)
 size = Vector3(0.5, 0.18, 0.08)
 material = ExtResource("4_cyan")
+
+[editable path="ImportedGate"]

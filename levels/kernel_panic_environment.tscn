@@ -783,3 +783,35 @@ scale = Vector3(1.3, 1.2, 1.2)
 position = Vector3(-7.65, 2.5, -28)
 rotation_degrees = Vector3(0, 90, 0)
 scale = Vector3(1.1, 1.1, 1.1)
+
+[editable path="Environment/KernelApproach/ProductionArtPass/ApproachPanelA"]
+
+[editable path="Environment/KernelApproach/ProductionArtPass/ApproachPanelB"]
+
+[editable path="Environment/KernelApproach/ProductionArtPass/ApproachLight"]
+
+[editable path="Environment/GravityDistortion/ProductionArtPass/GravityCableLeft"]
+
+[editable path="Environment/GravityDistortion/ProductionArtPass/GravityCableRight"]
+
+[editable path="Environment/GravityDistortion/ProductionArtPass/GravityMachineA"]
+
+[editable path="Environment/GravityDistortion/ProductionArtPass/GravityMachineB"]
+
+[editable path="Environment/CorePowerNetwork/ProductionArtPass/CoreCableWest"]
+
+[editable path="Environment/CorePowerNetwork/ProductionArtPass/CoreCableEast"]
+
+[editable path="Environment/CorePowerNetwork/ProductionArtPass/CoreMachineWest"]
+
+[editable path="Environment/CorePowerNetwork/ProductionArtPass/CoreMachineEast"]
+
+[editable path="Environment/FinalSecurityChamber/ProductionArtPass/SecurityPanel"]
+
+[editable path="Environment/FinalSecurityChamber/ProductionArtPass/SecurityLight"]
+
+[editable path="Environment/KernelShutdown/ProductionArtPass/ShutdownConsoleShell"]
+
+[editable path="Environment/KernelShutdown/ProductionArtPass/VictoryDoorFrame"]
+
+[editable path="Environment/KernelShutdown/ProductionArtPass/ShutdownHatchLeft"]

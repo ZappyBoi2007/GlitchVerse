@@ -6,7 +6,7 @@ signal attack_finished
 signal hit_confirmed(target: Node, damage: int)
 signal attack_missed
 
-@export_range(1, 10, 1) var damage := 1
+@export_range(1, 1000, 1) var damage := 25
 @export_range(0.1, 2.0, 0.05) var attack_cooldown := 0.42
 @export_range(0.5, 4.0, 0.1) var attack_reach := 2.1
 @export_range(0.1, 1.5, 0.05) var hit_radius := 0.72
@@ -63,12 +63,12 @@ func get_cooldown_remaining() -> float:
 
 
 func _play_swing_animation() -> void:
-	blade_pivot.rotation_degrees = Vector3(-12, -8, 22)
+	blade_pivot.rotation_degrees = Vector3(25, 35, -10)
 	var tween := create_tween()
 	tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.tween_property(blade_pivot, "rotation_degrees", Vector3(-28, 14, -76), 0.085)
+	tween.tween_property(blade_pivot, "rotation_degrees", Vector3(-12, -8, -82), 0.085)
 	tween.set_ease(Tween.EASE_IN_OUT)
-	tween.tween_property(blade_pivot, "rotation_degrees", Vector3(-12, -8, 22), 0.17)
+	tween.tween_property(blade_pivot, "rotation_degrees", Vector3(25, 35, -10), 0.17)
 	tween.finished.connect(attack_finished.emit, CONNECT_ONE_SHOT)
 
 

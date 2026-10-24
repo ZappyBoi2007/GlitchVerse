@@ -115,7 +115,17 @@ func _update_stats(elapsed: float, score: int) -> void:
 
 
 func _on_health_changed(current: int, maximum: int) -> void:
-	health_label.text = "INTEGRITY  %s%s" % ["■".repeat(current), "□".repeat(maximum - current)]
+	var filled := roundi(20.0 * float(current) / float(maxi(maximum, 1)))
+	health_label.text = "HP %03d / %03d  [%s%s]" % [
+		current,
+		maximum,
+		"■".repeat(filled),
+		"□".repeat(20 - filled),
+	]
+	health_label.add_theme_color_override(
+		"font_color",
+		Color("ff667d") if current <= maximum * 0.25 else Color("68ffac")
+	)
 
 
 func _on_interaction_target(_target: Node, prompt: String) -> void:

@@ -832,3 +832,31 @@ scale = Vector3(1.25, 1.2, 1.2)
 position = Vector3(-6.6, 2.5, -32)
 rotation_degrees = Vector3(0, 90, 0)
 scale = Vector3(1.1, 1.1, 1.1)
+
+[editable path="Environment/EntryControlRoom/ProductionArtPass/EntryWallPanelA"]
+
+[editable path="Environment/EntryControlRoom/ProductionArtPass/EntryWallPanelB"]
+
+[editable path="Environment/EntryControlRoom/ProductionArtPass/EntryLight"]
+
+[editable path="Environment/TimingChamber/ProductionArtPass/TimingCableTrayLeft"]
+
+[editable path="Environment/TimingChamber/ProductionArtPass/TimingCableTrayRight"]
+
+[editable path="Environment/TimingChamber/ProductionArtPass/TimingMachineA"]
+
+[editable path="Environment/TimingChamber/ProductionArtPass/TimingMachineB"]
+
+[editable path="Environment/PowerRoutingRoom/ProductionArtPass/PowerCabinetLeft"]
+
+[editable path="Environment/PowerRoutingRoom/ProductionArtPass/PowerCabinetRight"]
+
+[editable path="Environment/PowerRoutingRoom/ProductionArtPass/PowerCeilingTray"]
+
+[editable path="Environment/SecurityInterception/ProductionArtPass/SecurityWallPanel"]
+
+[editable path="Environment/SecurityInterception/ProductionArtPass/SecurityLight"]
+
+[editable path="Environment/ExitChamber/ProductionArtPass/ExitDoorFrame"]
+
+[editable path="Environment/ExitChamber/ProductionArtPass/ExitHatch"]

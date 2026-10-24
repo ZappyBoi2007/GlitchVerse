@@ -52,6 +52,12 @@ func _run() -> void:
 	check(level != null, "BREACH LAB loads through GameFlowManager")
 	check(player != null and player.is_in_group("action_player"), "preview spawns action-player variant")
 	check(grapple != null and sword != null and health != null and vector_run != null, "player owns grapple, vector run, blade, and health components")
+	var armored_arm := sword.get_node_or_null("BladePivot/ArmoredRightArm") as Node3D
+	var gloved_hand := sword.get_node_or_null("BladePivot/ArmoredRightArm/GlovedHand") as Node3D
+	check(armored_arm != null and gloved_hand != null, "first-person sword viewmodel includes an armored forearm and gloved gripping hand")
+	check(armored_arm.get_parent() == sword.blade_pivot and sword.blade_mesh.get_parent() == sword.blade_pivot, "arm, hand, grip, and blade share the existing attack pivot")
+	check(player.find_children("*", "SwordController", true, false).size() == 1, "player owns exactly one sword controller")
+	check(sword.find_children("*", "CollisionShape3D", true, false).is_empty(), "viewmodel adds no duplicate sword hitbox")
 	check(not level.is_exit_unlocked(), "finish starts locked")
 
 	var invalid_target := Node3D.new()
@@ -113,14 +119,27 @@ func _run() -> void:
 	var enemy := level.security_construct
 	enemy.set_physics_process(false)
 	enemy.player = player
+	for visual_path in ["BodyVisual/Head/Visor", "BodyVisual/ChestPlate", "BodyVisual/LeftShoulder", "BodyVisual/RightForearm", "BodyVisual/LeftBoot", "BodyVisual/ThreatIndicator"]:
+		check(enemy.get_node_or_null(visual_path) is MeshInstance3D, "guard visual rig contains %s" % visual_path)
+	check(enemy.find_children("*", "CollisionShape3D", true, false).size() == 1, "guard visual upgrade preserves exactly one gameplay collision shape")
+	var enemy_collision_transform := enemy.collision.transform
 	player.global_position = enemy.global_position + Vector3(0, 0, 1)
 	health.reset_health()
 	var telegraph_count := [0]
 	enemy.attack_telegraphed.connect(func() -> void: telegraph_count[0] += 1)
 	enemy._set_state(SecurityConstruct.STATE_WINDUP)
+	enemy._process(0.1)
 	check(telegraph_count[0] == 1, "construct emits attack telegraph before damage")
+	check(absf(enemy.right_arm.rotation.x) > 0.01, "guard windup produces a readable visual attack pose")
+	check(enemy.collision.transform.is_equal_approx(enemy_collision_transform), "guard visual state changes never move its gameplay hitbox")
 	enemy._resolve_attack(1.0)
-	check(health.current_health == 2, "construct attack damages player by one segment")
+	check(
+		health.current_health == health.maximum_health - enemy.attack_damage,
+		"construct attack subtracts its configured hit-point damage"
+	)
+	var health_after_one_swing := health.current_health
+	enemy._resolve_attack(1.0)
+	check(health.current_health == health_after_one_swing, "player invulnerability prevents duplicate accepted damage from an immediate repeated swing")
 	health.reset_health()
 
 	# Pull handle changes real collision geometry and is one-shot.
@@ -147,8 +166,8 @@ func _run() -> void:
 	enemy = level.security_construct
 	enemy.set_physics_process(false)
 	check(not level.bridge.is_deployed and not level.pull_handle.is_pulled, "restart resets tether machinery")
-	check(enemy.current_health == 3 and not enemy.is_deactivated(), "restart resets construct health/state")
-	check(health.current_health == 3, "restart restores player integrity")
+	check(enemy.current_health == enemy.maximum_health and not enemy.is_deactivated(), "restart resets construct health/state")
+	check(health.current_health == health.maximum_health, "restart restores player hit points")
 
 	# Solve the mechanism, then use actual shape-query sword attacks.
 	player.global_position = Vector3(0, 0.05, 0)
@@ -163,15 +182,19 @@ func _run() -> void:
 	check(sword.try_attack(), "blade accepts first attack")
 	check(not sword.try_attack(), "blade cooldown prevents attack spam")
 	await wait_seconds(0.16)
-	check(enemy.current_health == 2, "one slash applies exactly one damage")
+	check(enemy.current_health == enemy.maximum_health - sword.damage, "one slash applies configured damage")
 	await wait_seconds(sword.attack_cooldown + 0.08)
 	check(sword.try_attack(), "blade becomes ready after cooldown")
 	await wait_seconds(0.16)
-	check(enemy.current_health == 1, "second slash applies one damage")
+	check(enemy.current_health == enemy.maximum_health - sword.damage * 2, "second slash stacks damage")
 	await wait_seconds(sword.attack_cooldown + 0.08)
 	check(sword.try_attack(), "third attack begins normally")
+	await wait_seconds(0.16)
+	check(enemy.current_health == enemy.maximum_health - sword.damage * 3, "third slash leaves remaining hit points")
+	await wait_seconds(sword.attack_cooldown + 0.08)
+	check(sword.try_attack(), "fourth attack begins normally")
 	await wait_seconds(0.2)
-	check(enemy.is_deactivated(), "construct deactivates after approximately three hits")
+	check(enemy.is_deactivated(), "construct deactivates when hit points reach zero")
 	check(level.is_puzzle_complete() and level.is_exit_unlocked(), "bridge plus enemy objective unlocks finish")
 
 	level.puzzle_exit._on_exit_trigger_body_entered(player)

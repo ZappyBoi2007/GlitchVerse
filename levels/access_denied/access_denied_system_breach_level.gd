@@ -3,7 +3,6 @@ extends GameplayLevel
 
 const ANCHOR_SCENE := preload("res://interactive/grapple_anchor.tscn")
 const HANDLE_SCENE := preload("res://interactive/tether_pull_handle.tscn")
-const ENEMY_SCENE := preload("res://enemies/security_construct.tscn")
 const RELAY_SCENE := preload("res://interactive/objective_relay.tscn")
 const REWIRE_SCENE := preload("res://interactive/rewire_console.tscn")
 const EXIT_SCENE := preload("res://interactive/campaign_exit.tscn")
@@ -12,12 +11,14 @@ const FALL_SCENE := preload("res://interactive/fall_hazard.tscn")
 const DOOR_PLANE_X := 33.0
 const EXIT_TRIGGER_POSITION := Vector3(35.8, 0.4, 30.0)
 
+
 @onready var environment: Node3D = $Environment
 @onready var markers: Node3D = $Environment/InteractionMarkers
+@onready var enemy_encounter: RandomEnemyEncounter = $EnemyEncounter
 
 var bridge: SystemBreachBridge
 var pull_handle: TetherPullHandle
-var enemy: SecurityConstruct
+@onready var enemy: SecurityConstruct = $SecurityConstruct_01
 var relay_a: ObjectiveRelay
 var relay_b: ObjectiveRelay
 var rewire_console: RewireConsole
@@ -39,6 +40,9 @@ func _ready() -> void:
 	_build_exit_vestibule()
 	_spawn_gameplay()
 	_apply_rewire_state(false)
+	_apply_final_gate_state(false)
+	enemy_encounter.encounter_completed.connect(_on_enemy_encounter_completed)
+	_start_enemy_encounter.call_deferred()
 	_bind_player_health.call_deferred()
 	_report_progress()
 
@@ -60,7 +64,11 @@ func _apply_production_art_safety() -> void:
 func _validate_environment_contract() -> bool:
 	for path in [
 		"PlayerSpawn", "GrappleAnchor_01", "GrappleAnchor_02", "TetherPullHandle_01",
-		"BridgeExtendedTarget", "EnemySpawn_01", "RelayA_Marker", "PowerConsole_Marker",
+		"BridgeExtendedTarget", "EnemySpawn_01", "EnemySpawn_02", "CombatStrafeLeft", "CombatStrafeRight",
+		"EnemySpawn_BrokenCrossing", "EnemySpawn_BrokenApproach",
+		"EnemySpawn_PowerNorth", "EnemySpawn_PowerEast",
+		"FinalEnemySpawn", "EnemySpawn_FinalNorth", "EnemySpawn_FinalSouth",
+		"RelayA_Marker", "PowerConsole_Marker",
 		"RelayB_Marker", "ExitMarker", "FallZoneMarker"
 	]:
 		if markers.get_node_or_null(path) == null:
@@ -90,8 +98,6 @@ func _spawn_gameplay() -> void:
 	pull_handle = _spawn_at_marker(HANDLE_SCENE, "TetherPullHandle_01", "TetherPullHandle_01_Runtime") as TetherPullHandle
 	pull_handle.pulled.connect(bridge.activate)
 
-	enemy = _spawn_at_marker(ENEMY_SCENE, "EnemySpawn_01", "SecurityConstruct_01") as SecurityConstruct
-	enemy.deactivated.connect(_on_enemy_deactivated)
 
 	relay_a = _spawn_at_marker(RELAY_SCENE, "RelayA_Marker", "RelayA") as ObjectiveRelay
 	relay_a.position.y += 1.1
@@ -119,6 +125,12 @@ func _spawn_gameplay() -> void:
 	var fall := _spawn_at_marker(FALL_SCENE, "FallZoneMarker", "SystemBreachFallZone") as FallHazard
 	fall.failure_reason = "SYSTEM BREACH // PLAYER LOST IN BROKEN CROSSING"
 	fall.failure_requested.connect(fail_level)
+
+
+func _start_enemy_encounter() -> void:
+	var player_body := get_tree().get_first_node_in_group("player") as CharacterBody3D
+	if player_body != null:
+		enemy_encounter.begin(player_body)
 
 
 func _spawn_at_marker(scene: PackedScene, marker_name: String, node_name: String) -> Node3D:
@@ -262,22 +274,25 @@ func _runtime_emissive(color: Color, energy: float) -> StandardMaterial3D:
 
 func _on_bridge_deployed() -> void:
 	_bridge_deployed = true
+	enemy_encounter.set_room_accessible(&"broken_crossing", true)
 	_report_progress()
 
 
-func _on_enemy_deactivated() -> void:
+func _on_enemy_encounter_completed() -> void:
 	relay_a.set_available(true)
 	_report_progress()
 
 
 func _on_relay_a_restored() -> void:
 	_relay_a_restored = true
+	enemy_encounter.set_room_accessible(&"power_diversion", true)
 	rewire_console.set_available(true)
 	_report_progress()
 
 
 func _on_rewire_changed(door_powered: bool) -> void:
 	_rewired = door_powered
+	enemy_encounter.set_room_accessible(&"final_containment", door_powered)
 	_apply_rewire_state(door_powered)
 	relay_b.set_available(door_powered)
 	_report_progress()
@@ -304,22 +319,33 @@ func _apply_rewire_state(door_powered: bool) -> void:
 
 
 func _open_containment_exit() -> void:
-	var door := environment.get_node("Environment/FinalContainmentExit/ContainmentDoor")
-	_set_csg_state(door, "LockedDoorPanel", false, false)
-	_set_visible(door, "LockedDoorSeam", false)
-	_set_visible(door, "LockingBolt01", false)
-	_set_visible(door, "LockingBolt02", false)
-	_set_visible(door, "OpenDoorPocket", true)
-	_set_visible(door, "OpenDoorLeftParked", true)
-	_set_visible(door, "OpenDoorRightParked", true)
-	_set_visible(door, "OpenDoorClearanceGlow", true)
-	var exit_label := door.get_node_or_null("ContainmentExitLabel") as Label3D
-	if exit_label != null:
-		exit_label.text = "CONTAINMENT EXIT // OPEN"
-		exit_label.modulate = Color("55ff9a")
+	enemy_encounter.stop()
+	_apply_final_gate_state(true)
 	mark_puzzle_completed()
 	campaign_exit.unlock_exit()
 	mark_exit_unlocked()
+
+
+func _apply_final_gate_state(open: bool) -> void:
+	var door := environment.get_node("Environment/FinalContainmentExit/ContainmentDoor")
+	var imported_gate_collision := door.get_node("ImportedGateCollision/CollisionShape3D") as CollisionShape3D
+	var imported_gate_visual := environment.get_node(
+		"Environment/FinalContainmentExit/ProductionArtPass/FinalDoorArchitecture/ImportedGate"
+	) as Node3D
+	imported_gate_collision.set_deferred("disabled", open)
+	imported_gate_visual.visible = not open
+	_set_csg_state(door, "LockedDoorPanel", not open, false)
+	_set_visible(door, "LockedDoorSeam", not open)
+	_set_visible(door, "LockingBolt01", not open)
+	_set_visible(door, "LockingBolt02", not open)
+	_set_visible(door, "OpenDoorPocket", open)
+	_set_visible(door, "OpenDoorLeftParked", open)
+	_set_visible(door, "OpenDoorRightParked", open)
+	_set_visible(door, "OpenDoorClearanceGlow", open)
+	var exit_label := door.get_node_or_null("ContainmentExitLabel") as Label3D
+	if exit_label != null:
+		exit_label.text = "CONTAINMENT EXIT // OPEN" if open else "CONTAINMENT EXIT"
+		exit_label.modulate = Color("55ff9a") if open else Color("ff293d")
 
 
 func _set_visible(parent: Node, child_name: String, value: bool) -> void:
@@ -338,15 +364,20 @@ func _set_csg_state(parent: Node, child_name: String, visible_value: bool, colli
 func _bind_player_health() -> void:
 	var health := get_tree().get_first_node_in_group("player_health") as PlayerHealth
 	if health != null:
-		health.player_defeated.connect(func() -> void: fail_level("SYSTEM BREACH // PLAYER INTEGRITY DEPLETED"))
+		health.player_defeated.connect(
+			func() -> void:
+				enemy_encounter.stop()
+				fail_level("SYSTEM BREACH // PLAYER INTEGRITY DEPLETED")
+		)
 
 
 func _report_progress() -> void:
 	var completed := int(_relay_a_restored) + int(_relay_b_restored)
 	var message := "DEPLOY CROSSING BRIDGE WITH TETHER"
-	if _bridge_deployed and not enemy.is_deactivated():
-		message = "DISABLE SECURITY CONSTRUCT"
-	elif enemy.is_deactivated() and not _relay_a_restored:
+	var encounter_cleared := enemy_encounter.is_completed()
+	if _bridge_deployed and not encounter_cleared:
+		message = "CLEAR SECURITY WAVE // %d OF %d" % [enemy_encounter.total_defeated, enemy_encounter.maximum_total_enemies]
+	elif encounter_cleared and not _relay_a_restored:
 		message = "F // RESTORE RELAY A // WEST CYAN BEACON"
 	elif _relay_a_restored and not _rewired:
 		message = "F // REWIRE POWER TO DOOR ROUTE"

@@ -1,29 +1,96 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene format=3]
 
 [ext_resource type="Script" path="res://enemies/security_construct.gd" id="1_script"]
 
 [sub_resource type="StandardMaterial3D" id="Material_armor"]
-albedo_color = Color(0.09, 0.12, 0.16, 1)
-metallic = 0.7
-roughness = 0.38
+albedo_color = Color(0.055, 0.075, 0.1, 1)
+metallic = 0.82
+roughness = 0.32
 
 [sub_resource type="StandardMaterial3D" id="Material_joint"]
-albedo_color = Color(0.21, 0.24, 0.28, 1)
+albedo_color = Color(0.16, 0.19, 0.23, 1)
+metallic = 0.52
+roughness = 0.48
+
+[sub_resource type="StandardMaterial3D" id="Material_glove"]
+albedo_color = Color(0.018, 0.024, 0.032, 1)
+metallic = 0.15
+roughness = 0.72
+
+[sub_resource type="StandardMaterial3D" id="Material_cyan"]
+albedo_color = Color(0.01, 0.35, 0.42, 1)
 metallic = 0.45
-roughness = 0.5
+roughness = 0.28
+emission_enabled = true
+emission = Color(0.02, 0.9, 1, 1)
+emission_energy_multiplier = 2.2
+
+[sub_resource type="StandardMaterial3D" id="Material_red"]
+albedo_color = Color(0.32, 0.01, 0.02, 1)
+metallic = 0.35
+roughness = 0.3
+emission_enabled = true
+emission = Color(1, 0.025, 0.04, 1)
+emission_energy_multiplier = 2.6
 
 [sub_resource type="BoxMesh" id="Mesh_torso"]
 material = SubResource("Material_armor")
-size = Vector3(0.85, 1.05, 0.42)
+size = Vector3(0.88, 1.0, 0.44)
 
 [sub_resource type="BoxMesh" id="Mesh_limb"]
 material = SubResource("Material_joint")
-size = Vector3(0.22, 0.9, 0.22)
+size = Vector3(0.22, 0.82, 0.22)
 
 [sub_resource type="SphereMesh" id="Mesh_head"]
 material = SubResource("Material_armor")
-radius = 0.32
-height = 0.64
+radius = 0.34
+height = 0.62
+radial_segments = 16
+rings = 8
+
+[sub_resource type="BoxMesh" id="Mesh_chest"]
+material = SubResource("Material_armor")
+size = Vector3(0.74, 0.56, 0.16)
+
+[sub_resource type="BoxMesh" id="Mesh_shoulder"]
+material = SubResource("Material_armor")
+size = Vector3(0.38, 0.28, 0.48)
+
+[sub_resource type="BoxMesh" id="Mesh_forearm"]
+material = SubResource("Material_armor")
+size = Vector3(0.3, 0.42, 0.3)
+
+[sub_resource type="BoxMesh" id="Mesh_hand"]
+material = SubResource("Material_glove")
+size = Vector3(0.25, 0.24, 0.25)
+
+[sub_resource type="BoxMesh" id="Mesh_boot"]
+material = SubResource("Material_glove")
+size = Vector3(0.34, 0.28, 0.48)
+
+[sub_resource type="BoxMesh" id="Mesh_knee"]
+material = SubResource("Material_armor")
+size = Vector3(0.28, 0.28, 0.12)
+
+[sub_resource type="BoxMesh" id="Mesh_visor"]
+material = SubResource("Material_cyan")
+size = Vector3(0.58, 0.12, 0.07)
+
+[sub_resource type="BoxMesh" id="Mesh_brow"]
+material = SubResource("Material_armor")
+size = Vector3(0.72, 0.16, 0.5)
+
+[sub_resource type="BoxMesh" id="Mesh_accent"]
+material = SubResource("Material_cyan")
+size = Vector3(0.42, 0.07, 0.05)
+
+[sub_resource type="BoxMesh" id="Mesh_threat"]
+material = SubResource("Material_red")
+size = Vector3(0.12, 0.12, 0.06)
+
+[sub_resource type="BoxMesh" id="Mesh_back"]
+material = SubResource("Material_joint")
+size = Vector3(0.55, 0.62, 0.2)
 
 [sub_resource type="CapsuleShape3D" id="Shape_construct"]
 radius = 0.45
@@ -37,44 +104,122 @@ floor_snap_length = 0.25
 position = Vector3(0, 0.95, 0)
 shape = SubResource("Shape_construct")
 
+[node name="ObstacleProbe" type="RayCast3D" parent="."]
+position = Vector3(0, 0.65, 0)
+target_position = Vector3(0, 0, -1.35)
+collision_mask = 1
+exclude_parent = true
+enabled = true
+
 [node name="BodyVisual" type="Node3D" parent="."]
 
 [node name="Torso" type="MeshInstance3D" parent="BodyVisual"]
-position = Vector3(0, 1.12, 0)
+position = Vector3(0, 1.14, 0)
 mesh = SubResource("Mesh_torso")
 
+[node name="ChestPlate" type="MeshInstance3D" parent="BodyVisual"]
+position = Vector3(0, 1.22, -0.27)
+mesh = SubResource("Mesh_chest")
+
+[node name="ChestAccent" type="MeshInstance3D" parent="BodyVisual"]
+position = Vector3(0, 1.38, -0.375)
+mesh = SubResource("Mesh_accent")
+
+[node name="ThreatIndicator" type="MeshInstance3D" parent="BodyVisual"]
+position = Vector3(0.27, 1.12, -0.385)
+mesh = SubResource("Mesh_threat")
+
+[node name="BackUnit" type="MeshInstance3D" parent="BodyVisual"]
+position = Vector3(0, 1.2, 0.3)
+mesh = SubResource("Mesh_back")
+
+[node name="SecurityInsignia" type="Label3D" parent="BodyVisual"]
+position = Vector3(-0.16, 1.13, -0.37)
+text = "SEC"
+font_size = 20
+outline_size = 4
+modulate = Color(0.15, 0.9, 1, 1)
+
 [node name="Head" type="Node3D" parent="BodyVisual"]
-position = Vector3(0, 1.92, 0)
+position = Vector3(0, 1.94, 0)
 
 [node name="Mesh" type="MeshInstance3D" parent="BodyVisual/Head"]
 mesh = SubResource("Mesh_head")
 
+[node name="HelmetBrow" type="MeshInstance3D" parent="BodyVisual/Head"]
+position = Vector3(0, 0.15, -0.02)
+mesh = SubResource("Mesh_brow")
+
+[node name="Visor" type="MeshInstance3D" parent="BodyVisual/Head"]
+position = Vector3(0, 0.04, -0.325)
+mesh = SubResource("Mesh_visor")
+
 [node name="TelegraphLight" type="OmniLight3D" parent="BodyVisual/Head"]
-position = Vector3(0, 0, -0.3)
+position = Vector3(0, 0.04, -0.36)
 light_color = Color(0.33, 0.91, 0.89, 1)
-light_energy = 0.8
-omni_range = 3.5
+light_energy = 0.65
+omni_range = 2.6
 shadow_enabled = false
 
 [node name="LeftArm" type="MeshInstance3D" parent="BodyVisual"]
-position = Vector3(-0.57, 1.1, 0)
+position = Vector3(-0.57, 1.08, 0)
 mesh = SubResource("Mesh_limb")
 
 [node name="RightArm" type="MeshInstance3D" parent="BodyVisual"]
-position = Vector3(0.57, 1.1, 0)
+position = Vector3(0.57, 1.08, 0)
 mesh = SubResource("Mesh_limb")
 
+[node name="LeftShoulder" type="MeshInstance3D" parent="BodyVisual"]
+position = Vector3(-0.61, 1.5, 0)
+mesh = SubResource("Mesh_shoulder")
+
+[node name="RightShoulder" type="MeshInstance3D" parent="BodyVisual"]
+position = Vector3(0.61, 1.5, 0)
+mesh = SubResource("Mesh_shoulder")
+
+[node name="LeftForearm" type="MeshInstance3D" parent="BodyVisual"]
+position = Vector3(-0.57, 0.83, -0.02)
+mesh = SubResource("Mesh_forearm")
+
+[node name="RightForearm" type="MeshInstance3D" parent="BodyVisual"]
+position = Vector3(0.57, 0.83, -0.02)
+mesh = SubResource("Mesh_forearm")
+
+[node name="LeftHand" type="MeshInstance3D" parent="BodyVisual"]
+position = Vector3(-0.57, 0.56, -0.03)
+mesh = SubResource("Mesh_hand")
+
+[node name="RightHand" type="MeshInstance3D" parent="BodyVisual"]
+position = Vector3(0.57, 0.56, -0.03)
+mesh = SubResource("Mesh_hand")
+
 [node name="LeftLeg" type="MeshInstance3D" parent="BodyVisual"]
-position = Vector3(-0.24, 0.45, 0)
+position = Vector3(-0.24, 0.48, 0)
 mesh = SubResource("Mesh_limb")
 
 [node name="RightLeg" type="MeshInstance3D" parent="BodyVisual"]
-position = Vector3(0.24, 0.45, 0)
+position = Vector3(0.24, 0.48, 0)
 mesh = SubResource("Mesh_limb")
 
+[node name="LeftKnee" type="MeshInstance3D" parent="BodyVisual"]
+position = Vector3(-0.24, 0.52, -0.16)
+mesh = SubResource("Mesh_knee")
+
+[node name="RightKnee" type="MeshInstance3D" parent="BodyVisual"]
+position = Vector3(0.24, 0.52, -0.16)
+mesh = SubResource("Mesh_knee")
+
+[node name="LeftBoot" type="MeshInstance3D" parent="BodyVisual"]
+position = Vector3(-0.24, 0.14, -0.09)
+mesh = SubResource("Mesh_boot")
+
+[node name="RightBoot" type="MeshInstance3D" parent="BodyVisual"]
+position = Vector3(0.24, 0.14, -0.09)
+mesh = SubResource("Mesh_boot")
+
 [node name="StateLabel" type="Label3D" parent="."]
-position = Vector3(0, 2.65, 0)
-text = "SECURITY // SCANNING"
+position = Vector3(0, 2.72, 0)
+text = "SECURITY // SCANNING\nHP 100 / 100"
 font_size = 22
 outline_size = 7
 modulate = Color(1, 0.66, 0.25, 1)

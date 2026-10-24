@@ -56,8 +56,9 @@ func _check_level_one() -> void:
 	await settle(14)
 	var level := flow.current_level as AccessDeniedSystemBreachLevel
 	check(level != null, "production ACCESS DENIED loads through GameFlowManager")
-	check(level.environment.scene_file_path.ends_with("access_denied_system_breach_environment.tscn"), "Level 1 instances Jefin's production environment")
-	check(level.get_node_or_null("Environment") == level.environment, "Level 1 contains exactly one production environment instance")
+	check(level.environment.scene_file_path.is_empty(), "Level 1 environment is authored directly in the playable scene for full editor access")
+	check(level.get_node_or_null("Environment") == level.environment, "Level 1 contains exactly one expanded authored environment root")
+	check(level.environment.get_node_or_null("Environment/ArrivalChamber") != null, "Level 1 expanded hierarchy exposes the complete arrival chamber")
 	var level_one_art := level.environment.get_node("Environment/ArrivalChamber/ProductionArtPass")
 	check(level_one_art != null, "Level 1 uses Jefin's latest production art pass")
 	check(subtree_has_no_collision(level_one_art), "Level 1 production art adds no duplicate collision")
@@ -69,6 +70,37 @@ func _check_level_one() -> void:
 	check(level.get_player_spawn_transform().origin.is_equal_approx(Vector3(-2.0, 0.4, 35.0)), "Level 1 begins at the intended unobstructed observation spawn")
 	check(level.get_node_or_null("GrappleAnchor_01_Runtime") is GrappleAnchor, "first real grapple marker is integrated")
 	check(level.get_node_or_null("GrappleAnchor_02_Runtime") is GrappleAnchor, "second real grapple marker is integrated")
+	var encounter := level.enemy_encounter
+	check(encounter != null and encounter.enabled and encounter.spawn_marker_paths.size() == 11, "Level 1 multi-room encounter exposes every authored marker in the editor")
+	check(encounter.maximum_simultaneous_enemies == RandomEnemyEncounter.MAX_ALIVE_ENEMIES and encounter.maximum_total_enemies == 5, "encounter uses the hard four-alive global cap and finite five-enemy objective")
+	check(encounter.spawn_marker_paths.size() == encounter.spawn_marker_room_ids.size(), "every enemy marker has an explicit room identity")
+	var arrival_excluded := true
+	for marker_path in encounter.spawn_marker_paths:
+		arrival_excluded = arrival_excluded and not String(marker_path).contains("PlayerSpawn") and encounter.get_spawn_room_for_marker(marker_path) != &"arrival_chamber"
+	check(arrival_excluded, "the arrival chamber and PlayerSpawn are excluded from all enemy spawn sources")
+	check(encounter.get_accessible_room_ids() == PackedStringArray(["security_interception"]), "locked rooms are ineligible before their progression state opens")
+	check(encounter.minimum_spawn_interval == 5.0 and encounter.maximum_spawn_interval == 9.0, "random spawn interval remains within the configured 5-9 second range")
+	var seeded_delays_a := encounter.sample_spawn_delays(5, 2468)
+	var seeded_delays_b := encounter.sample_spawn_delays(5, 2468)
+	check(seeded_delays_a == seeded_delays_b, "two seeded encounter runs produce reproducible spawn delays")
+	var delays_in_bounds := true
+	for delay in seeded_delays_a:
+		delays_in_bounds = delays_in_bounds and delay >= encounter.minimum_spawn_interval and delay <= encounter.maximum_spawn_interval
+	check(delays_in_bounds, "seeded random spawn delays stay inside configured bounds")
+	check(is_equal_approx(encounter.get_attack_interval_for_wave(1), 1.8), "wave 1 uses the fair initial attack interval")
+	check(is_equal_approx(encounter.get_attack_interval_for_wave(2), 1.5), "wave 2 moderately increases attack speed")
+	check(is_equal_approx(encounter.get_attack_interval_for_wave(3), 1.2), "wave 3 moderately increases attack speed")
+	check(is_equal_approx(encounter.get_attack_interval_for_wave(20), 1.0), "attack interval respects the hard minimum cap")
+	var enemy_at_authored_spawn := false
+	var enemy_planar := Vector2(level.enemy.global_position.x, level.enemy.global_position.z)
+	for marker_path in encounter.spawn_marker_paths:
+		var marker := encounter.get_node(marker_path) as Marker3D
+		var marker_planar := Vector2(marker.global_position.x, marker.global_position.z)
+		if enemy_planar.distance_to(marker_planar) < 0.1:
+			enemy_at_authored_spawn = true
+	check(enemy_at_authored_spawn, "Level 1 initial enemy selects one of the authored arena markers")
+	check(level.enemy.obstacle_probe != null and level.enemy.obstacle_probe.enabled, "enemy obstacle jump probe is authored and enabled")
+	check(level.enemy.movement_speed >= 6.0 and level.enemy.dash_speed > level.enemy.movement_speed, "enemy chase and dash speeds support agile pursuit")
 	var primary_anchor := level.get_node("GrappleAnchor_01_Runtime") as GrappleAnchor
 	var secondary_anchor := level.get_node("GrappleAnchor_02_Runtime") as GrappleAnchor
 	var grapple := flow.player.find_child("GrappleController", true, false) as GrappleController
@@ -121,6 +153,25 @@ func _check_level_one() -> void:
 	check(level.get_node_or_null("ExitSafetyGeometry/NorthDoorSeal") is StaticBody3D, "wrapper seals the north door bypass without editing Jefin's scene")
 	check(level.get_node_or_null("ExitSafetyGeometry/SouthDoorSeal") is StaticBody3D, "wrapper seals the south door bypass without editing Jefin's scene")
 	check(level.campaign_exit.global_position.x > AccessDeniedSystemBreachLevel.DOOR_PLANE_X + 1.4, "Level 1 exit trigger sits fully beyond the door plane")
+	var gate_body := level.environment.get_node("Environment/FinalContainmentExit/ContainmentDoor/ImportedGateCollision") as StaticBody3D
+	var gate_collision := gate_body.get_node("CollisionShape3D") as CollisionShape3D
+	var imported_gate_visual := level.environment.get_node("Environment/FinalContainmentExit/ProductionArtPass/FinalDoorArchitecture/ImportedGate") as Node3D
+	var final_door_panel := level.environment.get_node("Environment/FinalContainmentExit/ContainmentDoor/LockedDoorPanel") as CSGShape3D
+	check(not gate_collision.disabled and imported_gate_visual.visible, "closed imported gate has synchronized visible collision")
+	check(not final_door_panel.use_collision, "closed gate uses exactly one authored blocking collider")
+	var gate_probe_body := CharacterBody3D.new()
+	var gate_probe_shape_node := CollisionShape3D.new()
+	var gate_probe_shape := CapsuleShape3D.new()
+	gate_probe_shape.radius = 0.35
+	gate_probe_shape.height = 1.8
+	gate_probe_shape_node.position.y = 0.9
+	gate_probe_shape_node.shape = gate_probe_shape
+	gate_probe_body.add_child(gate_probe_shape_node)
+	root.add_child(gate_probe_body)
+	gate_probe_body.global_position = Vector3(31.2, 0.65, 30.0)
+	await settle_physics(2)
+	var closed_gate_hit := gate_probe_body.move_and_collide(Vector3(4.0, 0.0, 0.0), true)
+	check(closed_gate_hit != null and closed_gate_hit.get_collider() == gate_body, "closed imported gate blocks a CharacterBody3D sweep with its authored collider")
 	level.campaign_exit._on_body_entered(flow.player)
 	check(flow.flow_state == GameFlowManager.STATE_PLAYING, "locked Level 1 trigger cannot complete progression")
 
@@ -143,23 +194,62 @@ func _check_level_one() -> void:
 	await wait_seconds(level.bridge.deployment_duration + 0.12)
 	check(level.bridge.is_deployed and level._bridge_deployed, "grapple handle deploys authored bridge")
 	check(level.bridge.bridge_shape.use_collision, "deployed authored bridge enables collision")
+	var crossing_rooms := encounter.get_eligible_spawn_room_ids()
+	check(crossing_rooms.has("broken_crossing") and crossing_rooms.has("security_interception"), "bridge deployment enables two distinct reachable enemy-spawn rooms")
+	check(not crossing_rooms.has("power_diversion") and not crossing_rooms.has("final_containment"), "Power Diversion and Final Containment remain locked before their progression events")
+	var all_spawn_markers_have_floor := true
+	for marker_path in encounter.spawn_marker_paths:
+		var spawn_marker := encounter.get_node(marker_path) as Node3D
+		var floor_query := PhysicsRayQueryParameters3D.create(spawn_marker.global_position + Vector3.UP, spawn_marker.global_position + Vector3.DOWN)
+		all_spawn_markers_have_floor = all_spawn_markers_have_floor and not physics.intersect_ray(floor_query).is_empty()
+	check(all_spawn_markers_have_floor, "every authored multi-room spawn marker stands over solid collision")
 
-	for _hit in range(3):
-		level.enemy.take_damage(1)
+	encounter.force_activate()
+	check(encounter.total_spawned == 1 and encounter.get_active_enemies().size() == 1, "encounter registers the authored initial enemy exactly once")
+	check(encounter.try_spawn_now() and encounter.try_spawn_now() and encounter.try_spawn_now(), "encounter fills globally available slots up to four living enemies")
+	check(not encounter.try_spawn_now() and not encounter.try_spawn_now() and encounter.get_global_alive_count() == 4, "same-frame spawn attempts cannot create a fifth living enemy")
+	var first_wave_enemies := encounter.get_active_enemies()
+	check(is_equal_approx(first_wave_enemies[0].attack_cooldown, 1.8) and is_equal_approx(first_wave_enemies[1].attack_cooldown, 1.8), "first two enemies retain wave 1 attack timing")
+	check(is_equal_approx(first_wave_enemies[2].attack_cooldown, 1.5), "third spawned enemy receives wave 2 attack timing")
+	check(is_equal_approx(first_wave_enemies[3].attack_cooldown, 1.5), "fourth spawned enemy retains wave 2 attack timing")
+	first_wave_enemies[0].take_damage(first_wave_enemies[0].maximum_health)
+	await settle(2)
+	check(encounter.get_global_alive_count() == 3, "a defeated guard immediately frees one global living-enemy slot")
+	check(encounter.time_until_spawn >= encounter.minimum_spawn_interval and encounter.time_until_spawn <= encounter.maximum_spawn_interval, "replacement keeps the normal configured spawn delay after a death")
+	encounter.time_until_spawn = 0.0
+	await settle(2)
+	check(encounter.total_spawned == encounter.maximum_total_enemies and encounter.get_global_alive_count() == 4, "one delayed replacement occupies the freed slot without exceeding four alive")
+	check(not encounter.try_spawn_now(), "finite mandatory budget refuses an extra spawn before the clear-all objective completes")
+	for active_enemy in encounter.get_active_enemies():
+		active_enemy.take_damage(active_enemy.maximum_health)
 	await settle(3)
-	check(level.enemy.is_deactivated() and level.relay_a.available, "security defeat unlocks Relay A")
+	check(encounter.is_completed() and encounter.total_defeated == encounter.maximum_total_enemies, "finite enemy budget completes after every security guard is defeated")
+	check(level.relay_a.available, "completed finite security encounter unlocks Relay A")
+	check(encounter.try_spawn_now() and encounter.get_global_alive_count() == 1, "non-gating reinforcement mode can reuse a free slot after mandatory completion")
+	var removable_reinforcement := encounter.get_active_enemies()[0]
+	removable_reinforcement.queue_free()
+	await settle(3)
+	check(encounter.get_global_alive_count() == 0, "removing a live guard clears its stale global registry reference")
 	check(level.objective_description.contains("WEST CYAN BEACON"), "Relay A objective supplies spatial guidance instead of only a relay name")
 	check(bool(level.relay_a.interact(flow.player).success), "Relay A restores through F-interaction contract")
+	check(encounter.is_room_accessible(&"power_diversion"), "Relay A makes Power Diversion spawn markers eligible")
 	check(not level.is_exit_unlocked(), "one restored relay cannot unlock the final exit")
 	check(level.rewire_console.available, "Relay A unlocks REWIRE console")
 	check(bool(level.rewire_console.interact(flow.player).success), "REWIRE routes power to door state")
+	check(encounter.is_room_accessible(&"final_containment"), "powered route makes Final Containment spawn markers eligible")
 	var machinery := level.environment.get_node("Environment/PowerDiversion/Machinery")
 	check(not (machinery.get_node("SecurityField_Energized") as CSGShape3D).use_collision, "REWIRE disables security field collision")
 	check(not (machinery.get_node("PoweredDoor_Locked") as CSGShape3D).use_collision, "REWIRE opens powered door collision")
 	check(level.relay_b.available and bool(level.relay_b.interact(flow.player).success), "REWIRE makes Relay B accessible and restorable")
+	await settle_physics(2)
 	check(level.is_puzzle_complete() and level.is_exit_unlocked(), "both relays clear lockdown and unlock exit")
-	var final_door := level.environment.get_node("Environment/FinalContainmentExit/ContainmentDoor/LockedDoorPanel") as CSGShape3D
-	check(not final_door.visible and not final_door.use_collision, "containment door becomes visibly and physically passable")
+	check(not encounter.try_spawn_now(), "opening the containment exit stops every further reinforcement spawn")
+	check(gate_collision.disabled and not imported_gate_visual.visible, "opened imported gate hides its closed mesh and disables its collider")
+	check(not final_door_panel.visible and not final_door_panel.use_collision, "containment door becomes visibly and physically passable")
+	gate_probe_body.global_position = Vector3(31.2, 0.65, 30.0)
+	var open_gate_hit := gate_probe_body.move_and_collide(Vector3(4.0, 0.0, 0.0), true)
+	check(open_gate_hit == null, "opened imported gate permits CharacterBody3D passage without an invisible wall")
+	gate_probe_body.queue_free()
 	var door_label := level.environment.get_node("Environment/FinalContainmentExit/ContainmentDoor/ContainmentExitLabel") as Label3D
 	check(door_label.text.contains("OPEN"), "unlocked doorway is visibly identified from the approach")
 	flow.player.global_position = Vector3(31.5, 0.4, 30.0)
@@ -173,6 +263,7 @@ func _check_level_one() -> void:
 	await settle(14)
 	level = flow.current_level as AccessDeniedSystemBreachLevel
 	check(not level.bridge.is_deployed and not level.relay_a.is_restored and not level.rewire_console.door_powered, "replay reconstructs bridge, relay, and REWIRE state")
+	check(level.enemy_encounter.total_spawned == 1 and level.enemy_encounter.get_active_enemies().size() == 1, "replay resets the encounter without duplicate enemies or callbacks")
 	flow.queue_free()
 	await settle(3)
 
@@ -301,8 +392,7 @@ func _check_level_three() -> void:
 	clock_states = level.environment.get_node("Environment/PowerRoutingRoom/StateVisuals")
 	clock_hazard_wall = clock_states.get_node("TimingHazard_Active") as CSGShape3D
 	blocked_route = clock_states.get_node("BlockedRoute_Locked") as CSGShape3D
-	for _hit in range(3):
-		level.security_construct.take_damage(1)
+	level.security_construct.take_damage(level.security_construct.maximum_health)
 	await settle(2)
 	check(not level.sync_a.available, "security defeat alone cannot bypass REWIRE")
 	check(bool(level.rewire_console.interact(flow.player).success), "CLOCK FAILURE REWIRE accepts interaction")
@@ -375,8 +465,7 @@ func _check_level_four() -> void:
 	check(not level.core_shield.visible and not level.core_shield.use_collision, "production core shield becomes visibly and physically nonblocking")
 	var disabled_shield := level.environment.get_node("Environment/CorePowerNetwork/Machinery/CoreShield_Disabled") as CSGShape3D
 	check(disabled_shield.visible, "REWIRE exposes the production disabled-shield state")
-	for _hit in range(3):
-		level.security_construct.take_damage(1)
+	level.security_construct.take_damage(level.security_construct.maximum_health)
 	await settle(2)
 	check(level.shutdown_terminal.available, "POLARITY, REWIRE and combat unlock shutdown terminal")
 	check(bool(level.shutdown_terminal.interact(flow.player).success), "kernel shutdown interaction completes")
