@@ -1,0 +1,106 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/game_over.gd" id="1_over"]
+[ext_resource type="Theme" path="res://assets/ui/research_theme.tres" id="2_theme"]
+
+[node name="GameOver" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_over")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.051, 0.067, 0.09, 0.94)
+
+[node name="GlitchTint" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 0.169, 0.839, 0.03)
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="DialogPanel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(440, 0)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="Center/DialogPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Center/DialogPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.251, 0.341, 1)
+theme_override_font_sizes/font_size = 20
+text = "SIMULATION FAILURE"
+
+[node name="SubTitle" type="Label" parent="Center/DialogPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
+theme_override_font_sizes/font_size = 11
+text = "CONTAINMENT BREACH"
+
+[node name="HSeparator" type="HSeparator" parent="Center/DialogPanel/VBox"]
+layout_mode = 2
+
+[node name="ChamberLabel" type="Label" parent="Center/DialogPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 1)
+theme_override_font_sizes/font_size = 13
+text = "GV-01 // ACCESS DENIED"
+
+[node name="ReasonLabel" type="Label" parent="Center/DialogPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.251, 0.341, 1)
+theme_override_font_sizes/font_size = 12
+text = "CONTAINMENT BREACH // MATRIX COLLAPSED"
+autowrap_mode = 2
+
+[node name="ErrorCodeLabel" type="Label" parent="Center/DialogPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
+theme_override_font_sizes/font_size = 11
+text = "EXCEPTION DUMP: 0x88F_TEMPORAL_DESYNC"
+
+[node name="Spacer" type="Control" parent="Center/DialogPanel/VBox"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="RetryButton" type="Button" parent="Center/DialogPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "[ RE-INITIALIZE AT CHECKPOINT ]"
+alignment = 0
+
+[node name="MenuButton" type="Button" parent="Center/DialogPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "[ ABORT EXPERIMENT TO TERMINAL ]"
+alignment = 0

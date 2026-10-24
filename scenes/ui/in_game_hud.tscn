@@ -1,0 +1,599 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/in_game_hud.gd" id="1_hud"]
+[ext_resource type="Theme" path="res://assets/ui/research_theme.tres" id="2_theme"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bar_bg"]
+bg_color = Color(0.04, 0.055, 0.075, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.09, 0.22, 0.239, 0.75)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_health_fill"]
+bg_color = Color(0.224, 0.961, 1, 0.9)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_obj_fill"]
+bg_color = Color(0.224, 0.961, 1, 0.8)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_notif_panel"]
+content_margin_left = 16.0
+content_margin_top = 6.0
+content_margin_right = 16.0
+content_margin_bottom = 6.0
+bg_color = Color(0.04, 0.055, 0.075, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.09, 0.22, 0.239, 0.85)
+
+[node name="InGameHUD" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_hud")
+
+[node name="HUDContainer" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("2_theme")
+
+[node name="TopLeft" type="VBoxContainer" parent="HUDContainer"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 28.0
+offset_right = 560.0
+offset_bottom = 130.0
+mouse_filter = 2
+theme_override_constants/separation = 3
+
+[node name="ChamberRow" type="HBoxContainer" parent="HUDContainer/TopLeft"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="ChamberCode" type="Label" parent="HUDContainer/TopLeft/ChamberRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
+theme_override_font_sizes/font_size = 11
+text = "GV-01"
+
+[node name="Divider" type="Label" parent="HUDContainer/TopLeft/ChamberRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.11, 0.27, 0.29, 0.8)
+theme_override_font_sizes/font_size = 11
+text = "//"
+
+[node name="ChamberName" type="Label" parent="HUDContainer/TopLeft/ChamberRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 1)
+theme_override_font_sizes/font_size = 15
+text = "ACCESS DENIED"
+
+[node name="ObjectiveLabel" type="Label" parent="HUDContainer/TopLeft"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 1)
+theme_override_font_sizes/font_size = 12
+text = "OBJECTIVE: Restore access to the containment chamber."
+
+[node name="ObjectiveProgressRow" type="HBoxContainer" parent="HUDContainer/TopLeft"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="ProgressTag" type="Label" parent="HUDContainer/TopLeft/ObjectiveProgressRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
+theme_override_font_sizes/font_size = 11
+text = "PROGRESS:"
+
+[node name="ObjectiveProgressBar" type="ProgressBar" parent="HUDContainer/TopLeft/ObjectiveProgressRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 6)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_obj_fill")
+max_value = 1.0
+show_percentage = false
+
+[node name="ProgressLabel" type="Label" parent="HUDContainer/TopLeft/ObjectiveProgressRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "--/--"
+
+[node name="ObjectiveHintLabel" type="Label" parent="HUDContainer/TopLeft"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 0.9)
+theme_override_font_sizes/font_size = 11
+text = ">> HINT: Deploy crossing bridge with Tether"
+
+[node name="TopRight" type="VBoxContainer" parent="HUDContainer"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -340.0
+offset_top = 28.0
+offset_right = -32.0
+offset_bottom = 90.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="TimerLabel" type="Label" parent="HUDContainer/TopRight"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 1)
+theme_override_font_sizes/font_size = 16
+text = "00:00.00"
+horizontal_alignment = 2
+
+[node name="ScoreLabel" type="Label" parent="HUDContainer/TopRight"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "SCORE: 00000"
+horizontal_alignment = 2
+
+[node name="NotificationContainer" type="CenterContainer" parent="HUDContainer"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -320.0
+offset_top = 80.0
+offset_right = 320.0
+offset_bottom = 124.0
+grow_horizontal = 2
+mouse_filter = 2
+
+[node name="NotificationPanel" type="PanelContainer" parent="HUDContainer/NotificationContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_notif_panel")
+
+[node name="NotificationLabel" type="Label" parent="HUDContainer/NotificationContainer/NotificationPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 1)
+theme_override_font_sizes/font_size = 12
+text = "SYSTEM NOTIFICATION"
+horizontal_alignment = 1
+
+[node name="CenterReticle" type="CenterContainer" parent="HUDContainer"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -60.0
+offset_top = -60.0
+offset_right = 60.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ReticleControl" type="Control" parent="HUDContainer/CenterReticle"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ReticleH" type="ColorRect" parent="HUDContainer/CenterReticle/ReticleControl"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -10.0
+offset_top = -1.0
+offset_right = 10.0
+offset_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.91, 0.969, 0.973, 0.4)
+
+[node name="ReticleV" type="ColorRect" parent="HUDContainer/CenterReticle/ReticleControl"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1.0
+offset_top = -10.0
+offset_right = 1.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.91, 0.969, 0.973, 0.4)
+
+[node name="ReticleDot" type="ColorRect" parent="HUDContainer/CenterReticle/ReticleControl"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 2.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.91, 0.969, 0.973, 1)
+
+[node name="GrappleRing" type="Control" parent="HUDContainer/CenterReticle/ReticleControl"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -18.0
+offset_top = -18.0
+offset_right = 18.0
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BracketTL_H" type="ColorRect" parent="HUDContainer/CenterReticle/ReticleControl/GrappleRing"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 10.0
+offset_bottom = 4.0
+mouse_filter = 2
+color = Color(0.224, 0.961, 1, 0.9)
+
+[node name="BracketTL_V" type="ColorRect" parent="HUDContainer/CenterReticle/ReticleControl/GrappleRing"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 4.0
+offset_bottom = 10.0
+mouse_filter = 2
+color = Color(0.224, 0.961, 1, 0.9)
+
+[node name="BracketTR_H" type="ColorRect" parent="HUDContainer/CenterReticle/ReticleControl/GrappleRing"]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 2.0
+offset_right = 34.0
+offset_bottom = 4.0
+mouse_filter = 2
+color = Color(0.224, 0.961, 1, 0.9)
+
+[node name="BracketTR_V" type="ColorRect" parent="HUDContainer/CenterReticle/ReticleControl/GrappleRing"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 2.0
+offset_right = 34.0
+offset_bottom = 10.0
+mouse_filter = 2
+color = Color(0.224, 0.961, 1, 0.9)
+
+[node name="BracketBL_H" type="ColorRect" parent="HUDContainer/CenterReticle/ReticleControl/GrappleRing"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 32.0
+offset_right = 10.0
+offset_bottom = 34.0
+mouse_filter = 2
+color = Color(0.224, 0.961, 1, 0.9)
+
+[node name="BracketBL_V" type="ColorRect" parent="HUDContainer/CenterReticle/ReticleControl/GrappleRing"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 26.0
+offset_right = 4.0
+offset_bottom = 34.0
+mouse_filter = 2
+color = Color(0.224, 0.961, 1, 0.9)
+
+[node name="BracketBR_H" type="ColorRect" parent="HUDContainer/CenterReticle/ReticleControl/GrappleRing"]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 32.0
+offset_right = 34.0
+offset_bottom = 34.0
+mouse_filter = 2
+color = Color(0.224, 0.961, 1, 0.9)
+
+[node name="BracketBR_V" type="ColorRect" parent="HUDContainer/CenterReticle/ReticleControl/GrappleRing"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 26.0
+offset_right = 34.0
+offset_bottom = 34.0
+mouse_filter = 2
+color = Color(0.224, 0.961, 1, 0.9)
+
+[node name="TargetPromptLabel" type="Label" parent="HUDContainer/CenterReticle/ReticleControl"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -160.0
+offset_top = 10.0
+offset_right = 160.0
+offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 11
+horizontal_alignment = 1
+
+[node name="BottomLeft" type="VBoxContainer" parent="HUDContainer"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = -98.0
+offset_right = 480.0
+offset_bottom = -24.0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="VitalsHeader" type="Label" parent="HUDContainer/BottomLeft"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
+theme_override_font_sizes/font_size = 10
+text = "VITALS // INTEGRITY"
+
+[node name="HealthRow" type="HBoxContainer" parent="HUDContainer/BottomLeft"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="HealthBar" type="ProgressBar" parent="HUDContainer/BottomLeft/HealthRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 8)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_health_fill")
+value = 0.0
+show_percentage = false
+
+[node name="HealthLabel" type="Label" parent="HUDContainer/BottomLeft/HealthRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.7)
+theme_override_font_sizes/font_size = 12
+text = "-- / -- HP"
+
+[node name="LowHealthAlert" type="Label" parent="HUDContainer/BottomLeft"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.251, 0.341, 1)
+theme_override_font_sizes/font_size = 11
+text = "! CRITICAL INTEGRITY LEVEL !"
+
+[node name="ControlHints" type="Label" parent="HUDContainer/BottomLeft"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.75)
+theme_override_font_sizes/font_size = 10
+text = ""
+
+[node name="BottomRight" type="VBoxContainer" parent="HUDContainer"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -340.0
+offset_top = -142.0
+offset_right = -32.0
+offset_bottom = -24.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="Header" type="Label" parent="HUDContainer/BottomRight"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
+theme_override_font_sizes/font_size = 10
+text = "EQUIPMENT // LOADOUT"
+horizontal_alignment = 2
+
+[node name="TetherRow" type="HBoxContainer" parent="HUDContainer/BottomRight"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 2
+theme_override_constants/separation = 6
+
+[node name="TetherBadge" type="Label" parent="HUDContainer/BottomRight/TetherRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.6)
+theme_override_font_sizes/font_size = 12
+text = "▪"
+
+[node name="TetherLabel" type="Label" parent="HUDContainer/BottomRight/TetherRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.8)
+theme_override_font_sizes/font_size = 11
+text = "TETHER [E]:"
+
+[node name="TetherStatus" type="Label" parent="HUDContainer/BottomRight/TetherRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.7)
+theme_override_font_sizes/font_size = 11
+text = "STANDBY"
+
+[node name="BladeRow" type="HBoxContainer" parent="HUDContainer/BottomRight"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 2
+theme_override_constants/separation = 6
+
+[node name="BladeBadge" type="Label" parent="HUDContainer/BottomRight/BladeRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.6)
+theme_override_font_sizes/font_size = 12
+text = "▪"
+
+[node name="BladeLabel" type="Label" parent="HUDContainer/BottomRight/BladeRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.8)
+theme_override_font_sizes/font_size = 11
+text = "BLADE [LMB]:"
+
+[node name="BladeStatus" type="Label" parent="HUDContainer/BottomRight/BladeRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.7)
+theme_override_font_sizes/font_size = 11
+text = "STANDBY"
+
+[node name="PolarityRow" type="HBoxContainer" parent="HUDContainer/BottomRight"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+alignment = 2
+theme_override_constants/separation = 6
+
+[node name="PolarityBadge" type="Label" parent="HUDContainer/BottomRight/PolarityRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.6)
+theme_override_font_sizes/font_size = 12
+text = "▪"
+
+[node name="PolarityLabel" type="Label" parent="HUDContainer/BottomRight/PolarityRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.8)
+theme_override_font_sizes/font_size = 11
+text = "POLARITY [Q]:"
+
+[node name="PolarityStatus" type="Label" parent="HUDContainer/BottomRight/PolarityRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.7)
+theme_override_font_sizes/font_size = 11
+text = "STANDBY"
+
+[node name="RewireRow" type="HBoxContainer" parent="HUDContainer/BottomRight"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+alignment = 2
+theme_override_constants/separation = 6
+
+[node name="RewireBadge" type="Label" parent="HUDContainer/BottomRight/RewireRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.6)
+theme_override_font_sizes/font_size = 12
+text = "▪"
+
+[node name="RewireLabel" type="Label" parent="HUDContainer/BottomRight/RewireRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.8)
+theme_override_font_sizes/font_size = 11
+text = "REWIRE [F]:"
+
+[node name="RewireStatus" type="Label" parent="HUDContainer/BottomRight/RewireRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.7)
+theme_override_font_sizes/font_size = 11
+text = "STANDBY"
+
+[node name="VectorRow" type="HBoxContainer" parent="HUDContainer/BottomRight"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+alignment = 2
+theme_override_constants/separation = 6
+
+[node name="VectorBadge" type="Label" parent="HUDContainer/BottomRight/VectorRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.6)
+theme_override_font_sizes/font_size = 12
+text = "▪"
+
+[node name="VectorLabel" type="Label" parent="HUDContainer/BottomRight/VectorRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.8)
+theme_override_font_sizes/font_size = 11
+text = "VECTOR [SHIFT]:"
+
+[node name="VectorStatus" type="Label" parent="HUDContainer/BottomRight/VectorRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.7)
+theme_override_font_sizes/font_size = 11
+text = "STANDBY"
+
+[node name="AuxRow" type="HBoxContainer" parent="HUDContainer/BottomRight"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+alignment = 2
+theme_override_constants/separation = 6
+
+[node name="AbilityBadge" type="Label" parent="HUDContainer/BottomRight/AuxRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.6)
+theme_override_font_sizes/font_size = 12
+text = "▪"
+
+[node name="AbilityNameLabel" type="Label" parent="HUDContainer/BottomRight/AuxRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.8)
+theme_override_font_sizes/font_size = 11
+text = "--"
+
+[node name="AuxStatus" type="Label" parent="HUDContainer/BottomRight/AuxRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 0.7)
+theme_override_font_sizes/font_size = 11
+text = "STANDBY"
