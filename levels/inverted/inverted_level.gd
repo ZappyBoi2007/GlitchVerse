@@ -75,6 +75,27 @@ func _build_environment() -> void:
 		VECTOR_WALL_SCENE, "MaintenanceVectorWall", markers.get_node("MaintenanceVectorWall") as Node3D
 	)
 	add_label("LevelTitle", Vector3(0, 3.3, 16), "INVERTED // GRAVITY REACTOR", Color("8cefff"))
+	var stabilizer_guide := add_label(
+		"StabilizerRouteGuide",
+		Vector3(0, 2.35, 10.5),
+		"Q // ACTIVATE STABILIZERS A + B\nLEFT + RIGHT OF REACTOR",
+		Color("ffbf5a")
+	)
+	stabilizer_guide.font_size = 18
+	var tether_guide := add_label(
+		"TetherRouteGuide",
+		Vector3(0, 3.65, -6.2),
+		"UPPER ROUTE // E TETHER",
+		Color("8cefff")
+	)
+	tether_guide.font_size = 18
+	var portal_guide := add_label(
+		"PortalRouteGuide",
+		Vector3(0, 5.55, -13.0),
+		"EXIT // BEYOND VIOLET DECK",
+		Color("c792ff")
+	)
+	portal_guide.font_size = 18
 	var exit_guide := add_label("ExitGuide", Vector3(0, 6.4, -15.2), "EXIT DECK", Color("c792ff"))
 	exit_guide.font_size = 20
 	add_box("ExitPortalLeft", Vector3(-2.35, 5.2, -15.7), Vector3(0.22, 2.4, 0.22), secondary_material, false)
