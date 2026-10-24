@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/ui_preview.gd" id="1_prev"]
 [ext_resource type="Theme" path="res://assets/ui/research_theme.tres" id="2_theme"]
@@ -7,14 +7,17 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="5_pause"]
 [ext_resource type="PackedScene" path="res://scenes/ui/level_complete.tscn" id="6_comp"]
 [ext_resource type="PackedScene" path="res://scenes/ui/game_over.tscn" id="7_over"]
+[ext_resource type="PackedScene" path="res://scenes/ui/final_victory.tscn" id="8_vic"]
 
-[node name="UIPreview" type="Control" node_paths=PackedStringArray("main_menu_instance", "hud_instance", "pause_menu_instance", "level_complete_instance", "game_over_instance")]
+[node name="UIPreview" type="Control" node_paths=PackedStringArray("main_menu_instance", "hud_instance", "pause_menu_instance", "level_complete_instance", "game_over_instance", "victory_instance")]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 theme = ExtResource("2_theme")
 script = ExtResource("1_prev")
 main_menu_instance = NodePath("ScreensContainer/MainMenu")
@@ -22,6 +25,7 @@ hud_instance = NodePath("ScreensContainer/InGameHUD")
 pause_menu_instance = NodePath("ScreensContainer/PauseMenu")
 level_complete_instance = NodePath("ScreensContainer/LevelComplete")
 game_over_instance = NodePath("ScreensContainer/GameOver")
+victory_instance = NodePath("ScreensContainer/FinalVictory")
 
 [node name="MockGameBackground" type="ColorRect" parent="."]
 layout_mode = 1
@@ -56,6 +60,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="MainMenu" parent="ScreensContainer" instance=ExtResource("3_menu")]
 unique_name_in_owner = true
@@ -81,16 +86,30 @@ unique_name_in_owner = true
 visible = false
 layout_mode = 1
 
-[node name="DevSelectorLayer" type="CanvasLayer" parent="."]
-layer = 100
+[node name="FinalVictory" parent="ScreensContainer" instance=ExtResource("8_vic")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+
+[node name="DevSelectorLayer" type="Control" parent="."]
+process_mode = 3
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [node name="DevTopBar" type="PanelContainer" parent="DevSelectorLayer"]
+process_mode = 3
+layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -440.0
+offset_left = -480.0
 offset_top = 10.0
-offset_right = 440.0
+offset_right = 480.0
 offset_bottom = 50.0
 grow_horizontal = 2
 
@@ -107,44 +126,58 @@ text = "DEV PREVIEW:"
 [node name="BtnMainMenu" type="Button" parent="DevSelectorLayer/DevTopBar/HBox"]
 unique_name_in_owner = true
 layout_mode = 2
+focus_mode = 0
 theme_override_font_sizes/font_size = 11
 text = "[ MAIN MENU ]"
 
 [node name="BtnHUD" type="Button" parent="DevSelectorLayer/DevTopBar/HBox"]
 unique_name_in_owner = true
 layout_mode = 2
+focus_mode = 0
 theme_override_font_sizes/font_size = 11
 text = "[ HUD ]"
 
 [node name="BtnPause" type="Button" parent="DevSelectorLayer/DevTopBar/HBox"]
 unique_name_in_owner = true
 layout_mode = 2
+focus_mode = 0
 theme_override_font_sizes/font_size = 11
 text = "[ PAUSE ]"
 
 [node name="BtnComplete" type="Button" parent="DevSelectorLayer/DevTopBar/HBox"]
 unique_name_in_owner = true
 layout_mode = 2
+focus_mode = 0
 theme_override_font_sizes/font_size = 11
 text = "[ LEVEL COMPLETE ]"
 
 [node name="BtnGameOver" type="Button" parent="DevSelectorLayer/DevTopBar/HBox"]
 unique_name_in_owner = true
 layout_mode = 2
+focus_mode = 0
 theme_override_font_sizes/font_size = 11
 text = "[ GAME OVER ]"
 
+[node name="BtnVictory" type="Button" parent="DevSelectorLayer/DevTopBar/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 11
+text = "[ VICTORY ]"
+
 [node name="DevSubBar" type="PanelContainer" parent="DevSelectorLayer"]
 unique_name_in_owner = true
+process_mode = 3
 visible = false
+layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -580.0
+offset_left = -600.0
 offset_top = -146.0
-offset_right = 580.0
+offset_right = 600.0
 offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 0
@@ -157,7 +190,7 @@ theme_override_constants/separation = 4
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="LblLvl" type="Label" parent="DevSelectorLayer/DevSubBar/VBox/Row1"]
+[node name="LblLevel" type="Label" parent="DevSelectorLayer/DevSubBar/VBox/Row1"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
 theme_override_font_sizes/font_size = 10
@@ -167,25 +200,25 @@ text = "LEVEL:"
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "L1: ACCESS"
+text = "L1 ACCESS"
 
 [node name="BtnL2" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row1"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "L2: INVERTED"
+text = "L2 INVERT"
 
 [node name="BtnL3" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row1"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "L3: CLOCK"
+text = "L3 CLOCK"
 
 [node name="BtnL4" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row1"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "L4: PANIC"
+text = "L4 KERNEL"
 
 [node name="VSep1" type="VSeparator" parent="DevSelectorLayer/DevSubBar/VBox/Row1"]
 layout_mode = 2
@@ -200,20 +233,19 @@ text = "HEALTH:"
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "-25 HP"
+text = "-25 DMG"
 
 [node name="BtnHeal" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row1"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "+25 HP"
+text = "+25 HEAL"
 
 [node name="BtnCritHealth" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row1"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.251, 0.341, 1)
 theme_override_font_sizes/font_size = 10
-text = "15 HP [CRIT]"
+text = "CRIT 15%"
 
 [node name="VSep2" type="VSeparator" parent="DevSelectorLayer/DevSubBar/VBox/Row1"]
 layout_mode = 2
@@ -222,7 +254,7 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "+250 PTS"
+text = "+250 SCORE"
 
 [node name="Row2" type="HBoxContainer" parent="DevSelectorLayer/DevSubBar/VBox"]
 layout_mode = 2
@@ -232,25 +264,31 @@ theme_override_constants/separation = 5
 layout_mode = 2
 theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
 theme_override_font_sizes/font_size = 10
-text = "PROGRESS:"
+text = "OBJECTIVE STEP:"
 
 [node name="BtnObj0" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row2"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "OBJ 0/2"
+text = "STEP 0"
 
 [node name="BtnObj1" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row2"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "OBJ 1/2"
+text = "STEP 1"
 
 [node name="BtnObj2" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row2"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "OBJ 2/2"
+text = "STEP 2"
+
+[node name="BtnObj3" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row2"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 10
+text = "STEP 3 (EXIT)"
 
 [node name="VSep3" type="VSeparator" parent="DevSelectorLayer/DevSubBar/VBox/Row2"]
 layout_mode = 2
@@ -259,7 +297,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
 theme_override_font_sizes/font_size = 10
-text = "GRAPPLE:"
+text = "TARGETING:"
 
 [node name="BtnGrappleValid" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row2"]
 unique_name_in_owner = true
@@ -273,7 +311,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.251, 0.341, 1)
 theme_override_font_sizes/font_size = 10
-text = "ANCHOR INVALID"
+text = "ANCHOR OUT-OF-RANGE"
 
 [node name="BtnGrappleNone" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row2"]
 unique_name_in_owner = true
@@ -281,17 +319,25 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 10
 text = "NO ANCHOR"
 
-[node name="BtnTargetCompat" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row2"]
+[node name="BtnPromptInteract" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row2"]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_color = Color(0.22, 0.94, 0.49, 1)
 theme_override_font_sizes/font_size = 10
-text = "TARGET OK"
+text = "PROMPT [F]"
+
+[node name="BtnPromptPolarity" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row2"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.635, 0.35, 1, 1)
+theme_override_font_sizes/font_size = 10
+text = "PROMPT [Q]"
 
 [node name="BtnTargetNone" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row2"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "NO TARGET"
+text = "CLEAR PROMPT"
 
 [node name="Row3" type="HBoxContainer" parent="DevSelectorLayer/DevSubBar/VBox"]
 layout_mode = 2
@@ -301,13 +347,13 @@ theme_override_constants/separation = 5
 layout_mode = 2
 theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
 theme_override_font_sizes/font_size = 10
-text = "TETHER:"
+text = "LOADOUT:"
 
 [node name="BtnTetherReady" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row3"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 10
-text = "READY"
+text = "TETHER READY"
 
 [node name="BtnTetherAttached" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row3"]
 unique_name_in_owner = true
@@ -325,18 +371,12 @@ text = "RELEASED"
 [node name="VSep4" type="VSeparator" parent="DevSelectorLayer/DevSubBar/VBox/Row3"]
 layout_mode = 2
 
-[node name="LblBlade" type="Label" parent="DevSelectorLayer/DevSubBar/VBox/Row3"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
-theme_override_font_sizes/font_size = 10
-text = "BLADE:"
-
 [node name="BtnBladeReady" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row3"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.72, 0.19, 1)
 theme_override_font_sizes/font_size = 10
-text = "READY"
+text = "BLADE READY"
 
 [node name="BtnBladeStrike" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row3"]
 unique_name_in_owner = true
@@ -353,79 +393,76 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
 theme_override_font_sizes/font_size = 10
-text = "WALL RUN [SIM]"
+text = "VECTOR RUN"
+
+[node name="BtnVectorJump" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row3"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 10
+text = "WALL JUMP"
+
+[node name="VSep6" type="VSeparator" parent="DevSelectorLayer/DevSubBar/VBox/Row3"]
+layout_mode = 2
+
+[node name="BtnToolPolarity" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row3"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.635, 0.35, 1, 1)
+theme_override_font_sizes/font_size = 10
+text = "POLARITY [Q]"
+
+[node name="BtnToolRewire" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row3"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.22, 0.94, 0.49, 1)
+theme_override_font_sizes/font_size = 10
+text = "REWIRE [F]"
 
 [node name="Row4" type="HBoxContainer" parent="DevSelectorLayer/DevSubBar/VBox"]
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="LblTools" type="Label" parent="DevSelectorLayer/DevSubBar/VBox/Row4"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
-theme_override_font_sizes/font_size = 10
-text = "MOCK TOOLS:"
-
-[node name="BtnToolPolarity" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row4"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.635, 0.35, 1, 1)
-theme_override_font_sizes/font_size = 10
-text = "POLARITY (MOCK)"
-
-[node name="BtnToolRewire" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row4"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.22, 0.94, 0.49, 1)
-theme_override_font_sizes/font_size = 10
-text = "REWIRE (MOCK)"
-
-[node name="BtnPhase" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row4"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
-theme_override_font_sizes/font_size = 10
-text = "PHASE"
-
-[node name="BtnGravity" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row4"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.72, 0.19, 1)
-theme_override_font_sizes/font_size = 10
-text = "GRAV"
-
-[node name="BtnFreeze" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row4"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(0.635, 0.35, 1, 1)
-theme_override_font_sizes/font_size = 10
-text = "FREEZE"
-
-[node name="VSep6" type="VSeparator" parent="DevSelectorLayer/DevSubBar/VBox/Row4"]
-layout_mode = 2
-
 [node name="LblNotifs" type="Label" parent="DevSelectorLayer/DevSubBar/VBox/Row4"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.557, 0.647, 0.667, 1)
 theme_override_font_sizes/font_size = 10
-text = "NOTIFS:"
+text = "NOTIFICATIONS & FLOW:"
 
 [node name="BtnNotifBreach" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row4"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.251, 0.341, 1)
 theme_override_font_sizes/font_size = 10
-text = "BREACH"
+text = "BREACH ALERT"
 
 [node name="BtnNotifRelay" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row4"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
 theme_override_font_sizes/font_size = 10
-text = "RELAY"
+text = "RELAY RESTORED"
 
 [node name="BtnNotifUnlocked" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row4"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.22, 0.94, 0.49, 1)
 theme_override_font_sizes/font_size = 10
-text = "UNLOCKED"
+text = "EXIT UNLOCKED"
+
+[node name="VSep7" type="VSeparator" parent="DevSelectorLayer/DevSubBar/VBox/Row4"]
+layout_mode = 2
+
+[node name="BtnTriggerFail" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row4"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.251, 0.341, 1)
+theme_override_font_sizes/font_size = 10
+text = "TRIGGER FAIL"
+
+[node name="BtnTriggerVictory" type="Button" parent="DevSelectorLayer/DevSubBar/VBox/Row4"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.22, 0.94, 0.49, 1)
+theme_override_font_sizes/font_size = 10
+text = "TRIGGER VICTORY"

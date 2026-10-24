@@ -1,6 +1,7 @@
 class_name GameOver
 extends Control
 
+
 ## Simulation Failure / Containment Breach screen for GlitchVerse.
 ## Hierarchy: Failure status, relevant reason/status, restart, return.
 
@@ -22,12 +23,16 @@ signal menu_requested
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	UIAudio.initialize_audio_service(self)
 	retry_button.pressed.connect(_on_retry_pressed)
 	menu_button.pressed.connect(_on_menu_pressed)
+	UIAudio.attach_all_buttons(self)
 	_update_display()
+	hide()
 
 
 func show_game_over(level_id: int, reason: String = "CONTAINMENT BREACH // MATRIX COLLAPSED", error_code: String = "0x88F_TEMPORAL_DESYNC") -> void:
+	UIAudio.play_game_over(self)
 	current_level_id = level_id
 	if error_label != null:
 		error_label.text = "EXCEPTION DUMP: %s" % error_code
@@ -47,10 +52,12 @@ func _update_display() -> void:
 
 
 func _on_retry_pressed() -> void:
+	UIAudio.play_click(self)
 	hide()
 	retry_requested.emit(current_level_id)
 
 
 func _on_menu_pressed() -> void:
+	UIAudio.play_back(self)
 	hide()
 	menu_requested.emit()

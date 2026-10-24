@@ -1,6 +1,7 @@
 class_name LevelComplete
 extends Control
 
+
 ## Level Complete / Simulation Complete (Victory) screen for GlitchVerse.
 ## Hierarchy: Completion status, Score, Time, Next Action.
 
@@ -30,13 +31,17 @@ var _final_score: int = 1450
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	UIAudio.initialize_audio_service(self)
 	next_button.pressed.connect(_on_next_pressed)
 	retry_button.pressed.connect(_on_retry_pressed)
 	menu_button.pressed.connect(_on_menu_pressed)
+	UIAudio.attach_all_buttons(self)
 	_update_display()
+	hide()
 
 
 func show_completion(level_id: int, elapsed_seconds: float = 47.23, score: int = 1450, is_victory: bool = false) -> void:
+	UIAudio.play_level_complete(self)
 	current_level_id = level_id
 	_final_score = score
 	var mins := int(elapsed_seconds) / 60
@@ -80,6 +85,7 @@ func _update_display() -> void:
 
 
 func _on_next_pressed() -> void:
+	UIAudio.play_confirm(self)
 	hide()
 	if current_level_id >= 4:
 		menu_requested.emit()
@@ -89,10 +95,12 @@ func _on_next_pressed() -> void:
 
 
 func _on_retry_pressed() -> void:
+	UIAudio.play_click(self)
 	hide()
 	retry_requested.emit(current_level_id)
 
 
 func _on_menu_pressed() -> void:
+	UIAudio.play_back(self)
 	hide()
 	menu_requested.emit()

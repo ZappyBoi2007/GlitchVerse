@@ -61,6 +61,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 theme = ExtResource("2_theme")
 script = ExtResource("1_menu")
 
@@ -469,6 +470,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 96
 theme_override_constants/margin_top = 80
 theme_override_constants/margin_right = 96
@@ -476,6 +478,7 @@ theme_override_constants/margin_bottom = 44
 
 [node name="VBox" type="VBoxContainer" parent="LeftTerminalInterface" unique_id=734549275]
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/separation = 8
 
 [node name="InstitutionalTag" type="Label" parent="LeftTerminalInterface/VBox" unique_id=1240389530]
@@ -487,6 +490,7 @@ text = "FACILITY-04 // SUB-ATOMIC REALITY RESEARCH"
 [node name="TitleBox" type="Control" parent="LeftTerminalInterface/VBox" unique_id=767738022]
 custom_minimum_size = Vector2(480, 72)
 layout_mode = 2
+mouse_filter = 2
 
 [node name="TitleCyan" type="Label" parent="LeftTerminalInterface/VBox/TitleBox" unique_id=2114894105]
 unique_name_in_owner = true
@@ -529,6 +533,7 @@ text = "EXPERIMENTAL REALITY SIMULATION"
 custom_minimum_size = Vector2(320, 1)
 layout_mode = 2
 size_flags_horizontal = 0
+mouse_filter = 2
 
 [node name="WarningNotice" type="Label" parent="LeftTerminalInterface/VBox" unique_id=1898024980]
 layout_mode = 2
@@ -539,10 +544,12 @@ text = "Parameters beyond this threshold do not conform to physical reality."
 [node name="NavSpacer" type="Control" parent="LeftTerminalInterface/VBox" unique_id=607011731]
 custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
+mouse_filter = 2
 
 [node name="NavContainer" type="VBoxContainer" parent="LeftTerminalInterface/VBox" unique_id=182898583]
 layout_mode = 2
 size_flags_horizontal = 0
+mouse_filter = 1
 theme_override_constants/separation = 10
 
 [node name="StartBtn" type="Button" parent="LeftTerminalInterface/VBox/NavContainer" unique_id=1778252527]
@@ -580,6 +587,7 @@ alignment = 0
 [node name="PromptSpacer" type="Control" parent="LeftTerminalInterface/VBox" unique_id=349812756]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
+mouse_filter = 2
 
 [node name="DispatchPrompt" type="Label" parent="LeftTerminalInterface/VBox" unique_id=1948271034]
 unique_name_in_owner = true
@@ -591,9 +599,11 @@ text = ">> DISPATCH: INITIALIZE CONTAINMENT SIMULATION GV-01 // READY"
 [node name="BottomSpacer" type="Control" parent="LeftTerminalInterface/VBox" unique_id=862071790]
 layout_mode = 2
 size_flags_vertical = 3
+mouse_filter = 2
 
 [node name="FooterDivider" type="HSeparator" parent="LeftTerminalInterface/VBox" unique_id=769333508]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="FooterMetadata" type="HBoxContainer" parent="LeftTerminalInterface/VBox" unique_id=975458259]
 layout_mode = 2
@@ -728,10 +738,38 @@ theme_override_font_sizes/font_size = 11
 text = "ACOUSTIC DAMPENING (MASTER)"
 
 [node name="Val" type="Label" parent="SettingsModal/VBox/RowAudio" unique_id=731736052]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
 theme_override_font_sizes/font_size = 11
 text = "85% [NOMINAL]"
+
+[node name="MasterSlider" type="HSlider" parent="SettingsModal/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+value = 85.0
+
+[node name="RowSFX" type="HBoxContainer" parent="SettingsModal/VBox"]
+layout_mode = 2
+
+[node name="SFXLbl" type="Label" parent="SettingsModal/VBox/RowSFX"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 1)
+theme_override_font_sizes/font_size = 11
+text = "TACTICAL INTERFACE AUDIO (SFX)"
+
+[node name="SFXVal" type="Label" parent="SettingsModal/VBox/RowSFX"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "90% [ACTIVE]"
+
+[node name="SFXSlider" type="HSlider" parent="SettingsModal/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+value = 90.0
 
 [node name="RowScanline" type="HBoxContainer" parent="SettingsModal/VBox" unique_id=274973929]
 layout_mode = 2
@@ -821,29 +859,35 @@ text = "OBJECTIVE: Navigate containment chambers 01-04 to rewrite the corrupted 
 [node name="HSep2" type="HSeparator" parent="HowToPlayModal/VBox" unique_id=661582915]
 layout_mode = 2
 
-[node name="InstPhase" type="Label" parent="HowToPlayModal/VBox" unique_id=815971024]
+[node name="InstTether" type="Label" parent="HowToPlayModal/VBox" unique_id=815971024]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.224, 0.961, 1, 1)
 theme_override_font_sizes/font_size = 10
-text = "[1] PHASE (CYAN)     - Restructure molecular barriers for matter pass-through."
+text = "[E] TETHER (CYAN)       - Momentum pendulum swing & activate machinery pull handles."
 
-[node name="InstGrav" type="Label" parent="HowToPlayModal/VBox" unique_id=1182217362]
+[node name="InstBlade" type="Label" parent="HowToPlayModal/VBox" unique_id=1182217362]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.72, 0.19, 1)
 theme_override_font_sizes/font_size = 10
-text = "[2] GRAVITY (AMBER)  - Invert localized object mass and counter gravitational drift."
+text = "[LMB] BLADE (AMBER)    - Melee strike to disable hostile Security Constructs."
 
-[node name="InstFreeze" type="Label" parent="HowToPlayModal/VBox" unique_id=703616220]
+[node name="InstPolarity" type="Label" parent="HowToPlayModal/VBox" unique_id=703616220]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.635, 0.35, 1, 1)
 theme_override_font_sizes/font_size = 10
-text = "[3] FREEZE (VIOLET)  - Freeze localized temporal cycle on moving hazards."
+text = "[Q] POLARITY (VIOLET)  - Invert localized object mass & align reactor stabilizers."
+
+[node name="InstRewire" type="Label" parent="HowToPlayModal/VBox" unique_id=703616221]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.22, 0.94, 0.49, 1)
+theme_override_font_sizes/font_size = 10
+text = "[F] INTERACT / REWIRE  - Restore terminal relays & divert power from hazards to doors."
 
 [node name="LineControls" type="Label" parent="HowToPlayModal/VBox" unique_id=2009877974]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.91, 0.969, 0.973, 0.85)
 theme_override_font_sizes/font_size = 10
-text = "CONTROLS: [W][A][S][D] Move | [SHIFT] Sprint | [SPACE] Jump | [LMB] Rewrite Reality"
+text = "TRAVERSAL: [W][A][S][D] Move | [SHIFT] Sprint / VECTOR RUN (marked walls) | [SPACE] Jump / Wall-Jump"
 
 [node name="Spacer" type="Control" parent="HowToPlayModal/VBox" unique_id=601352420]
 layout_mode = 2

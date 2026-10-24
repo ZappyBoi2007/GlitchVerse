@@ -1,6 +1,7 @@
 class_name MainMenu
 extends Control
 
+
 ## Experimental Research Interface - Main Menu for GlitchVerse.
 ## Cinematic research facility environment with integrated clinical navigation and subtle reality corruption.
 
@@ -36,7 +37,9 @@ const NAV_ACTIONS: Dictionary = {
 	},
 }
 
-@export var auto_load_gameplay_scene: bool = false
+@export var auto_load_gameplay_scene: bool = true
+
+var menu_music_player: AudioStreamPlayer = null
 
 # Title Typography
 @onready var title_primary: Label = %TitlePrimary
@@ -56,6 +59,10 @@ const NAV_ACTIONS: Dictionary = {
 # Modals
 @onready var settings_modal: Control = %SettingsModal
 @onready var close_settings_btn: Button = %CloseSettingsBtn
+@onready var master_slider: HSlider = %MasterSlider
+@onready var sfx_slider: HSlider = %SFXSlider
+@onready var audio_val_label: Label = %Val
+@onready var sfx_val_label: Label = %SFXVal
 @onready var how_to_play_modal: Control = get_node_or_null("%HowToPlayModal") if get_node_or_null("%HowToPlayModal") != null else get_node_or_null("%AboutModal")
 @onready var about_modal: Control = how_to_play_modal
 @onready var close_how_to_play_btn: Button = get_node_or_null("%CloseHowToPlayBtn") if get_node_or_null("%CloseHowToPlayBtn") != null else get_node_or_null("%CloseAboutBtn")
@@ -78,6 +85,8 @@ var _glitch_duration: float = 0.0
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	UIAudio.initialize_audio_service(self)
+	_start_menu_music()
 
 	if start_btn != null:
 		start_btn.pressed.connect(_on_start_pressed)
@@ -103,6 +112,36 @@ func _ready() -> void:
 	if exit_btn != null:
 		_setup_nav_button(exit_btn, "exit", false)
 
+	# Establish explicit circular focus navigation for keyboard / gamepad
+	if start_btn != null and how_to_play_btn != null and settings_btn != null and exit_btn != null:
+		var p_start := start_btn.get_path()
+		var p_how := how_to_play_btn.get_path()
+		var p_set := settings_btn.get_path()
+		var p_exit := exit_btn.get_path()
+
+		start_btn.focus_neighbor_top = p_exit
+		start_btn.focus_neighbor_bottom = p_how
+		start_btn.focus_previous = p_exit
+		start_btn.focus_next = p_how
+
+		how_to_play_btn.focus_neighbor_top = p_start
+		how_to_play_btn.focus_neighbor_bottom = p_set
+		how_to_play_btn.focus_previous = p_start
+		how_to_play_btn.focus_next = p_set
+
+		settings_btn.focus_neighbor_top = p_how
+		settings_btn.focus_neighbor_bottom = p_exit
+		settings_btn.focus_previous = p_how
+		settings_btn.focus_next = p_exit
+
+		exit_btn.focus_neighbor_top = p_set
+		exit_btn.focus_neighbor_bottom = p_start
+		exit_btn.focus_previous = p_set
+		exit_btn.focus_next = p_start
+
+	UIAudio.attach_all_buttons(self)
+	_init_audio_sliders()
+
 	if settings_modal != null:
 		settings_modal.visible = false
 	if how_to_play_modal != null:
@@ -127,19 +166,18 @@ func _setup_nav_button(btn: Button, action_key: String, is_initial_focus: bool) 
 	var label_name: String = String(info.get("name", "ACTION"))
 	var dispatch_text: String = String(info.get("dispatch", ""))
 
+	btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	btn.focus_mode = Control.FOCUS_ALL
 	btn.text = ("▸ %s // %s" if is_initial_focus else "  %s // %s") % [code, label_name]
 	if is_initial_focus:
-		btn.position.x = 8.0
 		_set_dispatch(dispatch_text)
 
 	btn.focus_entered.connect(func():
 		btn.text = "▸ %s // %s" % [code, label_name]
-		btn.position.x = 8.0
 		_set_dispatch(dispatch_text)
 	)
 	btn.focus_exited.connect(func():
 		btn.text = "  %s // %s" % [code, label_name]
-		btn.position.x = 0.0
 	)
 	btn.mouse_entered.connect(func():
 		btn.grab_focus()
@@ -240,14 +278,39 @@ func _end_glitch_event() -> void:
 		status_text.modulate = Color(0.91, 0.969, 0.973, 0.85)
 
 
+func _start_menu_music() -> void:
+	if menu_music_player != null and is_instance_valid(menu_music_player):
+		return
+	var stream: AudioStream = load(UIAudio.STREAM_MENU_MUSIC) as AudioStream
+	if stream == null:
+		print("DEBUG: STREAM_MENU_MUSIC failed to load: ", UIAudio.STREAM_MENU_MUSIC)
+		return
+	if stream is AudioStreamMP3:
+		(stream as AudioStreamMP3).loop = true
+	menu_music_player = AudioStreamPlayer.new()
+	menu_music_player.name = "MenuMusicPlayer"
+	menu_music_player.bus = "Music"
+	menu_music_player.volume_db = -6.0
+	menu_music_player.stream = stream
+	add_child(menu_music_player)
+	if menu_music_player.is_inside_tree():
+		menu_music_player.play()
+	else:
+		menu_music_player.ready.connect(func(): if is_instance_valid(menu_music_player): menu_music_player.play(), CONNECT_ONE_SHOT)
+
+
 func _on_start_pressed() -> void:
+	UIAudio.play_confirm(self)
 	play_requested.emit()
+	if menu_music_player != null and is_instance_valid(menu_music_player):
+		menu_music_player.stop()
 	if auto_load_gameplay_scene and ResourceLoader.exists("res://main.tscn"):
 		if is_inside_tree() and get_tree() != null:
 			get_tree().change_scene_to_file("res://main.tscn")
 
 
 func _on_how_to_play_pressed() -> void:
+	UIAudio.play_click(self)
 	if how_to_play_modal != null:
 		how_to_play_modal.visible = true
 	if settings_modal != null:
@@ -263,6 +326,7 @@ func _on_about_pressed() -> void:
 
 
 func _on_settings_pressed() -> void:
+	UIAudio.play_click(self)
 	if settings_modal != null:
 		settings_modal.visible = true
 	if how_to_play_modal != null:
@@ -273,6 +337,7 @@ func _on_settings_pressed() -> void:
 
 
 func _on_close_how_to_play() -> void:
+	UIAudio.play_back(self)
 	if how_to_play_modal != null:
 		how_to_play_modal.visible = false
 	if how_to_play_btn != null:
@@ -284,6 +349,7 @@ func _on_close_about() -> void:
 
 
 func _on_close_settings() -> void:
+	UIAudio.play_back(self)
 	if settings_modal != null:
 		settings_modal.visible = false
 	if settings_btn != null:
@@ -291,6 +357,52 @@ func _on_close_settings() -> void:
 
 
 func _on_exit_pressed() -> void:
+	UIAudio.play_click(self)
 	quit_requested.emit()
 	if is_inside_tree() and get_tree() != null:
 		get_tree().quit()
+
+
+func _init_audio_sliders() -> void:
+	if master_slider != null:
+		var bus_idx := AudioServer.get_bus_index("Master")
+		var cur := 85.0
+		if bus_idx >= 0 and not AudioServer.is_bus_mute(bus_idx):
+			cur = db_to_linear(AudioServer.get_bus_volume_db(bus_idx)) * 100.0
+		master_slider.value = cur
+		_update_val_label(audio_val_label, cur, "NOMINAL")
+		if not master_slider.value_changed.is_connected(_on_master_slider_changed):
+			master_slider.value_changed.connect(_on_master_slider_changed)
+
+	if sfx_slider != null:
+		var bus_idx := AudioServer.get_bus_index("SFX")
+		var cur := 90.0
+		if bus_idx >= 0 and not AudioServer.is_bus_mute(bus_idx):
+			cur = db_to_linear(AudioServer.get_bus_volume_db(bus_idx)) * 100.0
+		sfx_slider.value = cur
+		_update_val_label(sfx_val_label, cur, "ACTIVE")
+		if not sfx_slider.value_changed.is_connected(_on_sfx_slider_changed):
+			sfx_slider.value_changed.connect(_on_sfx_slider_changed)
+
+
+func _on_master_slider_changed(val: float) -> void:
+	var bus_idx := AudioServer.get_bus_index("Master")
+	if bus_idx >= 0:
+		var linear := val / 100.0
+		AudioServer.set_bus_volume_db(bus_idx, linear_to_db(linear) if linear > 0.001 else -80.0)
+		AudioServer.set_bus_mute(bus_idx, linear <= 0.001)
+	_update_val_label(audio_val_label, val, "NOMINAL" if val > 0.0 else "MUTED")
+
+
+func _on_sfx_slider_changed(val: float) -> void:
+	var bus_idx := AudioServer.get_bus_index("SFX")
+	if bus_idx >= 0:
+		var linear := val / 100.0
+		AudioServer.set_bus_volume_db(bus_idx, linear_to_db(linear) if linear > 0.001 else -80.0)
+		AudioServer.set_bus_mute(bus_idx, linear <= 0.001)
+	_update_val_label(sfx_val_label, val, "ACTIVE" if val > 0.0 else "MUTED")
+
+
+func _update_val_label(label: Label, val: float, status: String) -> void:
+	if label != null:
+		label.text = "%d%% [%s]" % [int(round(val)), status]
