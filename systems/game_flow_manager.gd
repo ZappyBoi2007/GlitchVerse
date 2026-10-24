@@ -267,6 +267,9 @@ func _clear_current_level() -> void:
 
 
 func _reset_player_at_spawn() -> void:
+	var health := player.find_child("PlayerHealth", true, false) as PlayerHealth
+	if health != null:
+		health.reset_health()
 	player.global_transform = current_level.get_player_spawn_transform()
 	player.velocity = Vector3.ZERO
 	var head := player.get_node_or_null("Head") as Node3D

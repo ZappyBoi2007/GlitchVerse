@@ -105,6 +105,22 @@ func place_scene(scene: PackedScene, node_name: String, position_value: Vector3,
 	return instance
 
 
+func place_scene_at_marker(scene: PackedScene, node_name: String, marker: Node3D) -> Node3D:
+	var instance := scene.instantiate() as Node3D
+	instance.name = node_name
+	# Configure the local transform before entering the active SceneTree. Area3D
+	# nodes must never spend a physics tick at the wrapper origin, where they can
+	# emit a false player overlap before being moved to their authored marker.
+	instance.transform = global_transform.affine_inverse() * marker.global_transform
+	add_child(instance)
+	return instance
+
+
+func set_csg_state(shape: CSGShape3D, visible_state: bool, collision_state := false) -> void:
+	shape.visible = visible_state
+	shape.use_collision = collision_state
+
+
 func add_fall_failure(position_value := Vector3(0, -7, 0), reason := "PLAYER LOST OUTSIDE THE SIMULATION") -> FallHazard:
 	var hazard := place_scene(FALL_SCENE, "FallFailure", position_value) as FallHazard
 	hazard.failure_reason = reason

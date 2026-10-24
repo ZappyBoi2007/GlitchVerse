@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://levels/clock_failure/clock_failure_level.gd" id="1"]
+[ext_resource type="PackedScene" path="res://levels/clock_failure_environment.tscn" id="2_environment"]
 
 [node name="ClockFailureLevel" type="Node3D"]
 script = ExtResource("1")
@@ -8,5 +9,6 @@ level_id = "clock_failure"
 level_display_name = "LEVEL 3 // CLOCK FAILURE"
 par_time_seconds = 210.0
 base_score = 1800
-[node name="PlayerSpawn" type="Marker3D" parent="."]
-position = Vector3(0, 0.05, 17)
+player_spawn_path = NodePath("ClockFailureEnvironment/InteractionMarkers/PlayerSpawn")
+
+[node name="ClockFailureEnvironment" parent="." instance=ExtResource("2_environment")]

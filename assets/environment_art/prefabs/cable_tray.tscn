@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3]
+[ext_resource type="PackedScene" path="res://assets/environment_art/modular/cables.glb" id="1_cables"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/industrial_dark.tres" id="2_dark"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/amber_emissive.tres" id="3_amber"]
+[node name="CableTray" type="Node3D"]
+[node name="ImportedCables" parent="." instance=ExtResource("1_cables")]
+scale = Vector3(1.5, 1.5, 1.5)
+[node name="Tray" type="CSGBox3D" parent="."]
+position = Vector3(0, -0.18, 0)
+size = Vector3(4, 0.16, 0.9)
+material = ExtResource("2_dark")
+[node name="ServiceStrip" type="CSGBox3D" parent="."]
+position = Vector3(0, -0.27, 0.48)
+size = Vector3(3.2, 0.07, 0.07)
+material = ExtResource("3_amber")
+
+[editable path="ImportedCables"]

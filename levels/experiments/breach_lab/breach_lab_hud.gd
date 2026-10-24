@@ -78,7 +78,13 @@ func _bind_runtime() -> void:
 
 
 func _on_health_changed(current: int, maximum: int) -> void:
-	health_label.text = "INTEGRITY  %s%s" % ["■".repeat(current), "□".repeat(maximum - current)]
+	var filled := roundi(20.0 * float(current) / float(maxi(maximum, 1)))
+	health_label.text = "HP %03d / %03d  [%s%s]" % [
+		current,
+		maximum,
+		"■".repeat(filled),
+		"□".repeat(20 - filled),
+	]
 
 
 func _on_objective_updated(description: String, completed: int, total: int) -> void:

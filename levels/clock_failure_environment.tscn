@@ -1,0 +1,862 @@
+[gd_scene load_steps=20 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/recessed_wall_panel.tscn" id="ArtWallPanel"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/reinforced_floor_tile.tscn" id="ArtFloorTile"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/door_frame.tscn" id="ArtDoorFrame"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/cable_tray.tscn" id="ArtCableTray"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/relay_console.tscn" id="ArtConsole"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/machinery_housing.tscn" id="ArtMachinery"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/industrial_light.tscn" id="ArtLight"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/maintenance_hatch.tscn" id="ArtHatch"]
+[ext_resource type="PackedScene" path="res://assets/environment_art/prefabs/safety_railing.tscn" id="ArtRail"]
+
+[sub_resource type="StandardMaterial3D" id="Floor"]
+albedo_color = Color(0.16, 0.21, 0.23, 1)
+metallic = 0.72
+roughness = 0.38
+
+[sub_resource type="StandardMaterial3D" id="Wall"]
+albedo_color = Color(0.18, 0.23, 0.25, 1)
+metallic = 0.82
+roughness = 0.32
+
+[sub_resource type="StandardMaterial3D" id="Structure"]
+albedo_color = Color(0.27, 0.31, 0.34, 1)
+metallic = 0.9
+roughness = 0.24
+
+[sub_resource type="StandardMaterial3D" id="Primary"]
+albedo_color = Color(0.02, 0.55, 0.52, 1)
+emission_enabled = true
+emission = Color(0.02, 1, 0.92, 1)
+emission_energy_multiplier = 5.0
+
+[sub_resource type="StandardMaterial3D" id="Secondary"]
+albedo_color = Color(0.8, 0.32, 0.03, 1)
+emission_enabled = true
+emission = Color(1, 0.42, 0.03, 1)
+emission_energy_multiplier = 4.5
+
+[sub_resource type="StandardMaterial3D" id="Warning"]
+albedo_color = Color(0.65, 0.025, 0.04, 1)
+emission_enabled = true
+emission = Color(1, 0.02, 0.04, 1)
+emission_energy_multiplier = 5.5
+
+[sub_resource type="StandardMaterial3D" id="Inactive"]
+albedo_color = Color(0.055, 0.065, 0.08, 1)
+metallic = 0.8
+roughness = 0.42
+
+[sub_resource type="StandardMaterial3D" id="Green"]
+albedo_color = Color(0.02, 0.45, 0.18, 1)
+emission_enabled = true
+emission = Color(0.05, 1, 0.35, 1)
+emission_energy_multiplier = 4.0
+
+[sub_resource type="Environment" id="World"]
+background_mode = 1
+background_color = Color(0.012, 0.022, 0.026, 1)
+ambient_light_source = 3
+ambient_light_color = Color(0.48, 0.72, 0.72, 1)
+ambient_light_energy = 0.78
+tonemap_mode = 2
+
+[node name="ClockFailureEnvironment" type="Node3D"]
+
+[node name="Environment" type="Node3D" parent="."]
+
+[node name="EntryControlRoom" type="Node3D" parent="Environment"]
+
+[node name="Architecture" type="Node3D" parent="Environment/EntryControlRoom"]
+
+[node name="Floor" type="CSGBox3D" parent="Environment/EntryControlRoom/Architecture"]
+position = Vector3(0, -0.5, 30)
+size = Vector3(16, 1, 12)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="WestWall" type="CSGBox3D" parent="Environment/EntryControlRoom/Architecture"]
+position = Vector3(-8.0, 2.5, 30)
+size = Vector3(0.6, 6, 12)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="EastWall" type="CSGBox3D" parent="Environment/EntryControlRoom/Architecture"]
+position = Vector3(8.0, 2.5, 30)
+size = Vector3(0.6, 6, 12)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="NorthWallLeft" type="CSGBox3D" parent="Environment/EntryControlRoom/Architecture"]
+position = Vector3(-5.333333333333333, 2.5, 24.0)
+size = Vector3(5.333333333333333, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="NorthWallRight" type="CSGBox3D" parent="Environment/EntryControlRoom/Architecture"]
+position = Vector3(5.333333333333333, 2.5, 24.0)
+size = Vector3(5.333333333333333, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="SouthWall" type="CSGBox3D" parent="Environment/EntryControlRoom/Architecture"]
+position = Vector3(0, 2.5, 36.0)
+size = Vector3(16, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="MissionProps" type="Node3D" parent="Environment/EntryControlRoom"]
+
+[node name="ObjectiveConsole" type="CSGBox3D" parent="Environment/EntryControlRoom/MissionProps"]
+position = Vector3(0, 1.25, 31.8)
+size = Vector3(6, 2.5, 0.8)
+material = SubResource("Structure")
+use_collision = true
+
+[node name="ObjectiveDisplay" type="CSGBox3D" parent="Environment/EntryControlRoom/MissionProps"]
+position = Vector3(0, 2, 32.25)
+size = Vector3(5.2, 1.1, 0.08)
+material = SubResource("Primary")
+
+[node name="ObjectiveLabel" type="Label3D" parent="Environment/EntryControlRoom/MissionProps"]
+position = Vector3(0, 3.2, 32.3)
+text = "RESTORE SECTOR TIMING // REACH EXIT"
+font_size = 34
+outline_size = 10
+modulate = Color(0.254902, 1.000000, 0.945098, 1)
+billboard = 1
+
+[node name="ExitSightlineFrame" type="CSGBox3D" parent="Environment/EntryControlRoom/MissionProps"]
+position = Vector3(0, 2.4, 24.1)
+size = Vector3(5.5, 4.8, 0.6)
+material = SubResource("Structure")
+use_collision = true
+
+[node name="ExitSightlineLocked" type="CSGBox3D" parent="Environment/EntryControlRoom/MissionProps"]
+position = Vector3(0, 2.4, 23.75)
+size = Vector3(4.2, 3.8, 0.18)
+material = SubResource("Warning")
+
+[node name="ExitSightlineLabel" type="Label3D" parent="Environment/EntryControlRoom/MissionProps"]
+position = Vector3(0, 4.7, 24)
+text = "EXIT DESYNCHRONIZED"
+font_size = 28
+outline_size = 10
+modulate = Color(1.000000, 0.254902, 0.333333, 1)
+billboard = 1
+
+[node name="GuideRail_-5.2" type="CSGBox3D" parent="Environment/EntryControlRoom/MissionProps"]
+position = Vector3(-5.2, 0.12, 25.8)
+size = Vector3(0.18, 0.12, 7)
+material = SubResource("Primary")
+
+[node name="GuideRail_5.2" type="CSGBox3D" parent="Environment/EntryControlRoom/MissionProps"]
+position = Vector3(5.2, 0.12, 25.8)
+size = Vector3(0.18, 0.12, 7)
+material = SubResource("Primary")
+
+[node name="TimingChamber" type="Node3D" parent="Environment"]
+
+[node name="Architecture" type="Node3D" parent="Environment/TimingChamber"]
+
+[node name="EntryDeck" type="CSGBox3D" parent="Environment/TimingChamber/Architecture"]
+position = Vector3(0, -0.5, 20)
+size = Vector3(12, 1, 7)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="WestTimingDeck" type="CSGBox3D" parent="Environment/TimingChamber/Architecture"]
+position = Vector3(-6, -0.5, 12)
+size = Vector3(7, 1, 8)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="EastTimingDeck" type="CSGBox3D" parent="Environment/TimingChamber/Architecture"]
+position = Vector3(6, 1.5, 9)
+size = Vector3(7, 0.8, 7)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="TimingExitDeck" type="CSGBox3D" parent="Environment/TimingChamber/Architecture"]
+position = Vector3(0, -0.5, 3)
+size = Vector3(12, 1, 5)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="SideWall_-10" type="CSGBox3D" parent="Environment/TimingChamber/Architecture"]
+position = Vector3(-10, 3, 12)
+size = Vector3(0.7, 7, 22)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="SideWall_10" type="CSGBox3D" parent="Environment/TimingChamber/Architecture"]
+position = Vector3(10, 3, 12)
+size = Vector3(0.7, 7, 22)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="Clockwork" type="Node3D" parent="Environment/TimingChamber"]
+
+[node name="TimingAxle_1" type="CSGCylinder3D" parent="Environment/TimingChamber/Clockwork"]
+position = Vector3(0, 4.5, 18)
+radius = 1.5
+height = 14
+sides = 24
+material = SubResource("Structure")
+rotation_degrees = Vector3(0, 0, 90)
+
+[node name="TimingHub_1" type="CSGCylinder3D" parent="Environment/TimingChamber/Clockwork"]
+position = Vector3(0, 4.5, 18)
+radius = 0.65
+height = 14.3
+sides = 24
+material = SubResource("Secondary")
+rotation_degrees = Vector3(0, 0, 90)
+
+[node name="TimingAxle_2" type="CSGCylinder3D" parent="Environment/TimingChamber/Clockwork"]
+position = Vector3(0, 4.5, 14)
+radius = 1.5
+height = 14
+sides = 24
+material = SubResource("Structure")
+rotation_degrees = Vector3(0, 0, 90)
+
+[node name="TimingHub_2" type="CSGCylinder3D" parent="Environment/TimingChamber/Clockwork"]
+position = Vector3(0, 4.5, 14)
+radius = 0.65
+height = 14.3
+sides = 24
+material = SubResource("Secondary")
+rotation_degrees = Vector3(0, 0, 90)
+
+[node name="TimingAxle_3" type="CSGCylinder3D" parent="Environment/TimingChamber/Clockwork"]
+position = Vector3(0, 4.5, 10)
+radius = 1.5
+height = 14
+sides = 24
+material = SubResource("Structure")
+rotation_degrees = Vector3(0, 0, 90)
+
+[node name="TimingHub_3" type="CSGCylinder3D" parent="Environment/TimingChamber/Clockwork"]
+position = Vector3(0, 4.5, 10)
+radius = 0.65
+height = 14.3
+sides = 24
+material = SubResource("Secondary")
+rotation_degrees = Vector3(0, 0, 90)
+
+[node name="TimingAxle_4" type="CSGCylinder3D" parent="Environment/TimingChamber/Clockwork"]
+position = Vector3(0, 4.5, 6)
+radius = 1.5
+height = 14
+sides = 24
+material = SubResource("Structure")
+rotation_degrees = Vector3(0, 0, 90)
+
+[node name="TimingHub_4" type="CSGCylinder3D" parent="Environment/TimingChamber/Clockwork"]
+position = Vector3(0, 4.5, 6)
+radius = 0.65
+height = 14.3
+sides = 24
+material = SubResource("Secondary")
+rotation_degrees = Vector3(0, 0, 90)
+
+[node name="HazardTrackLeft" type="CSGBox3D" parent="Environment/TimingChamber/Clockwork"]
+position = Vector3(-3.5, 0.18, 12)
+size = Vector3(0.25, 0.18, 15)
+material = SubResource("Warning")
+
+[node name="HazardTrackRight" type="CSGBox3D" parent="Environment/TimingChamber/Clockwork"]
+position = Vector3(3.5, 0.18, 12)
+size = Vector3(0.25, 0.18, 15)
+material = SubResource("Warning")
+
+[node name="TetherVisuals" type="Node3D" parent="Environment/TimingChamber"]
+
+[node name="AnchorMount_01" type="CSGCylinder3D" parent="Environment/TimingChamber/TetherVisuals"]
+position = Vector3(-3.5, 7, 16)
+radius = 0.45
+height = 3
+sides = 24
+material = SubResource("Structure")
+rotation_degrees = Vector3(90, 0, 0)
+use_collision = true
+
+[node name="AnchorBeacon_01" type="CSGCylinder3D" parent="Environment/TimingChamber/TetherVisuals"]
+position = Vector3(-3.5, 7, 16)
+radius = 0.8
+height = 0.25
+sides = 24
+material = SubResource("Primary")
+rotation_degrees = Vector3(90, 0, 0)
+
+[node name="AnchorMount_02" type="CSGCylinder3D" parent="Environment/TimingChamber/TetherVisuals"]
+position = Vector3(4.5, 8.5, 8)
+radius = 0.45
+height = 3
+sides = 24
+material = SubResource("Structure")
+rotation_degrees = Vector3(90, 0, 0)
+use_collision = true
+
+[node name="AnchorBeacon_02" type="CSGCylinder3D" parent="Environment/TimingChamber/TetherVisuals"]
+position = Vector3(4.5, 8.5, 8)
+radius = 0.8
+height = 0.25
+sides = 24
+material = SubResource("Secondary")
+rotation_degrees = Vector3(90, 0, 0)
+
+[node name="TimingWarning" type="Label3D" parent="Environment/TimingChamber"]
+position = Vector3(0, 6, 21)
+text = "TIMING CHAMBER // CYCLIC SWEEP"
+font_size = 30
+outline_size = 10
+modulate = Color(1.000000, 0.588235, 0.219608, 1)
+billboard = 1
+
+[node name="EntryTimingConnector" type="CSGBox3D" parent="Environment/TimingChamber/Architecture"]
+position = Vector3(0, -0.5, 24)
+size = Vector3(6, 1, 2)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="PowerRoutingRoom" type="Node3D" parent="Environment"]
+
+[node name="Architecture" type="Node3D" parent="Environment/PowerRoutingRoom"]
+
+[node name="Floor" type="CSGBox3D" parent="Environment/PowerRoutingRoom/Architecture"]
+position = Vector3(0, -0.5, -6)
+size = Vector3(18, 1, 12)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="WestWall" type="CSGBox3D" parent="Environment/PowerRoutingRoom/Architecture"]
+position = Vector3(-9.0, 2.5, -6)
+size = Vector3(0.6, 6, 12)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="EastWall" type="CSGBox3D" parent="Environment/PowerRoutingRoom/Architecture"]
+position = Vector3(9.0, 2.5, -6)
+size = Vector3(0.6, 6, 12)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="NorthWallLeft" type="CSGBox3D" parent="Environment/PowerRoutingRoom/Architecture"]
+position = Vector3(-6.0, 2.5, -12.0)
+size = Vector3(6.0, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="NorthWallRight" type="CSGBox3D" parent="Environment/PowerRoutingRoom/Architecture"]
+position = Vector3(6.0, 2.5, -12.0)
+size = Vector3(6.0, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="SouthWallLeft" type="CSGBox3D" parent="Environment/PowerRoutingRoom/Architecture"]
+position = Vector3(-6.0, 2.5, 0.0)
+size = Vector3(6.0, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="SouthWallRight" type="CSGBox3D" parent="Environment/PowerRoutingRoom/Architecture"]
+position = Vector3(6.0, 2.5, 0.0)
+size = Vector3(6.0, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="Machinery" type="Node3D" parent="Environment/PowerRoutingRoom"]
+
+[node name="RewireConsoleBase" type="CSGBox3D" parent="Environment/PowerRoutingRoom/Machinery"]
+position = Vector3(0, 0.7, -5)
+size = Vector3(4, 1.4, 3)
+material = SubResource("Structure")
+use_collision = true
+
+[node name="RewireConsoleDisplay" type="CSGBox3D" parent="Environment/PowerRoutingRoom/Machinery"]
+position = Vector3(0, 1.6, -3.45)
+size = Vector3(3, 0.9, 0.1)
+material = SubResource("Secondary")
+
+[node name="RewireLabel" type="Label3D" parent="Environment/PowerRoutingRoom/Machinery"]
+position = Vector3(0, 2.8, -5)
+text = "REWIRE // TIMING BYPASS"
+font_size = 30
+outline_size = 10
+modulate = Color(1.000000, 0.752941, 0.250980, 1)
+billboard = 1
+
+[node name="StateVisuals" type="Node3D" parent="Environment/PowerRoutingRoom"]
+
+[node name="ChannelA_Base" type="CSGBox3D" parent="Environment/PowerRoutingRoom/StateVisuals"]
+position = Vector3(-4, 0.1, -6)
+size = Vector3(0.7, 0.12, 8)
+material = SubResource("Inactive")
+
+[node name="ChannelA_Active" type="CSGBox3D" parent="Environment/PowerRoutingRoom/StateVisuals"]
+position = Vector3(-4, 0.18, -6)
+size = Vector3(0.3, 0.13, 8)
+material = SubResource("Primary")
+
+[node name="ChannelA_Inactive" type="CSGBox3D" parent="Environment/PowerRoutingRoom/StateVisuals"]
+position = Vector3(-4, 0.18, -6)
+size = Vector3(0.3, 0.13, 8)
+material = SubResource("Inactive")
+visible = false
+
+[node name="ChannelB_Base" type="CSGBox3D" parent="Environment/PowerRoutingRoom/StateVisuals"]
+position = Vector3(4, 0.1, -6)
+size = Vector3(0.7, 0.12, 8)
+material = SubResource("Inactive")
+
+[node name="ChannelB_Active" type="CSGBox3D" parent="Environment/PowerRoutingRoom/StateVisuals"]
+position = Vector3(4, 0.18, -6)
+size = Vector3(0.3, 0.13, 8)
+material = SubResource("Secondary")
+visible = false
+
+[node name="ChannelB_Inactive" type="CSGBox3D" parent="Environment/PowerRoutingRoom/StateVisuals"]
+position = Vector3(4, 0.18, -6)
+size = Vector3(0.3, 0.13, 8)
+material = SubResource("Inactive")
+
+[node name="TimingHazard_Active" type="CSGBox3D" parent="Environment/PowerRoutingRoom/StateVisuals"]
+position = Vector3(-7, 2, -6)
+size = Vector3(0.25, 3.5, 4)
+material = SubResource("Warning")
+use_collision = true
+
+[node name="TimingHazard_Disabled" type="CSGBox3D" parent="Environment/PowerRoutingRoom/StateVisuals"]
+position = Vector3(-7, 0.45, -6)
+size = Vector3(0.25, 0.18, 4)
+material = SubResource("Green")
+visible = false
+
+[node name="BlockedRoute_Locked" type="CSGBox3D" parent="Environment/PowerRoutingRoom/StateVisuals"]
+position = Vector3(7, 2, -6)
+size = Vector3(0.4, 4, 4)
+material = SubResource("Warning")
+use_collision = true
+
+[node name="BlockedRoute_Open" type="CSGBox3D" parent="Environment/PowerRoutingRoom/StateVisuals"]
+position = Vector3(7, 4.2, -6)
+size = Vector3(0.4, 0.25, 4)
+material = SubResource("Green")
+visible = false
+
+[node name="TimingPowerConnector" type="CSGBox3D" parent="Environment/PowerRoutingRoom/Architecture"]
+position = Vector3(0, -0.5, 0.25)
+size = Vector3(6, 1, 2)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="SecurityInterception" type="Node3D" parent="Environment"]
+
+[node name="Architecture" type="Node3D" parent="Environment/SecurityInterception"]
+
+[node name="Floor" type="CSGBox3D" parent="Environment/SecurityInterception/Architecture"]
+position = Vector3(0, -0.5, -19)
+size = Vector3(16, 1, 12)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="WestWall" type="CSGBox3D" parent="Environment/SecurityInterception/Architecture"]
+position = Vector3(-8.0, 2.5, -19)
+size = Vector3(0.6, 6, 12)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="EastWall" type="CSGBox3D" parent="Environment/SecurityInterception/Architecture"]
+position = Vector3(8.0, 2.5, -19)
+size = Vector3(0.6, 6, 12)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="NorthWallLeft" type="CSGBox3D" parent="Environment/SecurityInterception/Architecture"]
+position = Vector3(-5.333333333333333, 2.5, -25.0)
+size = Vector3(5.333333333333333, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="NorthWallRight" type="CSGBox3D" parent="Environment/SecurityInterception/Architecture"]
+position = Vector3(5.333333333333333, 2.5, -25.0)
+size = Vector3(5.333333333333333, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="SouthWallLeft" type="CSGBox3D" parent="Environment/SecurityInterception/Architecture"]
+position = Vector3(-5.333333333333333, 2.5, -13.0)
+size = Vector3(5.333333333333333, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="SouthWallRight" type="CSGBox3D" parent="Environment/SecurityInterception/Architecture"]
+position = Vector3(5.333333333333333, 2.5, -13.0)
+size = Vector3(5.333333333333333, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="CombatProps" type="Node3D" parent="Environment/SecurityInterception"]
+
+[node name="CoverLeft" type="CSGBox3D" parent="Environment/SecurityInterception/CombatProps"]
+position = Vector3(-4, 0.65, -19)
+size = Vector3(3, 1.3, 1.2)
+material = SubResource("Structure")
+use_collision = true
+
+[node name="CoverRight" type="CSGBox3D" parent="Environment/SecurityInterception/CombatProps"]
+position = Vector3(4, 0.65, -16)
+size = Vector3(3, 1.3, 1.2)
+material = SubResource("Structure")
+use_collision = true
+
+[node name="SyncTerminalA_Housing" type="CSGBox3D" parent="Environment/SecurityInterception/CombatProps"]
+position = Vector3(-5, 1.2, -22)
+size = Vector3(2, 2.4, 1)
+material = SubResource("Structure")
+use_collision = true
+
+[node name="SyncTerminalA_Screen" type="CSGBox3D" parent="Environment/SecurityInterception/CombatProps"]
+position = Vector3(-5, 1.5, -21.45)
+size = Vector3(1.3, 0.7, 0.08)
+material = SubResource("Primary")
+
+[node name="SyncTerminalB_Housing" type="CSGBox3D" parent="Environment/SecurityInterception/CombatProps"]
+position = Vector3(5, 1.2, -22)
+size = Vector3(2, 2.4, 1)
+material = SubResource("Structure")
+use_collision = true
+
+[node name="SyncTerminalB_Screen" type="CSGBox3D" parent="Environment/SecurityInterception/CombatProps"]
+position = Vector3(5, 1.5, -21.45)
+size = Vector3(1.3, 0.7, 0.08)
+material = SubResource("Secondary")
+
+[node name="PowerSecurityConnector" type="CSGBox3D" parent="Environment/SecurityInterception/Architecture"]
+position = Vector3(0, -0.5, -12.5)
+size = Vector3(6, 1, 2)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="ExitChamber" type="Node3D" parent="Environment"]
+
+[node name="Architecture" type="Node3D" parent="Environment/ExitChamber"]
+
+[node name="Floor" type="CSGBox3D" parent="Environment/ExitChamber/Architecture"]
+position = Vector3(0, -0.5, -32)
+size = Vector3(14, 1, 10)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="WestWall" type="CSGBox3D" parent="Environment/ExitChamber/Architecture"]
+position = Vector3(-7.0, 2.5, -32)
+size = Vector3(0.6, 6, 10)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="EastWall" type="CSGBox3D" parent="Environment/ExitChamber/Architecture"]
+position = Vector3(7.0, 2.5, -32)
+size = Vector3(0.6, 6, 10)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="NorthWallLeft" type="CSGBox3D" parent="Environment/ExitChamber/Architecture"]
+position = Vector3(-4.666666666666667, 2.5, -37.0)
+size = Vector3(4.666666666666667, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="NorthWallRight" type="CSGBox3D" parent="Environment/ExitChamber/Architecture"]
+position = Vector3(4.666666666666667, 2.5, -37.0)
+size = Vector3(4.666666666666667, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="SouthWall" type="CSGBox3D" parent="Environment/ExitChamber/Architecture"]
+position = Vector3(0, 2.5, -27.0)
+size = Vector3(14, 6, 0.6)
+material = SubResource("Wall")
+use_collision = true
+
+[node name="ExitDoorStates" type="Node3D" parent="Environment/ExitChamber"]
+
+[node name="ExitFrameTop" type="CSGBox3D" parent="Environment/ExitChamber/ExitDoorStates"]
+position = Vector3(0, 5, -36.7)
+size = Vector3(8, 0.8, 0.8)
+material = SubResource("Structure")
+use_collision = true
+
+[node name="ExitFrameLeft" type="CSGBox3D" parent="Environment/ExitChamber/ExitDoorStates"]
+position = Vector3(-4, 2.5, -36.7)
+size = Vector3(0.8, 5, 0.8)
+material = SubResource("Structure")
+use_collision = true
+
+[node name="ExitFrameRight" type="CSGBox3D" parent="Environment/ExitChamber/ExitDoorStates"]
+position = Vector3(4, 2.5, -36.7)
+size = Vector3(0.8, 5, 0.8)
+material = SubResource("Structure")
+use_collision = true
+
+[node name="Exit_Locked" type="CSGBox3D" parent="Environment/ExitChamber/ExitDoorStates"]
+position = Vector3(0, 2.4, -36.7)
+size = Vector3(7.2, 4.2, 0.45)
+material = SubResource("Warning")
+use_collision = true
+
+[node name="Exit_OpenLeft" type="CSGBox3D" parent="Environment/ExitChamber/ExitDoorStates"]
+position = Vector3(-4.8, 2.4, -36.7)
+size = Vector3(1.4, 4.2, 0.45)
+material = SubResource("Structure")
+visible = false
+
+[node name="Exit_OpenRight" type="CSGBox3D" parent="Environment/ExitChamber/ExitDoorStates"]
+position = Vector3(4.8, 2.4, -36.7)
+size = Vector3(1.4, 4.2, 0.45)
+material = SubResource("Structure")
+visible = false
+
+[node name="Exit_OpenGlow" type="CSGBox3D" parent="Environment/ExitChamber/ExitDoorStates"]
+position = Vector3(0, 0.3, -36.6)
+size = Vector3(7.2, 0.1, 0.15)
+material = SubResource("Green")
+visible = false
+
+[node name="ExitLabel" type="Label3D" parent="Environment/ExitChamber"]
+position = Vector3(0, 5.7, -36.4)
+text = "SECTOR EXIT"
+font_size = 38
+outline_size = 10
+modulate = Color(0.254902, 1.000000, 0.945098, 1)
+billboard = 1
+
+[node name="SecurityExitConnector" type="CSGBox3D" parent="Environment/ExitChamber/Architecture"]
+position = Vector3(0, -0.5, -26)
+size = Vector3(6, 1, 3)
+material = SubResource("Floor")
+use_collision = true
+
+[node name="InteractionMarkers" type="Node3D" parent="."]
+
+[node name="PlayerSpawn" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(0, 0.4, 35)
+rotation_degrees = Vector3(0, 0, 0)
+
+[node name="EntryObjectiveMarker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(0, 1.2, 33)
+
+[node name="TetherLaunch_01" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(0, 0.4, 19)
+rotation_degrees = Vector3(0, 0, 0)
+
+[node name="TetherAnchor_01" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-3.5, 7, 16)
+
+[node name="TetherIntermediateLanding" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-6, 0.4, 12)
+
+[node name="TetherLaunch_02" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-4, 1.9, 10)
+rotation_degrees = Vector3(0, 135, 0)
+
+[node name="TetherAnchor_02" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(4.5, 8.5, 8)
+
+[node name="TetherLanding_02" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(5.5, 1.9, 8)
+
+[node name="FallRecoveryMarker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(0, 0.4, 20)
+
+[node name="TimingHazard_Marker_01" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-2, 1.2, 13)
+
+[node name="TimingHazard_Marker_02" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(2, 1.2, 9)
+
+[node name="PowerConsole_Marker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(0, 0.4, -2.8)
+rotation_degrees = Vector3(0, 180, 0)
+
+[node name="BlockedRoute_Marker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(7, 1.2, -6)
+
+[node name="SecurityConstructSpawn" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(0, 0.4, -18)
+rotation_degrees = Vector3(0, 180, 0)
+
+[node name="SyncTerminalA_Marker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(-5, 0.4, -21)
+
+[node name="SyncTerminalB_Marker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(5, 0.4, -21)
+
+[node name="ExitMarker" type="Marker3D" parent="InteractionMarkers"]
+position = Vector3(0, 0.4, -35.3)
+rotation_degrees = Vector3(0, 0, 0)
+
+[node name="Lighting" type="Node3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Lighting"]
+environment = SubResource("World")
+
+[node name="FacilityKey" type="DirectionalLight3D" parent="Lighting"]
+rotation_degrees = Vector3(-55, -25, 0)
+light_color = Color(0.749020, 1.000000, 0.933333, 1)
+light_energy = 1.2
+shadow_enabled = true
+
+[node name="EntryTeal" type="OmniLight3D" parent="Lighting"]
+position = Vector3(0, 4, 30)
+light_color = Color(0.207843, 1.000000, 0.933333, 1)
+light_energy = 2.1
+omni_range = 13
+shadow_enabled = true
+
+[node name="TimingAmber" type="OmniLight3D" parent="Lighting"]
+position = Vector3(0, 6, 12)
+light_color = Color(1.000000, 0.607843, 0.196078, 1)
+light_energy = 2.5
+omni_range = 16
+shadow_enabled = true
+
+[node name="PowerTeal" type="OmniLight3D" parent="Lighting"]
+position = Vector3(-4, 3, -6)
+light_color = Color(0.125490, 0.913725, 0.878431, 1)
+light_energy = 2.0
+omni_range = 11
+shadow_enabled = true
+
+[node name="PowerAmber" type="OmniLight3D" parent="Lighting"]
+position = Vector3(4, 3, -6)
+light_color = Color(1.000000, 0.596078, 0.180392, 1)
+light_energy = 2.0
+omni_range = 11
+shadow_enabled = true
+
+[node name="SecurityRed" type="OmniLight3D" parent="Lighting"]
+position = Vector3(0, 4, -19)
+light_color = Color(1.000000, 0.188235, 0.282353, 1)
+light_energy = 2.2
+omni_range = 12
+shadow_enabled = true
+
+[node name="ExitTeal" type="OmniLight3D" parent="Lighting"]
+position = Vector3(0, 4, -32)
+light_color = Color(0.200000, 1.000000, 0.909804, 1)
+light_energy = 2.2
+omni_range = 11
+shadow_enabled = true
+
+[node name="PreviewCamera" type="Camera3D" parent="."]
+position = Vector3(0, 70, 1)
+rotation_degrees = Vector3(-90, 0, 0)
+current = false
+fov = 60.0
+
+[node name="ProductionArtPass" type="Node3D" parent="Environment/EntryControlRoom"]
+
+[node name="ProductionArtPass" type="Node3D" parent="Environment/TimingChamber"]
+
+[node name="ProductionArtPass" type="Node3D" parent="Environment/PowerRoutingRoom"]
+
+[node name="ProductionArtPass" type="Node3D" parent="Environment/SecurityInterception"]
+
+[node name="ProductionArtPass" type="Node3D" parent="Environment/ExitChamber"]
+
+[node name="EntryWallPanelA" parent="Environment/EntryControlRoom/ProductionArtPass" instance=ExtResource("ArtWallPanel")]
+position = Vector3(-7.65, 0.2, 30.5)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(1, 1, 1)
+
+[node name="EntryWallPanelB" parent="Environment/EntryControlRoom/ProductionArtPass" instance=ExtResource("ArtWallPanel")]
+position = Vector3(7.65, 0.2, 30.5)
+rotation_degrees = Vector3(0, -90, 0)
+scale = Vector3(1, 1, 1)
+
+[node name="EntryLight" parent="Environment/EntryControlRoom/ProductionArtPass" instance=ExtResource("ArtLight")]
+position = Vector3(0, 5.2, 30)
+scale = Vector3(1.4, 1.4, 1.4)
+
+[node name="TimingCableTrayLeft" parent="Environment/TimingChamber/ProductionArtPass" instance=ExtResource("ArtCableTray")]
+position = Vector3(-8.8, 5.5, 12)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(2, 1.3, 1.3)
+
+[node name="TimingCableTrayRight" parent="Environment/TimingChamber/ProductionArtPass" instance=ExtResource("ArtCableTray")]
+position = Vector3(8.8, 5.5, 12)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(2, 1.3, 1.3)
+
+[node name="TimingMachineA" parent="Environment/TimingChamber/ProductionArtPass" instance=ExtResource("ArtMachinery")]
+position = Vector3(-8, 0, 18)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(0.85, 0.85, 0.85)
+
+[node name="TimingMachineB" parent="Environment/TimingChamber/ProductionArtPass" instance=ExtResource("ArtMachinery")]
+position = Vector3(8, 0, 5)
+rotation_degrees = Vector3(0, -90, 0)
+scale = Vector3(0.85, 0.85, 0.85)
+
+[node name="PowerCabinetLeft" parent="Environment/PowerRoutingRoom/ProductionArtPass" instance=ExtResource("ArtMachinery")]
+position = Vector3(-7.2, 0, -9)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(0.9, 0.9, 0.9)
+
+[node name="PowerCabinetRight" parent="Environment/PowerRoutingRoom/ProductionArtPass" instance=ExtResource("ArtMachinery")]
+position = Vector3(7.2, 0, -3)
+rotation_degrees = Vector3(0, -90, 0)
+scale = Vector3(0.9, 0.9, 0.9)
+
+[node name="PowerCeilingTray" parent="Environment/PowerRoutingRoom/ProductionArtPass" instance=ExtResource("ArtCableTray")]
+position = Vector3(0, 5.1, -6)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(1.8, 1.4, 1.4)
+
+[node name="SecurityWallPanel" parent="Environment/SecurityInterception/ProductionArtPass" instance=ExtResource("ArtWallPanel")]
+position = Vector3(0, 0.2, -24.65)
+scale = Vector3(1.2, 1.2, 1.2)
+
+[node name="SecurityLight" parent="Environment/SecurityInterception/ProductionArtPass" instance=ExtResource("ArtLight")]
+position = Vector3(0, 5.1, -19)
+scale = Vector3(1.4, 1.4, 1.4)
+
+[node name="ExitDoorFrame" parent="Environment/ExitChamber/ProductionArtPass" instance=ExtResource("ArtDoorFrame")]
+position = Vector3(0, 0, -36.3)
+scale = Vector3(1.25, 1.2, 1.2)
+
+[node name="ExitHatch" parent="Environment/ExitChamber/ProductionArtPass" instance=ExtResource("ArtHatch")]
+position = Vector3(-6.6, 2.5, -32)
+rotation_degrees = Vector3(0, 90, 0)
+scale = Vector3(1.1, 1.1, 1.1)
+
+[editable path="Environment/EntryControlRoom/ProductionArtPass/EntryWallPanelA"]
+
+[editable path="Environment/EntryControlRoom/ProductionArtPass/EntryWallPanelB"]
+
+[editable path="Environment/EntryControlRoom/ProductionArtPass/EntryLight"]
+
+[editable path="Environment/TimingChamber/ProductionArtPass/TimingCableTrayLeft"]
+
+[editable path="Environment/TimingChamber/ProductionArtPass/TimingCableTrayRight"]
+
+[editable path="Environment/TimingChamber/ProductionArtPass/TimingMachineA"]
+
+[editable path="Environment/TimingChamber/ProductionArtPass/TimingMachineB"]
+
+[editable path="Environment/PowerRoutingRoom/ProductionArtPass/PowerCabinetLeft"]
+
+[editable path="Environment/PowerRoutingRoom/ProductionArtPass/PowerCabinetRight"]
+
+[editable path="Environment/PowerRoutingRoom/ProductionArtPass/PowerCeilingTray"]
+
+[editable path="Environment/SecurityInterception/ProductionArtPass/SecurityWallPanel"]
+
+[editable path="Environment/SecurityInterception/ProductionArtPass/SecurityLight"]
+
+[editable path="Environment/ExitChamber/ProductionArtPass/ExitDoorFrame"]
+
+[editable path="Environment/ExitChamber/ProductionArtPass/ExitHatch"]

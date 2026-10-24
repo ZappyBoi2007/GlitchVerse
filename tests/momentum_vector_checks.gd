@@ -45,10 +45,13 @@ func _run() -> void:
 	var player := flow.player
 	var grapple := player.find_child("GrappleController", true, false) as GrappleController
 	var vector_run := player.find_child("VectorRunController", true, false) as VectorRunController
+	var debug_overlay := player.find_child("MovementDebugOverlay", true, false)
 	var health := player.find_child("PlayerHealth", true, false) as PlayerHealth
 	var wall := level.get_node("VectorRunWall") as VectorRunSurface
 	var anchor := level.get_node("PrimaryGrappleAnchor") as GrappleAnchor
 	check(grapple != null and vector_run != null, "action player owns both movement components")
+	check(debug_overlay != null and not debug_overlay.debug_enabled and not debug_overlay.visible, "development movement telemetry exists and is disabled by default")
+	check(is_zero_approx(grapple.reel_in_speed), "swing rope does not silently shorten while attached")
 	check(wall != null and wall.is_in_group("vector_run_surface"), "BREACH LAB wall uses the marked surface contract")
 	wall.enabled = false
 	check(not vector_run.is_vector_surface(wall), "disabled marked wall is rejected")
@@ -62,6 +65,7 @@ func _run() -> void:
 	player.global_position = Vector3(0, 3.0, 14.0)
 	player.velocity = Vector3.ZERO
 	check(grapple.try_attach_target(anchor), "swing attaches from an airborne neutral state")
+	check(player.velocity.length() > 0.5 and player.velocity.length() <= grapple.maximum_attach_assist + 0.1, "neutral attachment receives bounded initial swing assistance")
 	var gravity_start_y := player.global_position.y
 	await settle_physics(12)
 	check(player.global_position.y < gravity_start_y, "gravity continues to drive the attached swing")
@@ -116,7 +120,10 @@ func _run() -> void:
 	check(not vector_run.begin_wall_run(wall, Vector3.LEFT, 1), "active grapple blocks competing wall-run state")
 	var momentum_before_release := player.velocity
 	grapple.cancel_grapple(&"test_release")
-	check(player.velocity.distance_to(momentum_before_release) < 0.01, "grapple release preserves transition momentum")
+	check(
+		player.velocity.distance_to(momentum_before_release * grapple.release_momentum_multiplier) < 0.01,
+		"grapple release preserves momentum with the configured bounded release boost"
+	)
 	check(vector_run.begin_wall_run(wall, Vector3.LEFT, 1), "wall run can begin after grapple release")
 	vector_run.stop_wall_run(&"test")
 

@@ -115,7 +115,17 @@ func _update_stats(elapsed: float, score: int) -> void:
 
 
 func _on_health_changed(current: int, maximum: int) -> void:
-	health_label.text = "INTEGRITY  %s%s" % ["■".repeat(current), "□".repeat(maximum - current)]
+	var filled := roundi(20.0 * float(current) / float(maxi(maximum, 1)))
+	health_label.text = "HP %03d / %03d  [%s%s]" % [
+		current,
+		maximum,
+		"■".repeat(filled),
+		"□".repeat(20 - filled),
+	]
+	health_label.add_theme_color_override(
+		"font_color",
+		Color("ff667d") if current <= maximum * 0.25 else Color("68ffac")
+	)
 
 
 func _on_interaction_target(_target: Node, prompt: String) -> void:
@@ -129,10 +139,13 @@ func _on_polarity_target(_target: Node, valid: bool) -> void:
 		crosshair.modulate = Color("c07cff")
 
 
-func _on_grapple_target(_target: Node, valid: bool) -> void:
+func _on_grapple_target(target: Node, valid: bool) -> void:
 	if valid:
-		prompt_label.text = "E // TETHER"
-		crosshair.modulate = Color("55eaff")
+		prompt_label.text = str(target.call("get_grapple_prompt")) if target.has_method("get_grapple_prompt") else "E // SWING"
+		crosshair.modulate = Color("ffb347") if target.is_in_group("tether_pull_handle") else Color("55eaff")
+	elif prompt_label.text.begins_with("E //"):
+		prompt_label.text = ""
+		crosshair.modulate = Color.WHITE
 
 
 func _on_action_result(message: String, success: bool) -> void:

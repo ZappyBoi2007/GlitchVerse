@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3]
+[ext_resource type="PackedScene" path="res://assets/environment_art/modular/gate.glb" id="1_gate"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/industrial_edge.tres" id="2_edge"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/red_emissive.tres" id="3_red"]
+[ext_resource type="Material" path="res://assets/environment_art/materials/cyan_emissive.tres" id="4_cyan"]
+[node name="DoorFrameAssembly" type="Node3D"]
+[node name="ImportedGate" parent="." instance=ExtResource("1_gate")]
+scale = Vector3(1.4, 1.4, 1.4)
+[node name="Header" type="CSGBox3D" parent="."]
+position = Vector3(0, 4.2, 0)
+size = Vector3(6.4, 0.5, 0.65)
+material = ExtResource("2_edge")
+[node name="LockLightLeft" type="CSGBox3D" parent="."]
+position = Vector3(-2.25, 4.2, -0.36)
+size = Vector3(0.5, 0.18, 0.08)
+material = ExtResource("3_red")
+[node name="LockLightRight" type="CSGBox3D" parent="."]
+position = Vector3(2.25, 4.2, -0.36)
+size = Vector3(0.5, 0.18, 0.08)
+material = ExtResource("4_cyan")
+
+[editable path="ImportedGate"]

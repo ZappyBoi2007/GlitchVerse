@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://player/player_controller.gd" id="1_player"]
 [ext_resource type="Script" path="res://audio/player_audio_controller.gd" id="2_audio"]
@@ -8,6 +8,8 @@
 [ext_resource type="Script" path="res://systems/vector_run_controller.gd" id="6_vector_run"]
 [ext_resource type="Script" path="res://systems/interaction_controller.gd" id="7_interaction"]
 [ext_resource type="Script" path="res://systems/polarity_controller.gd" id="8_polarity"]
+[ext_resource type="Script" path="res://player/movement_debug_overlay.gd" id="9_debug"]
+[ext_resource type="Script" path="res://player/combat_feedback.gd" id="10_feedback"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape_player"]
 radius = 0.35
@@ -83,6 +85,9 @@ collide_with_areas = true
 [node name="PlayerHealth" type="Node" parent="."]
 script = ExtResource("3_health")
 
+[node name="CombatFeedback" type="CanvasLayer" parent="."]
+script = ExtResource("10_feedback")
+
 [node name="VectorRunController" type="Node3D" parent="."]
 position = Vector3(0, 1, 0)
 script = ExtResource("6_vector_run")
@@ -97,3 +102,38 @@ collision_mask = 1
 
 [node name="PlayerAudioController" type="Node" parent="."]
 script = ExtResource("2_audio")
+
+[node name="MovementDebugOverlay" type="CanvasLayer" parent="."]
+layer = 90
+script = ExtResource("9_debug")
+debug_enabled = false
+
+[node name="Panel" type="ColorRect" parent="MovementDebugOverlay"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 254.0
+offset_bottom = 246.0
+mouse_filter = 2
+color = Color(0.015, 0.025, 0.04, 0.82)
+
+[node name="Margin" type="MarginContainer" parent="MovementDebugOverlay/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 8.0
+offset_right = -10.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Readout" type="Label" parent="MovementDebugOverlay/Panel/Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.45, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "MOVEMENT DEBUG"
+
+[editable path="SwordController"]

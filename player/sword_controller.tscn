@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene format=3]
 
 [ext_resource type="Script" path="res://systems/sword_controller.gd" id="1_script"]
 
@@ -14,20 +14,127 @@ emission_enabled = true
 emission = Color(0.22, 0.88, 1, 1)
 emission_energy_multiplier = 2.4
 
+[sub_resource type="StandardMaterial3D" id="Material_gauntlet"]
+albedo_color = Color(0.07, 0.09, 0.12, 1)
+metallic = 0.78
+roughness = 0.34
+
+[sub_resource type="StandardMaterial3D" id="Material_glove"]
+albedo_color = Color(0.015, 0.02, 0.027, 1)
+metallic = 0.12
+roughness = 0.78
+
+[sub_resource type="StandardMaterial3D" id="Material_arm_accent"]
+albedo_color = Color(0.02, 0.4, 0.5, 1)
+metallic = 0.42
+roughness = 0.25
+emission_enabled = true
+emission = Color(0.08, 0.85, 1, 1)
+emission_energy_multiplier = 1.8
+
 [sub_resource type="BoxMesh" id="Mesh_grip"]
 material = SubResource("Material_grip")
 size = Vector3(0.13, 0.13, 0.42)
 
 [sub_resource type="BoxMesh" id="Mesh_blade"]
 material = SubResource("Material_blade")
-size = Vector3(0.075, 0.075, 1.25)
+size = Vector3(0.065, 0.065, 1.42)
+
+[sub_resource type="BoxMesh" id="Mesh_sleeve"]
+material = SubResource("Material_glove")
+size = Vector3(0.3, 0.26, 0.58)
+
+[sub_resource type="BoxMesh" id="Mesh_forearm_guard"]
+material = SubResource("Material_gauntlet")
+size = Vector3(0.36, 0.31, 0.48)
+
+[sub_resource type="BoxMesh" id="Mesh_cuff"]
+material = SubResource("Material_gauntlet")
+size = Vector3(0.4, 0.36, 0.18)
+
+[sub_resource type="BoxMesh" id="Mesh_palm"]
+material = SubResource("Material_glove")
+size = Vector3(0.25, 0.2, 0.28)
+
+[sub_resource type="BoxMesh" id="Mesh_finger"]
+material = SubResource("Material_glove")
+size = Vector3(0.055, 0.12, 0.22)
+
+[sub_resource type="BoxMesh" id="Mesh_knuckle"]
+material = SubResource("Material_gauntlet")
+size = Vector3(0.27, 0.07, 0.13)
+
+[sub_resource type="BoxMesh" id="Mesh_arm_accent"]
+material = SubResource("Material_arm_accent")
+size = Vector3(0.07, 0.025, 0.32)
 
 [node name="SwordController" type="Node3D"]
 script = ExtResource("1_script")
 
 [node name="BladePivot" type="Node3D" parent="."]
-position = Vector3(0.48, -0.36, -0.58)
-rotation_degrees = Vector3(-12, -8, 22)
+position = Vector3(0.52, -0.42, -0.82)
+rotation_degrees = Vector3(25, 35, -10)
+
+[node name="ArmoredRightArm" type="Node3D" parent="BladePivot"]
+scale = Vector3(0.58, 0.58, 0.58)
+
+[node name="Sleeve" type="MeshInstance3D" parent="BladePivot/ArmoredRightArm"]
+position = Vector3(0.025, -0.2, 0.37)
+rotation_degrees = Vector3(-20, 0, 0)
+mesh = SubResource("Mesh_sleeve")
+cast_shadow = 0
+
+[node name="ForearmGuard" type="MeshInstance3D" parent="BladePivot/ArmoredRightArm"]
+position = Vector3(0.015, -0.13, 0.15)
+rotation_degrees = Vector3(-14, 0, 0)
+mesh = SubResource("Mesh_forearm_guard")
+cast_shadow = 0
+
+[node name="Cuff" type="MeshInstance3D" parent="BladePivot/ArmoredRightArm"]
+position = Vector3(0, -0.055, -0.055)
+rotation_degrees = Vector3(-8, 0, 0)
+mesh = SubResource("Mesh_cuff")
+cast_shadow = 0
+
+[node name="CyanAccent" type="MeshInstance3D" parent="BladePivot/ArmoredRightArm"]
+position = Vector3(0.0, -0.305, 0.14)
+rotation_degrees = Vector3(-14, 0, 0)
+mesh = SubResource("Mesh_arm_accent")
+cast_shadow = 0
+
+[node name="GlovedHand" type="Node3D" parent="BladePivot/ArmoredRightArm"]
+position = Vector3(0, -0.005, -0.115)
+
+[node name="Palm" type="MeshInstance3D" parent="BladePivot/ArmoredRightArm/GlovedHand"]
+mesh = SubResource("Mesh_palm")
+cast_shadow = 0
+
+[node name="KnucklePlate" type="MeshInstance3D" parent="BladePivot/ArmoredRightArm/GlovedHand"]
+position = Vector3(0, 0.12, -0.035)
+mesh = SubResource("Mesh_knuckle")
+cast_shadow = 0
+
+[node name="FingerIndex" type="MeshInstance3D" parent="BladePivot/ArmoredRightArm/GlovedHand"]
+position = Vector3(-0.09, 0, -0.02)
+rotation_degrees = Vector3(0, 0, 10)
+mesh = SubResource("Mesh_finger")
+cast_shadow = 0
+
+[node name="FingerMiddle" type="MeshInstance3D" parent="BladePivot/ArmoredRightArm/GlovedHand"]
+position = Vector3(-0.03, -0.01, -0.025)
+mesh = SubResource("Mesh_finger")
+cast_shadow = 0
+
+[node name="FingerRing" type="MeshInstance3D" parent="BladePivot/ArmoredRightArm/GlovedHand"]
+position = Vector3(0.03, -0.01, -0.025)
+mesh = SubResource("Mesh_finger")
+cast_shadow = 0
+
+[node name="FingerLittle" type="MeshInstance3D" parent="BladePivot/ArmoredRightArm/GlovedHand"]
+position = Vector3(0.09, 0, -0.02)
+rotation_degrees = Vector3(0, 0, -10)
+mesh = SubResource("Mesh_finger")
+cast_shadow = 0
 
 [node name="Grip" type="MeshInstance3D" parent="BladePivot"]
 position = Vector3(0, 0, -0.14)
